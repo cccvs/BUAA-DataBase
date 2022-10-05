@@ -34,13 +34,11 @@
 
 项目管理规范：
 
-1. 关于`commit`：
-
-   ```git
-   git commit -m "姓名-中文描述自己干了什么"
-   ```
-
-2. ...
+- 维持 `main` 主分支，这个分支应该是没有 bug 的，稳定的。
+- 开发的时候从 `main` 上 `checkout` 出新的开发分支。分支命名规则为 `name-function` （姓名为首字母缩写）。如 `tsy-login`。
+- 合并分支的时候应当先在 `main` 上 `pull`，更新 `main` 分支（`main` 可能被其他人更新）。然后切换到开发分支，`merge main` 。当功能正常以后，切换到 `main` 分支，然后 `merge dev` 。最后 `push main` 完成一次开发。
+- `gc` 的时候的 `comment` 要求是中文，尽量描述清楚干了啥。记得写名字如 `cnx-起始化仓库`
+- 尽量多 `push` 更新。  
 
 ## 参考作品
 
