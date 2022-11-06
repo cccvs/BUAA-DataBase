@@ -5,10 +5,16 @@ import FindClub from "@/pages/FindClub";
 import MainPage from "@/pages/MainPage";
 import MyClub from "@/pages/MyClub";
 import UserCenter from "@/pages/UserCenter";
+import LoginPage from "@/pages/LoginPage";
 
 const router = new VueRouter({
     // mode: 'hash', //hash||history
     routes: [
+        {
+            name: 'login',
+            path: '/',
+            component:LoginPage
+        },
         {
             name: "clubcenter",
             path: '/clubcenter',
