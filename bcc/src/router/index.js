@@ -1,0 +1,44 @@
+import VueRouter from "vue-router";
+import ClubCenter from "@/pages/ClubCenter";
+import ClubManage from "@/pages/ClubManage";
+import FindClub from "@/pages/FindClub";
+import MainPage from "@/pages/MainPage";
+import MyClub from "@/pages/MyClub";
+import UserCenter from "@/pages/UserCenter";
+
+const router = new VueRouter({
+    // mode: 'hash', //hash||history
+    routes: [
+        {
+            name: "clubcenter",
+            path: '/clubcenter',
+            component: ClubCenter
+        },
+        {
+            name: "clubmanage",
+            path: '/clubmanage',
+            component: ClubManage
+        },
+        {
+            name: "findclub",
+            path: '/findclub',
+            component: FindClub
+        },
+        {
+            name: "mainpage",
+            path: '/mainpage',
+            component: MainPage
+        },
+        {
+            name: "myclub",
+            path: '/myclub',
+            component: MyClub
+        },
+        {
+            name: "usercenter",
+            path: '/usercenter',
+            component: UserCenter
+        }
+    ]
+})
+export default router
