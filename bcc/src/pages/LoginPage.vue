@@ -155,22 +155,32 @@ export default {
         studentID:this.loginForm.studentID,
         password:this.loginForm.password
       };
-      //console.log(con);
+      console.log(con);
+      console.log("尝试登陆！！！");
       axios({
         url: 'http://101.42.160.94:8000/api/user_web/login',
         method: 'post',
         data: qs.stringify(con),
       }).then((ret) => {
-        //console.log(ret);
-        if (ret.data.errno === 0) {
-          //console.log(ret);
-          //console.log(ret.data.data.authorization);
-          localStorage.clear();
-          localStorage.setItem('Token',ret.data.data.authorization);
-          this.$message.success("登录成功");
-          console.log("我要跳转啦");
-          this.$router.push('/team');
-        } else this.$notify.error(ret.data.msg+"，登录失败");
+        console.log(ret);
+        console.log("正在执行");
+
+        /*
+        TODO:登陆检查
+         */
+        this.$message.success("登陆成功")
+        console.log("我要跳转啦");
+        this.$router.push('/mainpage');
+
+        // if (ret.data.errno === 0) {
+        //   //console.log(ret);
+        //   //console.log(ret.data.data.authorization);
+        //   localStorage.clear();
+        //   localStorage.setItem('Token',ret.data.data.authorization);
+        //   this.$message.success("登录成功");
+        //   console.log("我要跳转啦");
+        //   this.$router.push('/team');
+        // } else this.$notify.error(ret.data.msg+"，登录失败");
       })
     },
     register: function () {
