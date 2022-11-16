@@ -17,6 +17,19 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
+      <div class="dropdownType-box">
+        <el-dropdown placement="bottom" trigger="click" @command="handleSelectType">
+          <span style="cursor: pointer;color: dodgerblue">类型{{type}}<i class="el-icon-arrow-down el-icon--right"/></span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="科技">科技</el-dropdown-item>
+            <el-dropdown-item command="人文">人文</el-dropdown-item>
+            <el-dropdown-item command="实践">实践</el-dropdown-item>
+            <el-dropdown-item command="体育">体育</el-dropdown-item>
+            <el-dropdown-item command="艺术">艺术</el-dropdown-item>
+            <el-dropdown-item command="空">-</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
       <div class="dropdownSort-box">
         <el-dropdown placement="bottom" trigger="click" @command="handleSort">
           <span style="cursor: pointer;color: dodgerblue">{{ sortType }}<i class="el-icon-arrow-down el-icon--right"/></span>
@@ -30,7 +43,7 @@
       </div>
     </div>
     <div class="clubs-container" style="margin-top: 10px">
-      <div class="clubBar" v-for="item in clubList" :key="item.data" @click="gotoClub(item)">
+      <div class="clubBar" v-for="item in selectedList" :key="item.data" @click="gotoClub(item)">
         <span class="clubNameSpan" :title="item.name">{{item.name}} 星级：{{item.level}} 人数：{{item.num}}</span>
       </div>
     </div>
@@ -45,28 +58,52 @@ export default {
     return{
       searchClubName: '',
       sortType:'按成立时间降序',
-      level:null,
+      level: null,
+      isLevel: false,
+      type: null,
+      isType: false,
       club:{
         clubName:"",
         clubId:0,
       },
       clubList: [],
+      levelList: [],
+      typeList: [],
       tmpList: [
         {
           id: 1,
           name: "凌峰社",
           time:'',
+          type:"体育",
           num: 200,
           level: 5
         },
         {
           id: 2,
           name: "篮球裁判社",
+          type:"体育",
           time:'',
           num: 50,
           level: 4
+        },
+        {
+          id: 3,
+          name: "科协",
+          type:"科技",
+          time:'',
+          num: 150,
+          level: 3
+        },
+        {
+          id: 4,
+          name: "知行学社",
+          type:"人文",
+          time:'',
+          num: 100,
+          level: 2
         }
-      ]
+      ],
+      selectedList: this.tmpList
     }
   },
   methods:{
@@ -122,12 +159,12 @@ export default {
       }
     },
     sortClubs(){
-      for(let i = 0; i < this.clubList.length; i++){
-        for(let j = 0; j < this.clubList.length-i-1; j++){
-          if(this.sortCmp(this.clubList[j],this.clubList[j+1])){
-            let tmp = this.clubList[j];
-            this.clubList[j] = this.clubList[j+1];
-            this.clubList[j+1] = tmp;
+      for(let i = 0; i < this.selectedList.length; i++){
+        for(let j = 0; j < this.selectedList.length-i-1; j++){
+          if(this.sortCmp(this.selectedList[j],this.selectedList[j+1])){
+            let tmp = this.selectedList[j];
+            this.selectedList[j] = this.selectedList[j+1];
+            this.selectedList[j+1] = tmp;
           }
         }
       }
@@ -135,24 +172,80 @@ export default {
     gotoClub(){
     },
     selectLevel(){
-      this.clubList = [];
-      if (this.level == null) {
-        this.clubList = this.tmpList;
-      }
-      let j = 0;
-      for(let i = 0; i < this.tmpList.length; i++){
-        if (this.tmpList[i].level === this.level){
-          this.clubList[j++] = this.tmpList[i];
+      this.levelList = [];
+      if (this.isType) {
+        if (this.level == null) {
+          this.levelList = this.typeList;
+        } else {
+          let j = 0;
+          for(let i = 0; i < this.typeList.length; i++){
+            if (this.typeList[i].level === this.level){
+              this.levelList[j++] = this.typeList[i];
+            }
+          }
+        }
+      } else {
+        if (this.level == null) {
+          this.levelList = this.tmpList;
+        } else {
+          let j = 0;
+          for(let i = 0; i < this.tmpList.length; i++){
+            if (this.tmpList[i].level === this.level){
+              this.levelList[j++] = this.tmpList[i];
+            }
+          }
         }
       }
+      this.selectedList = this.levelList;
     },
     handleSelectLevel(command){
       if (command !== '6') {
-        this.level = command - '0'
+        this.level = command - '0';
+        this.isLevel = true;
       } else {
         this.level = null;
+        this.isLevel = false;
       }
       this.selectLevel();
+      this.sortClubs();
+    },
+    selectType(){
+      this.typeList = [];
+      if (this.isLevel) {
+        if (this.type == null) {
+          this.typeList = this.levelList;
+        } else {
+          let j = 0;
+          for(let i = 0; i < this.levelList.length; i++){
+            if (this.levelList[i].type === this.type){
+              this.typeList[j++] = this.levelList[i];
+            }
+          }
+        }
+      } else {
+        if (this.type == null) {
+          this.typeList = this.tmpList;
+        } else {
+          let j = 0;
+          for(let i = 0; i < this.tmpList.length; i++){
+            if (this.tmpList[i].type === this.type){
+              this.typeList[j++] = this.tmpList[i];
+            }
+          }
+        }
+      }
+      this.selectedList = this.typeList;
+    },
+    handleSelectType(command){
+      if (command !== "空") {
+        this.type = command;
+        this.isType = true;
+      } else {
+        this.type = null;
+        this.isType = false;
+      }
+      this.selectType();
+      this.sortClubs();
     }
   }
 }
@@ -165,11 +258,15 @@ export default {
   display: flex;
 }
 .search-box{
-  width: 300px;
-  margin-right: 40px;
+  width: 420px;
+  margin-right: 20px;
 }
 .dropdownSort-box{
-  width: 200px;
+  width: 250px;
+}
+.dropdownType-box{
+  width: 90px;
+  margin-right: 10px;
 }
 .dropdownLevel-box{
  width: 90px;
