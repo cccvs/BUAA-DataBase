@@ -73,6 +73,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# TODO[1]: change sqlite3 to mysql
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
