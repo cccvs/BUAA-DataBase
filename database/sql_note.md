@@ -13,3 +13,15 @@ desc <table_name>;	# 查看表结构
 #### 1119
 
 * `Free Talk`项目没用使用`user`内容。
+
+#### 1122
+
+* 修改`root`密码。
+
+```mysql
+use mysql;
+show tables;
+ALTER user 'root' @ 'localhost' IDENTIFIED BY '123456';
+```
+
+* `python`连接`mysql`数据库，用`pycharm`下载安装包会连接超时。于是用浏览器去下载[连接器](https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.25/mysql-connector-java-8.0.25.jar)，参考[教程](https://blog.csdn.net/fan521dan/article/details/104902294)进行配置即可。
