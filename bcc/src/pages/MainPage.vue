@@ -1,6 +1,8 @@
 <template>
   <el-container>
-    <SideBar></SideBar>
+    <div class="side-bar">
+      <SideBar></SideBar>
+    </div>
     <el-container>
       <el-header>
         <MyHeader></MyHeader>
@@ -53,7 +55,6 @@ export default {
 </script>
 
 <style scoped>
-
 .img-object1 {
   height: 100%;
   min-height: 300px;
@@ -99,5 +100,17 @@ export default {
 .row-bg {
   padding: 10px 0;
   background-color: #f9fafc;
+}
+
+.side-bar {
+  width: 65px;
+  transition:width 1s;
+  -moz-transition:width 1s;
+  -webkit-transition:width 1s;
+  -o-transition:width 1s;
+}
+
+.side-bar:hover{
+  width: 150px;
 }
 </style>

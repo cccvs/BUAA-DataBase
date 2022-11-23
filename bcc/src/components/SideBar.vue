@@ -1,9 +1,13 @@
 <template>
-  <el-aside width="200px">
+  <div @mouseover="mouseOver"
+       @mouseleave="mouseLeave"
+       class="showHide">
     <el-menu :default-active="this.$router.path"
              router
              class="el-menu-vertical-demo"
-             :collapse="isCollapse">
+             :collapse="isCollapse"
+             :collapse-transition="false"
+    >
       <el-menu-item index="mainpage" router>
         <i class="el-icon-video-camera"></i>
         <span slot="title">社团风采</span>
@@ -33,24 +37,31 @@
         <span slot="title">社团中心</span>
       </el-menu-item>
     </el-menu>
-    <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-      <el-radio-button :label="false">展开</el-radio-button>
-      <el-radio-button :label="true">收起</el-radio-button>
-    </el-radio-group>
-  </el-aside>
+  </div>
 </template>
 
 <script>
+
 export default {
   name: "SideBar",
   data() {
     return {
-      isCollapse: false
+      isCollapse: true
     };
+  },
+  methods: {
+    mouseOver() {
+      this.isCollapse = false
+    },
+    mouseLeave() {
+      this.isCollapse = true
+    }
   }
 }
 </script>
 
 <style scoped>
-
+.showHide {
+  margin-left: 0;
+}
 </style>
