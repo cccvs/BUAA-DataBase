@@ -1,6 +1,8 @@
 <template>
   <el-container>
-    <SideBar></SideBar>
+    <div class="side-bar">
+      <SideBar></SideBar>
+    </div>
     <el-container>
       <el-header>
         <MyHeader></MyHeader>
@@ -32,5 +34,15 @@ export default {
 </script>
 
 <style scoped>
+.side-bar {
+  width: 65px;
+  transition: width 0.5s;
+  -moz-transition: width 0.5s;
+  -webkit-transition: width 0.5s;
+  -o-transition: width 0.5s;
+}
 
+.side-bar:hover {
+  width: 150px;
+}
 </style>
