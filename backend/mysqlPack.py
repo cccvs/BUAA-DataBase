@@ -1,6 +1,5 @@
 # coding=utf-8
 import pymysql
-import jwt
 from django.http import HttpResponse
 
 
@@ -11,29 +10,36 @@ def connectDatabase():
     return connect, cursor
 
 
-def createUser(userID, password, name, email):
+def closeDatabase(connect, cursor):
+    connect.close()
+    cursor.close()
+
+
+def createUser(userID: str, password: str, name: str, email: str):
+    # create logical part
     connect, cursor = connectDatabase()
     ins = 'insert into user(user_id, password, time, real_name, email)' \
           'values (%s, %s, CURRENT_TIMESTAMP, %s, %s)'
     cursor.execute(ins, [userID, password, name, email])
     connect.commit()
+
     return HttpResponse({'code': 0})
 
 
-def findUser(userId: str):
+def getUser(userId: str):
     connect, cursor = connectDatabase()
     ins = "select * from user where user_id = %s"
     cursor.execute(ins, [userId])
-    print(cursor.fetchall())
-    connect.commit()
+    result = cursor.fetchall()
+    closeDatabase(connect, cursor)
+    return result
 
 
-code = jwt.encode(payload={'user_id': 'a'}, algorithm='HS256', key='s', headers={"typ": "JWT", "alg": "HS256"})
-print(code)
 # createUser('a', 'b', 'c', 'd')
 # createUser('aa', 'bb', 'cc', 'dd')
 
-# conn, cursor = connectDatabase()
+conn, cursor = connectDatabase()
 # cursor.execute('show databases')
-# cursor.execute('select * from user')
-# print(cursor.fetchall())
+cursor.execute('select * from user')
+x = cursor.fetchall()
+print(x)
