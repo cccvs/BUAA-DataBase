@@ -25,6 +25,9 @@ def loginUser(request):
         result = getUser(userId)
         if result:
             if result[0][1] != password:
+                # code = 3
+                # message = 'wrong password'
+                # return render(request, 'api/login.html'， locals()), code.encode()
                 return JsonResponse({'code': 3, 'message': 'wrong password'}), code.decode()
             else:
                 return JsonResponse({'code': 0, 'message': 'login succeed'}), code.decode()
