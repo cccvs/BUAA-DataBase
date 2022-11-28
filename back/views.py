@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.shortcuts import render
 from django.http import JsonResponse
-from mysqlPack import *
+from .mysqlPack import *
 import jwt
 import hashlib
 
@@ -58,10 +58,10 @@ def registerUser(request):
 def checkEmail(request):
     pass
 
-class TestRequest:
-    def __init__(self, str):
-        self.method = str
-
-testPost = TestRequest('POST')
-testGet = TestRequest('GET')
-loginUser(testPost)
+# class TestRequest:
+#     def __init__(self, str):
+#         self.method = str
+#
+# testPost = TestRequest('POST')
+# testGet = TestRequest('GET')
+# loginUser(testPost)
