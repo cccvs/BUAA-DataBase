@@ -22,4 +22,6 @@ urlpatterns = [
     path('api/login', views.loginUser),
     path('api/register', views.registerUser),
     path('api/check_email', views.checkEmail),
+    path('api/find_club', views.findClub),
+    path('api/create_club', views.createClub)
 ]

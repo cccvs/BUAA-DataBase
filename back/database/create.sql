@@ -1,8 +1,9 @@
-drop schema `club_system`;
-create schema `club_system`;
+drop schema if exists `club_system`;
+create schema `club_system` default charset = utf8;
 use `club_system`;
 
 # entity
+drop table if exists `user`;
 create table `user`
 (
     `user_id`   varchar(31)  not null,
@@ -22,23 +23,29 @@ create table `user`
     check ( 0 <= `level` and `level` <= 3 ) # 不同学生/管理员权限
 );
 
+
+drop table if exists `club`;
 create table `club`
 (
-    `club_id`   binary(16)  not null,
-    `club_name` varchar(31) not null,
-    `type`      smallint    not null,
-    `star`      smallint,
-    `score`     float,
-    `time`      timestamp   not null,
-    `intro`     varchar(1022),
-    `master_id` varchar(31),
+    `club_id`      binary(16)  not null,
+    `name`    varchar(31) not null,
+    `type`         smallint    not null,
+    `star`         smallint,
+    `member_count` int         not null,
+    `score`        float,
+    `time`         timestamp   not null,
+    `intro`        varchar(1022),
+    `master_id`    varchar(31),
+    `cover`        varchar(255),
     primary key (`club_id`),
     foreign key (`master_id`) references `user` (`user_id`),
     check ( 0 <= `type` and `type` <= 5 ),
     check ( `star` is null or (1 <= `star` and `star` <= 5) ),
+    check ( `member_count` >= 0 ),
     check ( 1.0 <= `score` and `score` <= 5.0 )
 );
 
+drop table if exists `notice`;
 create table `notice`
 (
     `notice_id` binary(16) not null,
@@ -51,6 +58,7 @@ create table `notice`
     check ( `top` = 0 or `top` = 1 )
 );
 
+drop table if exists `event`;
 create table `event`
 (
     `event_id`     binary(16) not null,
@@ -67,6 +75,7 @@ create table `event`
     foreign key (`user_id`) references `user` (`user_id`)
 );
 
+drop table if exists `post`;
 create table `post`
 (
     `post_id` binary(16)    not null,
@@ -82,6 +91,7 @@ create table `post`
     check ( `dislike` >= 0)
 );
 
+drop table if exists `reply`;
 create table `reply`
 (
     `reply_id` binary(16)    not null,
@@ -95,6 +105,7 @@ create table `reply`
     check ( `dislike` >= 0)
 );
 
+drop table if exists `application`;
 create table `application`
 (
     `form_id`      binary(16)  not null,
@@ -114,6 +125,7 @@ create table `application`
 );
 
 # relation
+drop table if exists `user_club`;
 create table `user_club`
 (
     `user_id`  varchar(31) not null,
@@ -126,6 +138,7 @@ create table `user_club`
     check (`identity` in (0, 1, 2))
 );
 
+drop table if exists `user_event`;
 create table `user_event`
 (
     `user_id`  varchar(31) not null,
@@ -137,6 +150,7 @@ create table `user_event`
     check ( `identity` in (0, 1, 2))
 );
 
+drop table if exists `score`;
 create table `score`
 (
     `user_id` varchar(31) not null,
@@ -148,6 +162,7 @@ create table `score`
     check ( `score` in (1.0, 2.0, 3.0, 4.0, 5.0) )
 );
 
+drop table if exists `user_post`;
 create table `user_post`
 (
     `user_id` varchar(31) not null,
@@ -159,6 +174,7 @@ create table `user_post`
     check ( `action` in (0, 1) )
 );
 
+drop table if exists `user_reply`;
 create table `user_reply`
 (
     `user_id`  varchar(31) not null,
@@ -170,6 +186,7 @@ create table `user_reply`
     check ( `action` in (0, 1) )
 );
 
+drop table if exists `follow`;
 create table `follow`
 (
     `follower_id` varchar(31) not null,
