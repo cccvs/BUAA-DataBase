@@ -28,7 +28,7 @@ drop table if exists `club`;
 create table `club`
 (
     `club_id`      binary(16)  not null,
-    `name`    varchar(31) not null,
+    `name`         varchar(31) not null,
     `type`         smallint    not null,
     `star`         smallint,
     `member_count` int         not null,
@@ -105,12 +105,12 @@ create table `reply`
     check ( `dislike` >= 0)
 );
 
-drop table if exists `application`;
-create table `application`
+drop table if exists `establishing_club`;
+create table `establishing_club`
 (
     `form_id`      binary(16)  not null,
     `applicant_id` varchar(31) not null,
-    `verifier_id`  varchar(31) not null,
+    `verifier_id`  varchar(31),
     `status`       smallint    not null,
     `club_name`    varchar(31) not null,
     `type`         smallint    not null,
@@ -122,6 +122,20 @@ create table `application`
     foreign key (`verifier_id`) references `user` (`user_id`),
     check ( 0 <= `status` and `status` <= 2),
     check ( 0 <= `type` and `type` <= 5)
+);
+
+drop table if exists `joining_club`;
+create table `joining_club`
+(
+    `form_id`      binary(16) not null,
+    `applicant_id` varchar(31),
+    `club_id`      binary(16),
+    `status`       smallint   not null,
+    `time`         timestamp  not null,
+    primary key (`form_id`),
+    foreign key (`applicant_id`) references `user` (`user_id`),
+    foreign key (`club_id`) references `club` (`club_id`),
+    check ( 0 <= `status` and `status` <= 2)
 );
 
 # relation

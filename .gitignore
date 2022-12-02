@@ -2,7 +2,8 @@
 
 # back ignore
 back/database/.idea
-back/__pycache__
+back/admin/__pycache__
+back/back/__pycache__
 
 # bcc ignore
 bcc/.DS_Store

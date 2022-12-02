@@ -1,10 +1,9 @@
 # coding=utf-8
 from datetime import datetime
 
-from django.shortcuts import render
 from django.http import JsonResponse
 
-from . import mysqlPack
+from back.back import mysqlPack
 import jwt
 import hashlib
 
