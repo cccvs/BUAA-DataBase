@@ -44,7 +44,10 @@
     </div>
     <div class="clubs-container" style="margin-top: 10px">
       <div class="clubBar" v-for="item in selectedList" :key="item.data" @click="gotoClub(item)">
-        <span class="clubNameSpan" :title="item.name">{{item.name}} 星级：{{item.level}} 人数：{{item.num}}</span>
+        <div class="club_picture"><img src="../assets/logo.png"></div>
+        <div class="club_name">{{item.name}}</div>
+        <div class="club_info">{{item.type}} {{item.level}}星级 {{item.time}}</div>
+        <div class="club_dis">{{item.description}}</div>
       </div>
     </div>
   </div>
@@ -73,8 +76,9 @@ export default {
         {
           id: 1,
           name: "凌峰社",
-          time:'',
+          time:'2010.11.11',
           type:"体育",
+          description:"是一个以攀岩、暑期登山、科考，以及其他户外活动为特色的北航“明星社团”",
           num: 200,
           level: 5
         },
@@ -82,7 +86,7 @@ export default {
           id: 2,
           name: "篮球裁判社",
           type:"体育",
-          time:'',
+          time:'2011.11.11',
           num: 50,
           level: 4
         },
@@ -90,7 +94,7 @@ export default {
           id: 3,
           name: "科协",
           type:"科技",
-          time:'',
+          time:'2012.11.11',
           num: 150,
           level: 3
         },
@@ -98,7 +102,7 @@ export default {
           id: 4,
           name: "知行学社",
           type:"人文",
-          time:'',
+          time:'2013.11.11',
           num: 100,
           level: 2
         }
@@ -254,7 +258,7 @@ export default {
 <style scoped>
 .tools{
   height: 30px;
-  width: 400px;
+  width: 1200px;
   display: flex;
 }
 .search-box{
@@ -271,5 +275,33 @@ export default {
 .dropdownLevel-box{
  width: 90px;
   margin-right: 10px;
+}
+.clubBar{
+  width: 600px;
+  float: left;
+  height: 200px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+}
+.club_picture{
+  width: 200px;
+  height: 200px;
+  float: left;
+  margin-right: 40px;
+}
+.club_name{
+  font-size: 50px;
+  width: 360px;
+  float: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.club_info{
+  float: left;
+  width: 360px;
+  margin-bottom: 10px;
+}
+.club_dis{
+  word-wrap: break-word;
+  display: inline;
 }
 </style>
