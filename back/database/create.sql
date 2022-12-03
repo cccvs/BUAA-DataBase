@@ -64,15 +64,19 @@ create table `event`
     `event_id`     binary(16) not null,
     `club_id`      binary(16) not null,
     `user_id`      varchar(31),
+    `intro`        varchar(255),
     `time`         timestamp  not null,
     `apply_time`   timestamp,
     `expired_time` timestamp,
     `begin_time`   timestamp,
     `end_time`     timestamp,
+    `member_count` int,
     `limit`        int,
     primary key (`event_id`),
     foreign key (`club_id`) references `club` (`club_id`),
-    foreign key (`user_id`) references `user` (`user_id`)
+    foreign key (`user_id`) references `user` (`user_id`),
+    check ( `member_count` >= 0),
+    check ( `limit` >= 0 )
 );
 
 drop table if exists `post`;
