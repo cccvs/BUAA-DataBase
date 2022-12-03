@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.http import JsonResponse
 
-from club import mysqlPack
+from . import mysqlPack
 import jwt
 import hashlib
 
