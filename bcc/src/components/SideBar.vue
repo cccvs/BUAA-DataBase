@@ -59,9 +59,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.showHide {
-  margin-left: 0;
-}
-</style>

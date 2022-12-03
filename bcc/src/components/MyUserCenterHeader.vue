@@ -1,39 +1,51 @@
 <template>
   <div>
-    <div class="flexs">
-      <el-container>
-        <el-header>
-          <el-container>
-            <el-avatar icon="el-icon-user-solid"></el-avatar>
-            <h3>管理您的账号</h3>
-          </el-container>
-        </el-header>
-        <el-container>
-          <el-button type="primary" size="medium" @click="dialogFormVisible = true">
-            修改密码
-          </el-button>
-          <el-button type="primary" size="medium">
-            上传头像
-          </el-button>
+    <v-app style="height: 80px;overflow-y: hidden;overflow-x: hidden">
+      <!--      <v-row style="margin-left: 15px;margin-top: 10px">-->
+      <!--        <v-icon color="blue">mdi-clipboard-text-multiple-outline</v-icon>-->
+      <!--      </v-row>-->
+      <v-row style="margin-left: 15px;margin-top: 10px">
+        <v-container style="width: 50%;height: 100%">
+          <v-row>
+            <v-icon color="blue" style="margin-right: 10px;">mdi-file-document-edit</v-icon>
+            <h4>管理您的账号</h4>
+          </v-row>
+          <div style="margin-top: 20px;">
+            <v-btn color="deep-purple accent-1"
+                   elevation="5"
+                   @click="dialogFormVisible = true">
+              修改密码
+            </v-btn>
+            <v-btn color="deep-purple accent-1"
+                   elevation="5"
+                   style="margin-left: 10px">
+              上传头像
+            </v-btn>
+          </div>
+        </v-container>
+        <v-spacer></v-spacer>
+        <v-avatar style="margin-right: 20px">
+          <img :src="avatar" alt="头像">
+        </v-avatar>
+        <div>
           <el-dialog :visible.sync="dialogFormVisible">
-          <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="密码" prop="pass">
-              <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="确认密码" prop="checkPass">
-              <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-              <el-button @click="resetForm('ruleForm')">重置</el-button>
-            </el-form-item>
-          </el-form>
-        </el-dialog>
-        </el-container>
-      </el-container>
-      <el-avatar :size="100" :src="avatar" fit="contain"></el-avatar>
-    </div>
-    <hr/>
+            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px"
+                     class="demo-ruleForm">
+              <el-form-item label="密码" prop="pass">
+                <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="确认密码" prop="checkPass">
+                <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+                <el-button @click="resetForm('ruleForm')">重置</el-button>
+              </el-form-item>
+            </el-form>
+          </el-dialog>
+        </div>
+      </v-row>
+    </v-app>
   </div>
 </template>
 
