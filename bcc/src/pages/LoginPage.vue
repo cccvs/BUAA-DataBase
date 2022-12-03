@@ -72,7 +72,6 @@
 
 <script>
 import axios from "axios";
-import qs from "qs";
 
 export default {
   name: "LoginPage",
@@ -157,7 +156,7 @@ export default {
       console.log(con);
       console.log("尝试登陆！！！");
       this.$axios({
-        url: 'http://http://127.0.0.1:8000//api//login',
+        url: 'http://127.0.0.1:8000//api//login',
         method: 'post',
         data: JSON.stringify(con),
       }).then((ret) => {
