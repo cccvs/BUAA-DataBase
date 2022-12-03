@@ -35,9 +35,6 @@
         <el-form-item prop="introduction">
           <el-input v-model="createClubForm.introduction" class="form__input" type="text" placeholder="社团简介"/>
         </el-form-item>
-        <el-form-item prop="reason">
-          <el-input v-model="createClubForm.reason" class="form__input" type="text" placeholder="申请理由"/>
-        </el-form-item>
         <el-form-item>
           <div class="primary-btn" @click="create">立即注册</div>
         </el-form-item>
@@ -63,13 +60,11 @@ export default {
         clubName:'',
         clubType:'',
         introduction:'',
-        reason:'',
       },
       createClubRules: {
         clubName:[{required: true, message: '请输入社团名称', trigger: 'blur'}],
         clubType:[{required: true, message: '请选择社团类型', trigger: 'blur'}],
         introduction:[{required: true, message: '请输入社团简介', trigger: 'blur'}],
-        reason:[{required: true, message: '请输入申请理由', trigger: 'blur'}],
       }
     }
   },
@@ -80,7 +75,6 @@ export default {
       con['clubName'] = this.createClubForm.clubName;
       con['clubType'] = this.createClubForm.clubType;
       con['introduction'] = this.createClubForm.introduction;
-      con['reason'] = this.createClubForm.reason;
       //console.log(con);
       this.$axios({
         url: '',

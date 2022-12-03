@@ -283,10 +283,11 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
 }
 .club_picture{
+  margin-left: 10px;
   width: 200px;
   height: 200px;
   float: left;
-  margin-right: 40px;
+  margin-right: 30px;
 }
 .club_name{
   font-size: 50px;
