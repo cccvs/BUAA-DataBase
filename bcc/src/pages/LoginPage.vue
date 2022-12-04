@@ -72,6 +72,7 @@
 
 <script>
 import axios from "axios";
+import Qs from "qs";
 
 export default {
   name: "LoginPage",
@@ -158,19 +159,17 @@ export default {
       this.$axios({
         url: 'http://127.0.0.1:8000/api/login',
         method: 'post',
-        data: JSON.stringify(con),
+        data: Qs.stringify(con),
       }).then((ret) => {
         console.log(ret);
         console.log("正在执行");
-        if (ret.data.errno === 0) {
-          //console.log(ret);
-          //console.log(ret.data.data.authorization);
+        if (ret.data.code === 0) {
           localStorage.clear();
-          localStorage.setItem('Token',ret.data.data.authorization);
+          localStorage.setItem('Token',ret.data.jwt);
           this.$message.success("登录成功");
           console.log("我要跳转啦");
           this.$router.push('/mainpage');
-        } else this.$notify.error(ret.data.msg+"，登录失败");
+        } else this.$notify.error(ret.data.message+"，登录失败");
       })
     },
     register: function () {
