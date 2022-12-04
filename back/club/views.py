@@ -2,8 +2,9 @@
 from datetime import datetime
 
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
-from club import mysqlPack
+from . import mysqlPack
 import jwt
 import hashlib
 
@@ -15,29 +16,36 @@ def hash_code(s, salt='log_reg_sys'):
     return h.hexdigest()
 
 
+@csrf_exempt
 def loginUser(request):
     if request.method == 'POST':
         # vars
         userId = request.POST.get('user_id')
         password = request.POST.get('password')
         code = jwt.encode(payload={'user_id': 'a', 'time': str(datetime.now())}, algorithm='HS256', key='123456',
-                          headers={"typ": "JWT", "alg": "HS256"})
+                          headers={'typ': 'JWT', 'alg': 'HS256'})
+        data = jwt.decode(jwt=code.decode(), key='123456', algorithms='HS256')
+        print(data)
         # logics
+        print(code)
+        print(request.POST)
+        print(userId, password)
         result = mysqlPack.getUser(userId)
+        print(result)
         if result:
             if result[0][1] != password:
                 # code = 3
                 # message = 'wrong password'
                 # return render(request, 'api/login.html'， locals()), code.encode()
-                return JsonResponse({'code': 3, 'message': 'wrong password'}), code.decode()
+                return JsonResponse({'code': 3, 'message': 'wrong password'})
             else:
-                return JsonResponse({'code': 0, 'message': 'login succeed'}), code.decode()
+                return JsonResponse({'code': 0, 'message': 'login succeess', 'jwt': code.decode()})
         else:
-            return JsonResponse({'code': 2, 'message': 'user not found'}), code.decode()
+            return JsonResponse({'code': 2, 'message': 'user not found'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
-
+@csrf_exempt
 def registerUser(request):
     if request.method == 'POST':
         # vars
@@ -48,7 +56,7 @@ def registerUser(request):
         verifyCode = request.POST.get('verify_code')
         # logics
         try:
-            mysqlPack.createUser(userId, name, password, email)
+            mysqlPack.createUser(userId, password, name, email)
             return JsonResponse({'code': 0, 'message': 'create user successfully!'})
         except Exception as e:
             print(e)
@@ -60,15 +68,16 @@ def registerUser(request):
 def checkEmail(request):
     pass
 
-
+@csrf_exempt
 def createClub(request):
     if request.method == 'POST':
         # vars
         name = request.POST.get('name')
         clubType = request.POST.get('type')
         masterId = request.POST.get('masterId')
+        intro = request.POST.get('intro')
         try:
-            mysqlPack.createClub(name, clubType, masterId)
+            mysqlPack.createClub(name, clubType, masterId, intro)
             return JsonResponse({'code': 0, 'message': ''})
         except Exception as e:
             print(e)
@@ -76,7 +85,7 @@ def createClub(request):
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
-
+@csrf_exempt
 def findClub(request):
     retDict = dict()
     if request.method == 'POST':

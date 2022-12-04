@@ -109,6 +109,25 @@ create table `reply`
     check ( `dislike` >= 0)
 );
 
+drop table if exists `comment`;
+create table `comment`
+(
+    `comment_id` binary(16)  not null,
+    `user_id`    varchar(31) not null,
+    `event_id`   binary(16)  not null,
+    `time`       timestamp   not null,
+    `content`    varchar(1022),
+    `score`      float       not null,
+    `like`       int         not null,
+    `dislike`    int         not null,
+    primary key (`comment_id`),
+    foreign key (`user_id`) references `user` (`user_id`),
+    foreign key (`event_id`) references `event` (`event_id`),
+    check ( `score` in (1.0, 2.0, 3.0, 4.0, 5.0) ),
+    check ( `like` >= 0 ),
+    check ( `dislike` >= 0)
+);
+
 drop table if exists `establishing_club`;
 create table `establishing_club`
 (

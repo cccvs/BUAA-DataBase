@@ -72,7 +72,7 @@
 
 <script>
 import axios from "axios";
-import qs from "qs";
+import Qs from "qs";
 
 export default {
   name: "LoginPage",
@@ -151,53 +151,41 @@ export default {
       }).catch((error)=>{console.log(error)})
     },
     login: function () {
-      let con = {
-        studentID:this.loginForm.studentID,
-        password:this.loginForm.password
-      };
+      let con = {};
+      con['user_id'] = this.loginForm.studentID;
+      con['password'] = this.loginForm.password;
       console.log(con);
       console.log("尝试登陆！！！");
-      axios({
-        url: 'http://101.42.160.94:8000/api/user_web/login',
+      this.$axios({
+        url: 'http://127.0.0.1:8000/api/login',
         method: 'post',
-        data: qs.stringify(con),
+        data: Qs.stringify(con),
       }).then((ret) => {
         console.log(ret);
         console.log("正在执行");
-
-        /*
-        TODO:登陆检查
-         */
-        this.$message.success("登陆成功")
-        console.log("我要跳转啦");
-        this.$router.push('/mainpage');
-
-        // if (ret.data.errno === 0) {
-        //   //console.log(ret);
-        //   //console.log(ret.data.data.authorization);
-        //   localStorage.clear();
-        //   localStorage.setItem('Token',ret.data.data.authorization);
-        //   this.$message.success("登录成功");
-        //   console.log("我要跳转啦");
-        //   this.$router.push('/team');
-        // } else this.$notify.error(ret.data.msg+"，登录失败");
+        if (ret.data.code === 0) {
+          localStorage.clear();
+          localStorage.setItem('Token',ret.data.jwt);
+          this.$message.success("登录成功");
+          console.log("我要跳转啦");
+          this.$router.push('/mainpage');
+        } else this.$notify.error(ret.data.message+"，登录失败");
       })
     },
     register: function () {
       let con = {};
+      con['user_id'] = this.createUserForm.studentID;
       con['name'] = this.createUserForm.name;
-      con['password_1'] = this.createUserForm.password1;
-      con['password_2'] = this.createUserForm.password2;
+      con['password'] = this.createUserForm.password1;
       con['email'] = this.createUserForm.email;
-      con['code'] = this.createUserForm.verifyCode;
-      con['studentID'] = this.createUserForm.studentID;
-      //console.log(con);
-      axios({
-        url: 'http://101.42.160.94:8000/api/user_web/register',
+      con['verify_code'] = this.createUserForm.verifyCode;
+      // console.log(con);
+      this.$axios({
+        url: 'http://127.0.0.1:8000/api/register',
         method: 'post',
-        data: JSON.stringify(con),
+        data: Qs.stringify(con),
       }).then((ret) => {
-        if (ret.data.errno === 0) {
+        if (ret.data.code === 0) {
           this.$message.success("注册成功");
           this.isLogin = !this.isLogin;
           this.createUserForm = {
@@ -208,7 +196,7 @@ export default {
             email: '',
             verifyCode: '',
           };
-        } else this.$notify.error(ret.data.msg+"，注册失败");
+        } else this.$notify.error(ret.data.message+"，注册失败");
       })
     },
     verify: function () {
@@ -322,7 +310,7 @@ export default {
     top: 0;
     left: 0;
     height: 100%;
-    width: 300px;
+    width: 400px;
     padding: 50px;
     z-index: 200;
     transition: 1.25s;
