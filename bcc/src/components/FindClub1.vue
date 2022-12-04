@@ -42,21 +42,16 @@
         </el-dropdown>
       </div>
     </div>
-    <div class="clubs-container" style="margin-top: 10px">
-      <div class="clubBar" v-for="item in selectedList" :key="item.data" @click="gotoClub(item)">
-        <div class="club_picture"><img src="../assets/logo.png"></div>
-        <div class="club_name">{{item.name}}</div>
-        <div class="club_info">{{item.type}} {{item.level}}星级 {{item.time}}</div>
-        <div class="club_dis">{{item.description}}</div>
-      </div>
-    </div>
+    <ClubList :clubs="selectedList"></ClubList>
   </div>
 </template>
 
 <script>
 // import qs from "qs";
+import ClubList from "@/components/ClubList";
 export default {
   name: "FindClub-1",
+  components: {ClubList},
   data(){
     return{
       searchClubName: '',
@@ -275,36 +270,5 @@ export default {
 .dropdownLevel-box{
  width: 90px;
   margin-right: 10px;
-}
-.clubBar{
-  width: 650px;
-  float: left;
-  height: 200px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  margin-right: 20px;
-  margin-bottom: 20px;
-}
-.club_picture{
-  margin-left: 10px;
-  width: 200px;
-  height: 200px;
-  float: left;
-  margin-right: 30px;
-}
-.club_name{
-  font-size: 50px;
-  width: 410px;
-  float: left;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-.club_info{
-  float: left;
-  width: 410px;
-  margin-bottom: 10px;
-}
-.club_dis{
-  word-wrap: break-word;
-  display: inline;
 }
 </style>

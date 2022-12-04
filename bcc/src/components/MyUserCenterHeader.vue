@@ -1,32 +1,25 @@
 <template>
   <div>
-    <v-app style="height: 80px;overflow-y: hidden;overflow-x: hidden">
-      <!--      <v-row style="margin-left: 15px;margin-top: 10px">-->
-      <!--        <v-icon color="blue">mdi-clipboard-text-multiple-outline</v-icon>-->
-      <!--      </v-row>-->
-      <v-row style="margin-left: 15px;margin-top: 10px">
-        <v-container style="width: 50%;height: 100%">
-          <v-row>
-            <v-icon color="blue" style="margin-right: 10px;">mdi-file-document-edit</v-icon>
-            <h4>管理您的账号</h4>
-          </v-row>
-          <div style="margin-top: 20px;">
-            <v-btn color="deep-purple accent-1"
-                   elevation="5"
-                   @click="dialogFormVisible = true">
-              修改密码
-            </v-btn>
-            <v-btn color="deep-purple accent-1"
-                   elevation="5"
-                   style="margin-left: 10px">
-              上传头像
-            </v-btn>
-          </div>
-        </v-container>
-        <v-spacer></v-spacer>
-        <v-avatar style="margin-right: 20px">
-          <img :src="avatar" alt="头像">
-        </v-avatar>
+    <v-app style="height: 100%;overflow-y: hidden;overflow-x: hidden">
+      <v-row style="max-height: 50px;margin-top: 10px;margin-left: 10px">
+        <v-col cols="1">
+          <v-icon color="blue">mdi-file-document-edit</v-icon>
+        </v-col>
+        <v-col cols="9">
+          <h1>管理您的账号</h1>
+        </v-col>
+      </v-row>
+      <v-row style="margin-left: 10px;max-height:50px;min-width: 300px">
+        <v-btn color="deep-purple accent-1"
+               elevation="5"
+               @click="dialogFormVisible = true">
+          修改密码
+        </v-btn>
+        <v-btn color="deep-purple accent-1"
+               elevation="5"
+               style="margin-left: 10px">
+          上传头像
+        </v-btn>
         <div>
           <el-dialog :visible.sync="dialogFormVisible">
             <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px"
@@ -45,13 +38,32 @@
           </el-dialog>
         </div>
       </v-row>
+      <v-row align-self="center" style="margin-left: 10px;max-height:300px;margin-top: 30px">
+        <v-card width="75%" shaped>
+          <v-row style="margin-left: 0;margin-top: 0;margin-right: 0;">
+            <v-avatar tile width="100%" height="300px">
+              <img :src="avatar" alt="头像">
+            </v-avatar>
+            <v-col cols="8" style="float: left">
+              <v-card-title>用户名：{{real_name}}</v-card-title>
+              <v-card-text>关注数：{{following}}</v-card-text>
+              <v-card-text>粉丝数：{{followers}}</v-card-text>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-row>
+      <MySnackBar></MySnackBar>
     </v-app>
   </div>
 </template>
 
 <script>
+import MySnackBar from "@/components/MySnackBar";
+
 export default {
   name: "MyUserCenterHeader",
+  components: {MySnackBar},
+  props:["real_name", "following", "followers"],
   data() {
     let validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -94,7 +106,7 @@ export default {
       console.log("验证密码正确性")
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          this.$bus.$emit("showSnackBar", "修改密码成功！")
         } else {
           console.log('error submit!!');
           return false;

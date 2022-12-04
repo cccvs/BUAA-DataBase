@@ -43,8 +43,6 @@
 </template>
 
 <script>
-
-
 import SideBar from "@/components/SideBar";
 import MyHeader from "@/components/MyHeader";
 

@@ -5,17 +5,17 @@
         <h2 class="title">社团基本信息</h2>
         <el-form-item class="pic">
           <el-upload
-            class="upload"
-            drag
-            action="api"
-            :show-file-list="false"
-            :data="fileData"
-            :headers="headers"
-            :on-success="handleSuccess"
-            :before-upload="beforeUpload"
-            :limit="1"
-            :on-exceed="handleExceed">
-            <img v-if="createClubForm.imageUrl" src="../assets/logo.png" class="avatar" />
+              class="upload"
+              drag
+              action="api"
+              :show-file-list="false"
+              :data="fileData"
+              :headers="headers"
+              :on-success="handleSuccess"
+              :before-upload="beforeUpload"
+              :limit="1"
+              :on-exceed="handleExceed">
+            <img v-if="createClubForm.imageUrl" src="../assets/logo.png" class="avatar"/>
             <i v-else class="el-icon-upload"></i>
             <div class="el-upload__text">将社团头像拖到此处，或<em>点击上传</em></div>
           </el-upload>
@@ -24,7 +24,8 @@
           <el-input v-model="createClubForm.clubName" class="form__input" type="text" placeholder="社团名称"/>
         </el-form-item>
         <el-form-item prop="clubType">
-          <el-select v-model="createClubForm.clubType" class="form__input" placeholder="请选择社团类型" style="display: block;">
+          <el-select v-model="createClubForm.clubType" class="form__input" placeholder="请选择社团类型"
+                     style="display: block;">
             <el-option label="科技" value="科技"></el-option>
             <el-option label="人文" value="人文"></el-option>
             <el-option label="实践" value="实践"></el-option>
@@ -56,15 +57,15 @@ export default {
         accessToken: ''
       },
       createClubForm: {
-        imageUrl:'../assets/logo.png',
-        clubName:'',
-        clubType:'',
-        introduction:'',
+        imageUrl: '../assets/logo.png',
+        clubName: '',
+        clubType: '',
+        introduction: '',
       },
       createClubRules: {
-        clubName:[{required: true, message: '请输入社团名称', trigger: 'blur'}],
-        clubType:[{required: true, message: '请选择社团类型', trigger: 'blur'}],
-        introduction:[{required: true, message: '请输入社团简介', trigger: 'blur'}],
+        clubName: [{required: true, message: '请输入社团名称', trigger: 'blur'}],
+        clubType: [{required: true, message: '请选择社团类型', trigger: 'blur'}],
+        introduction: [{required: true, message: '请输入社团简介', trigger: 'blur'}],
       }
     }
   },
@@ -90,7 +91,7 @@ export default {
             introduction: '',
             reason: ''
           };
-        } else this.$notify.error(ret.data.msg+"，申请失败");
+        } else this.$notify.error(ret.data.msg + "，申请失败");
       })
     },
     handleExceed(files, fileList) {
@@ -124,23 +125,25 @@ export default {
 
 <style lang="scss" scoped>
 .main-box {
-  position: relative;
+  position: center;
   width: 100%;
   min-width: 1000px;
-  min-height: 600px;
-  height: 800px;
+  min-height: 300px;
+  height: 600px;
   background-color: #ecf0f3;
   box-shadow: 10px 10px 10px #c3d5f3, -10px -10px 10px #f9f9f9;
   border-radius: 12px;
   overflow: hidden;
+
   .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
+    position: center;
     width: 100%;
     height: 100%;
     background-color: #ecf0f3;
+
     form {
       display: flex;
       justify-content: center;
@@ -149,16 +152,19 @@ export default {
       width: 100%;
       height: 100%;
       color: #ecf0f3;
+
       .title {
         font-size: 34px;
         font-weight: 700;
         line-height: 3;
         color: #181818;
       }
+
       .text {
         margin-top: 30px;
         margin-bottom: 12px;
       }
+
       .form__input {
         width: 700px;
         height: 40px;
@@ -173,6 +179,7 @@ export default {
         transition: 0.25s ease;
         border-radius: 8px;
         box-shadow: inset 2px 2px 4px #d1d9e6, inset -2px -2px 4px #f9f9f9;
+
         &::placeholder {
           color: #a0a5a8;
         }
@@ -180,13 +187,15 @@ export default {
     }
   }
 }
-::v-deep .el-input__inner{
+
+::v-deep .el-input__inner {
   background-color: #ecf0f3 !important;
   border: none 0 !important;
   padding-left: 0 !important;
   height: 30px !important;
   line-height: 30px !important;
 }
+
 .primary-btn {
   transition: all 0.3s;
   width: 180px;
@@ -201,6 +210,7 @@ export default {
   color: #f9f9f9;
   cursor: pointer;
   box-shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #f9f9f9;
+
   &:hover {
     box-shadow: 4px 4px 6px 0 rgb(255 255 255 / 50%),
     -4px -4px 6px 0 rgb(116 125 136 / 50%),
@@ -208,15 +218,14 @@ export default {
     inset 4px 4px 6px 0 rgb(0 0 0 / 40%);
   }
 }
-.avatar{
+
+.avatar {
   margin-top: 10px;
-  height: 230px;
-  width: 230px;
+  height: 150px;
+  width: 150px;
 }
-</style>
-<style>
-.el-upload-dragger{
-  height: 250px;
-  width: 250px;
-}
+.el-upload-dragger {
+   height: 250px;
+   width: 250px;
+ }
 </style>

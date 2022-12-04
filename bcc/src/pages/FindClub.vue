@@ -8,7 +8,7 @@
         <MyHeader></MyHeader>
       </el-header>
       <el-main>
-        <el-tabs>
+        <el-tabs v-model="activeName">
           <el-tab-pane label="加入社团" name="first">
             <find-club1></find-club1>
           </el-tab-pane>
@@ -29,7 +29,12 @@ import SideBar from "@/components/SideBar";
 
 export default {
   name: "FindClub",
-  components: {FindClub2, FindClub1, MyHeader, SideBar}
+  components: {FindClub2, FindClub1, MyHeader, SideBar},
+  data() {
+    return {
+      activeName: "first"
+    }
+  }
 }
 </script>
 

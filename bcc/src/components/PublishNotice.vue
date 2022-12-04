@@ -17,17 +17,26 @@
       </v-col>
     </v-row>
     <v-textarea
+        counter
+        auto-grow
         clearable
         clear-icon="mdi-close"
         label="正文内容"
         :value="notice.content"
     ></v-textarea>
+    <v-btn color="primary" @click="handlePublish">
+      <v-icon dark style="margin-right: 5px">mdi-checkbox-marked-circle</v-icon>
+      确认发布
+    </v-btn>
+    <MySnackBar></MySnackBar>
   </v-container>
 </template>
 
 <script>
+import MySnackBar from "@/components/MySnackBar";
 export default {
   name: "PublishNotice",
+  components: {MySnackBar},
   data() {
     return {
       notice: {
@@ -37,6 +46,11 @@ export default {
         user_id: 20373021,
         top: true
       }
+    }
+  },
+  methods:{
+    handlePublish() {
+      this.$bus.$emit('showSnackBar', "发布成功！")
     }
   }
 }
