@@ -3,85 +3,34 @@
         max-width="100%"
         class="align-center"
     >
-      <v-toolbar
-          src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
-      >
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
-        <v-toolbar-title>新的入社申请</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn icon>
-          <v-icon>mdi-magnify</v-icon>
-        </v-btn>
-      </v-toolbar>
-      <v-list subheader>
-        <v-subheader>又有新的小伙伴要加入社团了</v-subheader>
-
-        <v-list-item
-            v-for="request in requests"
-            :key="request.id">
-          <!--                      @click=""-->
-          <!--                  >-->
-          <v-list-item-avatar>
-            <v-avatar>
-              <img :src="request.avatar" alt="头像">
-            </v-avatar>
-          </v-list-item-avatar>
-
-          <v-list-item-content style="padding-left: 10px">
-            <v-list-item-title v-text="request.userName"></v-list-item-title>
-          </v-list-item-content>
-          <v-spacer></v-spacer>
-          <v-btn elevation="10" icon circle color="green" @click="handlePass(request.id)" style="margin-right: 20px">
-            <v-icon>
-              mdi-check
-            </v-icon>
-          </v-btn>
-          <v-btn elevation="10" icon color="red" @click="handleFailPass(request.id)" style="margin-right: 5px">
-            <v-icon>
-              mdi-close
-            </v-icon>
-          </v-btn>
-        </v-list-item>
-      </v-list>
-      <v-snackbar
-          center
-          top
-          v-model="snackbar.show"
-      >
-        {{ snackbar.text }}
-        <template v-slot:action="{ attrs }">
-          <v-btn
-              color="pink"
-              text
-              v-bind="attrs"
-              @click="snackbar.show = false"
-          >
-            关闭
-          </v-btn>
-        </template>
-      </v-snackbar>
+      <v-row style="margin-left: 10px;margin-top: 10px">
+        <v-icon color="blue">mdi-chat-plus</v-icon>
+        <h1 style="margin-left: 10px;margin-top: 10px">新的入社申请！</h1>
+      </v-row>
+      <MemberList :members="requests" :check-info="true"
+      text="又有新的小伙伴要加入社团了" style="margin-top: 20px"></MemberList>
+      <MySnackBar></MySnackBar>
     </v-card>
 </template>
 
 <script>
+import MySnackBar from "@/components/MySnackBar";
+import MemberList from "@/components/MemberList";
 export default {
   name: "CheckInfo",
+  components: {MemberList, MySnackBar},
   data() {
     return {
-      snackbar: {
-        show: false,
-        text: ""
-      },
       requests: [{
-        id: 1,
+        id: "20373021",
         userName: "陈俊杰",
-        avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
+        avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
       }, {
-        id: 2,
+        id: "123",
         userName: "蒋博文",
         avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
       }, {
-        id: 3,
+        id: "124",
         userName: "陈楚岩",
         avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
       }]
@@ -92,16 +41,22 @@ export default {
       this.requests = this.requests.filter((request) => {
         return request.id !== id;
       })
-      this.snackbar.show = true;
-      this.snackbar.text = "审核成功，该学生成功加入社团！"
+      this.$bus.$emit('showSnackBar', "审核成功，该学生成功加入社团！")
     },
     handleFailPass(id) {
       this.requests = this.requests.filter((request) => {
         return request.id !== id;
       })
-      this.snackbar.show = true;
-      this.snackbar.text = "已拒绝该学生成功加入社团"
+      this.$bus.$emit('showSnackBar', "已拒绝该学生成功加入社团")
     }
+  },
+  mounted() {
+    this.$bus.$on('handlePass', this.handlePass)
+    this.$bus.$on('handleFailPass', this.handleFailPass)
+  },
+  beforeDestroy() {
+    this.$bus.$off('handlePass', this.handlePass)
+    this.$bus.$off('handleFailPass', this.handleFailPass)
   }
 }
 </script>

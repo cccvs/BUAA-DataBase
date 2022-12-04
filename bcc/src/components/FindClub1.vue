@@ -55,10 +55,12 @@
 
 <script>
 // import qs from "qs";
+import ClubList from "@/components/ClubList";
 import Qs from "qs";
 
 export default {
   name: "FindClub-1",
+  components: {ClubList},
   data(){
     return{
       searchClubName: '',
@@ -114,27 +116,26 @@ export default {
   },
   methods:{
     searchClub(){
-      this.$axios.post(
-          "http://127.0.0.1:8000/api/find_club",
-          Qs.stringify({
-            content: this.searchClubName,
-          })
-      ).then((res)=>{
-        console.log(res);
-        if(res.data.code===0){
-          this.clubList = res.data.club_dist;
-          // let array = res.data.data;
-          // for(let i in array){
-          //   this.clubList.push({
-          //     id: array[i].club_id,
-          //     name: array[i].name,
-          //     time: array[i].time
-          //   });
-          // }
-        } else this.$notify.error(res.data.msg)
-      }).catch((error)=>{
-        console.log(error)
-      })
+      // this.$axios.post(
+      //     "http://43.138.22.20:8000/api/user/search_project",
+      //     qs.stringify({
+      //       content: this.searchClubName,
+      //     })
+      // ).then((res)=>{
+      //   if(res.data.errno===0){
+      //     this.clubList = [];
+      //     let array = res.data.data;
+      //     for(let i in array){
+      //       this.clubList.push({
+      //         id: array[i].club_id,
+      //         name: array[i].name,
+      //         time: array[i].time
+      //       });
+      //     }
+      //   } else this.$notify.error(res.data.msg)
+      // }).catch((error)=>{
+      //   console.log(error)
+      // })
     },
     handleSort(command){
       switch (command){

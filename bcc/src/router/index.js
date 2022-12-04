@@ -37,12 +37,12 @@ const router = new VueRouter({
         },
         {
             name: "myclub",
-            path: '/myclub',
+            path: '/myclub/:id/:name',
             component: MyClub
         },
         {
             name: "usercenter",
-            path: '/usercenter',
+            path: '/usercenter/:id/:name',
             component: UserCenter
         }
     ]

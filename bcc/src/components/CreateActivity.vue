@@ -37,26 +37,43 @@
             :default-time="['12:00:00', '08:00:00']">
         </el-date-picker>
       </div>
-
+    </v-row>
+    <v-row style="margin-top: 40px;margin-left: 5px">
+      <label>预计活动人数:{{activity.limit}}人</label>
+      <v-slider v-model="activity.limit"
+                :thumb-size="24"
+                thumb-label="always"
+                append-icon="mdi-arrow-right-circle"
+                prepend-icon="mdi-arrow-left-circle"
+                @click:append="zoomIn"
+                @click:prepend="zoomOut"
+                min="0"
+      style="margin-left: 30px">
+      </v-slider>
     </v-row>
     <v-textarea
+        counter
+        auto-grow
         clearable
         clear-icon="mdi-close"
-        label="正文内容"
+        label="活动内容"
         :value="activity.content"
-        style="margin-top: 20px"
+        style="margin-top: 10px; margin-left: 5px"
     ></v-textarea>
-    <v-slider v-model="activity.limit"
-              :thumb-size="24"
-              thumb-label
-              min="0">
-    </v-slider>
+    <v-btn color="primary" @click="handleApply">
+      <v-icon dark style="margin-right: 5px">mdi-checkbox-marked-circle</v-icon>
+      发起活动
+    </v-btn>
+    <MySnackBar>
+    </MySnackBar>
   </v-container>
 </template>
 
 <script>
+import MySnackBar from "@/components/MySnackBar";
 export default {
   name: "CreateActivity",
+  components: {MySnackBar},
   data() {
     return {
       activity: {
@@ -68,6 +85,20 @@ export default {
         begin_time: "",
         limit: 24
       }
+    }
+  },
+  methods: {
+    handleApply() {
+      this.$bus.$emit('showSnackBar', "活动已发布！")
+    },
+    zoomIn() {
+      this.activity.limit++;
+    },
+    zoomOut() {
+      if (this.activity.limit === 0) {
+        this.$bus.emit('showSnackBar', "活动人数最低为0！")
+      }
+      this.activity.limit--;
     }
   }
 }
