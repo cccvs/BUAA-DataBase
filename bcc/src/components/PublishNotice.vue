@@ -39,6 +39,9 @@ export default {
   components: {MySnackBar},
   data() {
     return {
+      /*
+      TODO:前端容器，格式可以和后端配合
+       */
       notice: {
         id: 1,
         title: "",
@@ -49,6 +52,9 @@ export default {
     }
   },
   methods:{
+    /*
+    TODO: 发布公告的接口，暂时没有添加任何约束。如果置顶，可以将公告插入到后端容器首？
+    */
     handlePublish() {
       this.$bus.$emit('showSnackBar', "发布成功！")
     }

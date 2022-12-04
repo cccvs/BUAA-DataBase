@@ -1,5 +1,6 @@
 <template>
   <v-snackbar
+      timeout="1000"
       center
       top
       v-model="snackbar.show"

@@ -9,7 +9,7 @@
     </v-row>
     <MemberList :members="members"
                 style="margin-top: 20px"
-                text="您可以社团成员骨干或进行社长换届" change-position="true"></MemberList>
+                text="您可以社团成员骨干或进行社长换届" :change-position="true"></MemberList>
     <MySnackBar></MySnackBar>
   </v-card>
 </template>
@@ -22,31 +22,38 @@ export default {
   name: "ChangePosition",
   components: {MySnackBar, MemberList},
   data() {
+    /*
+    TODO: 前端容器，保存社团成员，应该在挂载时获取。
+     */
     return {
       members: [{
-        id: "20373021",
-        userName: "陈俊杰",
+        user_id: "20373021",
+        real_name: "陈俊杰",
         avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
         label: "社长"
       }, {
-        id: "123",
-        userName: "蒋博文",
+        user_id: "123",
+        real_name: "蒋博文",
         avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
         label: "副社长"
       }, {
-        id: "124",
-        userName: "陈楚岩",
+        user_id: "124",
+        real_name: "陈楚岩",
         avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
         label: "办公室部长"
       }]
     }
   },
   methods: {
+    /*
+    TODO:确认修改的接口，这里只修改了前端容器，需要同步到后端，可以写一个触发器，验证某种职务是否人数已满
+     */
     handelChangePosition(id) {
       let newLabel
       this.members.forEach((member) => {
-        if (member.id === id) newLabel = member.label
+        if (member.user_id === id) newLabel = member.label
       })
+      console.log(newLabel);
       this.$bus.$emit('showSnackBar', "修改成功，该学生已成为社团" + newLabel)
     }
   },

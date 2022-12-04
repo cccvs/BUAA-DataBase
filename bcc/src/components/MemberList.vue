@@ -3,25 +3,25 @@
     <v-subheader>{{ text }}</v-subheader>
     <v-list-item
         v-for="member in members"
-        :key="member.id"
-        @click="detailOfUser(member)">
+        :key="member.user_id"
+        @dblclick="detailOfUser(member)">
       <v-list-item-avatar>
         <v-avatar>
           <img :src="member.avatar" alt="头像">
         </v-avatar>
       </v-list-item-avatar>
       <v-list-item-content style="padding-left: 10px">
-        <v-list-item-title v-text="member.userName"></v-list-item-title>
+        <v-list-item-title v-text="member.real_name"></v-list-item-title>
         <v-list-item-subtitle v-text="member.label"></v-list-item-subtitle>
       </v-list-item-content>
       <v-spacer></v-spacer>
-      <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(member.id)"
+      <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(member.user_id)"
              style="margin-right: 20px">
         <v-icon>
           mdi-check
         </v-icon>
       </v-btn>
-      <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(member.id)"
+      <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(member.user_id)"
              style="margin-right: 5px">
         <v-icon>
           mdi-close
@@ -38,7 +38,11 @@
       </el-select>
       <v-btn v-show="changePosition"
              color="blue lighten-3"
-             @click="handelChangePosition(member.id)">确认修改
+             @click="handelChangePosition(member.user_id)">确认修改
+      </v-btn>
+      <v-btn v-show="follow"
+             color="blue lighten-3"
+             @click="handelFollow(member.user_id)">关注
       </v-btn>
     </v-list-item>
   </v-list>
@@ -47,7 +51,7 @@
 <script>
 export default {
   name: "MemberList",
-  props: ["members", "checkInfo", "text", "changePosition"],
+  props: ["members", "checkInfo", "text", "changePosition", "follow"],
   data() {
     return {
       // '社长', '副社长', '办公室部长'
@@ -64,6 +68,12 @@ export default {
     }
   },
   methods: {
+    /*
+    TODO: 关注/取消关注接口
+     */
+    handelFollow(id) {
+      console.log(id)
+    },
     handlePass(id) {
       this.$bus.$emit('handlePass', id)
     },
@@ -74,8 +84,8 @@ export default {
       this.$bus.$emit('handelChangePosition', id)
     },
     detailOfUser(member) {
-      if (this.$router.history.current.params.id !== member.id) {
-        let path = "/usercenter/" +  member.id + "/" + member.userName;
+      if (this.$router.history.current.params.id !== member.user_id) {
+        let path = "/usercenter/" +  member.user_id + "/" + member.real_name;
         this.$router.push({
           path
         });

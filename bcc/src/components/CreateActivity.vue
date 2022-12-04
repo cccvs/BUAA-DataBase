@@ -80,7 +80,7 @@ export default {
         id: 1,
         title: "",
         content: "",
-        user_id: 20373021,
+        user_id: "20373021",
         apply_time: "",
         begin_time: "",
         limit: 24
@@ -88,6 +88,9 @@ export default {
     }
   },
   methods: {
+    /*
+    TODO:发布活动的接口，这里是否考虑加入活动封面？
+     */
     handleApply() {
       this.$bus.$emit('showSnackBar', "活动已发布！")
     },

@@ -17,7 +17,8 @@
         </v-btn>
         <v-btn color="deep-purple accent-1"
                elevation="5"
-               style="margin-left: 10px">
+               style="margin-left: 10px"
+               @click="pickPhoto">
           上传头像
         </v-btn>
         <div>
@@ -45,9 +46,9 @@
               <img :src="avatar" alt="头像">
             </v-avatar>
             <v-col cols="8" style="float: left">
-              <v-card-title>用户名：{{real_name}}</v-card-title>
-              <v-card-text>关注数：{{following}}</v-card-text>
-              <v-card-text>粉丝数：{{followers}}</v-card-text>
+              <v-card-title>用户名：{{ real_name }}</v-card-title>
+              <v-card-text>关注数：{{ following }}</v-card-text>
+              <v-card-text>粉丝数：{{ followers }}</v-card-text>
             </v-col>
           </v-row>
         </v-card>
@@ -63,7 +64,10 @@ import MySnackBar from "@/components/MySnackBar";
 export default {
   name: "MyUserCenterHeader",
   components: {MySnackBar},
-  props:["real_name", "following", "followers"],
+  /*
+  FIXME: 本来avatar属性应该也是由父组件传递进来的，但是发现url不能跨域传递？
+   */
+  props: ["real_name", "following", "followers"],
   data() {
     let validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -102,10 +106,14 @@ export default {
     }
   },
   methods: {
+    /*
+    TODO: 验证密码正确性的接口
+     */
     submitForm(formName) {
       console.log("验证密码正确性")
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.dialogFormVisible = false
           this.$bus.$emit("showSnackBar", "修改密码成功！")
         } else {
           console.log('error submit!!');
@@ -115,6 +123,12 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    /*
+    TODO: 上传头像接口，可以复用社团上传图片的接口
+     */
+    pickPhoto() {
+
     }
   }
 }

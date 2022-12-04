@@ -1,10 +1,30 @@
 <template>
   <div class="clubs-container" style="margin-top: 10px">
-    <div class="clubBar" v-for="club in clubs" :key="club.data" @click="gotoClub(club)">
+    <div class="clubBar" v-for="club in clubs" :key="club.data" @dblclick="gotoClub(club)">
       <div class="club_picture"><img src="../assets/logo.png" alt="社团封面"></div>
       <div class="club_name">{{club.name}}
         <div class="club_level" v-show="rateClub">
           <v-rating color="yellow" background-color="grey lighten-1" v-model="club.level" ></v-rating>
+        </div>
+        <div class="club_check" v-show="checkInfo">
+<!--          <el-switch-->
+<!--              v-model="club.isPass"-->
+<!--              active-color="#13ce66"-->
+<!--              inactive-color="#ff4949"-->
+<!--              active-text="通过">-->
+<!--          </el-switch>-->
+          <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(member.user_id)"
+                 style="margin-right: 20px">
+            <v-icon>
+              mdi-check
+            </v-icon>
+          </v-btn>
+          <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(member.user_id)"
+                 style="margin-right: 5px">
+            <v-icon>
+              mdi-close
+            </v-icon>
+          </v-btn>
         </div>
       </div>
       <div class="club_info">{{club.type}} {{club.level}}星级 {{club.time}}</div>
@@ -16,7 +36,7 @@
 <script>
 export default {
   name: "ClubList",
-  props: ["clubs", "rateClub"],
+  props: ["clubs", "rateClub", "checkInfo"],
   methods: {
     gotoClub(club) {
       if (this.$router.history.current.params.id !== club.id) {
@@ -35,6 +55,10 @@ export default {
   height: 800px;
 }
 .club_level {
+  float: right;
+}
+.club_check {
+  margin-right: 10px;
   float: right;
 }
 .clubBar{

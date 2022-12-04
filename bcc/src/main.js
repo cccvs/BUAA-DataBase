@@ -7,6 +7,7 @@ import Router from "@/router";
 import VueRouter from "vue-router";
 import ElementUI from 'element-ui';
 import Vuetify from "vuetify";
+import * as echarts from "echarts";
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from "axios";
 import vuetify from './plugins/vuetify'
@@ -16,6 +17,7 @@ Vue.use(Vuetify)
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.prototype.$axios = axios;
+Vue.prototype.$echarts = echarts;
 
 new Vue({
   el: "#app",

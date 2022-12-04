@@ -21,31 +21,41 @@ export default {
   components: {MemberList, MySnackBar},
   data() {
     return {
+      /*
+      TODO: 前端容器requests，也需要在挂载的时候从后端获取，
+       只需要将容器传递给MemberList，模式设定为check-info，requset是否需要自己的id？
+       */
       requests: [{
-        id: "20373021",
-        userName: "陈俊杰",
+        user_id: "20373021",
+        real_name: "陈俊杰",
         avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
       }, {
-        id: "123",
-        userName: "蒋博文",
+        user_id: "123",
+        real_name: "蒋博文",
         avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
       }, {
-        id: "124",
-        userName: "陈楚岩",
+        user_id: "124",
+        real_name: "陈楚岩",
         avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
       }]
     }
   },
   methods: {
+    /*
+    TODO: 申请加入社团请求通过的接口
+     */
     handlePass(id) {
       this.requests = this.requests.filter((request) => {
-        return request.id !== id;
+        return request.user_id !== id;
       })
       this.$bus.$emit('showSnackBar', "审核成功，该学生成功加入社团！")
     },
+    /*
+    TODO: 申请加入社团请求拒绝的接口
+     */
     handleFailPass(id) {
       this.requests = this.requests.filter((request) => {
-        return request.id !== id;
+        return request.user_id !== id;
       })
       this.$bus.$emit('showSnackBar', "已拒绝该学生成功加入社团")
     }

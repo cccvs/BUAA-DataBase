@@ -3,6 +3,9 @@
     <div class="side-bar">
       <SideBar></SideBar>
     </div>
+    <v-app>
+      <MySnackBar></MySnackBar>
+    </v-app>
     <el-container>
       <el-header>
         <MyHeader></MyHeader>
@@ -10,8 +13,9 @@
       <el-container>
         <el-main>
           <MyUserCenterHeader
-                              :followers="user.followers"
-                              :following="user.following"></MyUserCenterHeader>
+              :real_name="user.real_name"
+              :followers="user.followers"
+              :following="user.following"></MyUserCenterHeader>
         </el-main>
         <el-main class="el-main-table">
           <el-descriptions class="margin-top" :column="1" border>
@@ -88,7 +92,7 @@
             </el-descriptions-item>
           </el-descriptions>
           <div class="flexs">
-            <el-button type="primary" @click="isEdit = !isEdit">{{ mode }}</el-button>
+            <el-button type="primary" @click="submitChangeInfo">{{ mode }}</el-button>
             <el-button type="primary" v-show="isEdit" @click="isEdit = !isEdit">取消</el-button>
           </div>
         </el-main>
@@ -101,10 +105,11 @@
 import MyHeader from "@/components/MyHeader";
 import SideBar from "@/components/SideBar";
 import MyUserCenterHeader from "@/components/MyUserCenterHeader";
+import MySnackBar from "@/components/MySnackBar";
 
 export default {
   name: "UserCenter",
-  components: {MyUserCenterHeader, MyHeader, SideBar},
+  components: {MySnackBar, MyUserCenterHeader, MyHeader, SideBar},
   data() {
     return {
       user: {
@@ -135,6 +140,17 @@ export default {
     detailOfUser(id) {
       console.log(id)
       this.user.user_id = id
+    },
+    submitChangeInfo() {
+      if (this.isEdit) {
+        /*
+        TODO:提交基本信息（不包括密码和头像【在另一个组件】）修改的接口，
+         此时前端容器存储的即为最新的需要保存的信息，将其传回后端保存
+         showSnackBar是我实现的一个组件，用以方便地提示用户操作结果，调用示例如下：
+         */
+        this.$bus.$emit('showSnackBar', "你已成功修改信息！")
+      }
+      this.isEdit = !this.isEdit
     }
   },
   computed: {
@@ -149,6 +165,10 @@ export default {
   mounted() {
     let id = this.$router.history.current.params.id
     //根据id从后端获得用户数据，这里假设拿到了user_list
+    /*
+    TODO:根据路由参数中的id从后端读取用户的数据，并更新前端容器，
+     这里的userList及filter函数是从后端获取的数据，作示例用
+     */
     let userList = [{
       user_id: "20373021",
       password: "123456",
@@ -164,11 +184,11 @@ export default {
       followers: 22
     }, {
       user_id: "123",
-      user_name: "蒋博文",
+      real_name: "蒋博文",
       avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
     }, {
       user_id: "124",
-      user_name: "陈楚岩",
+      real_name: "陈楚岩",
       avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
     }];
     this.user = (userList.filter((user) => {
