@@ -2,7 +2,7 @@
 
 # back ignore
 back/database/.idea
-back/admin/__pycache__
+back/club/__pycache__
 back/back/__pycache__
 
 # bcc ignore
