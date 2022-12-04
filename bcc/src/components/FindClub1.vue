@@ -42,14 +42,15 @@
         </el-dropdown>
       </div>
     </div>
-    <div class="clubs-container" style="margin-top: 10px">
-      <div class="clubBar" v-for="item in selectedList" :key="item.data" @click="gotoClub(item)">
-        <div class="club_picture"><img src="../assets/logo.png"></div>
-        <div class="club_name">{{item.name}}</div>
-        <div class="club_info">{{item.type}} {{item.star}}星级 {{item.time.substr(0,10)}}</div>
-        <div class="club_dis">{{item.intro}}</div>
-      </div>
-    </div>
+    <ClubList :clubs="selectedList"></ClubList>
+<!--    <div class="clubs-container" style="margin-top: 10px">-->
+<!--      <div class="clubBar" v-for="item in selectedList" :key="item.data" @click="gotoClub(item)">-->
+<!--        <div class="club_picture"><img src="../assets/logo.png"></div>-->
+<!--        <div class="club_name">{{item.name}}</div>-->
+<!--        <div class="club_info">{{item.type}} {{item.star}}星级 {{item.time.substr(0,10)}}</div>-->
+<!--        <div class="club_dis">{{item.intro}}</div>-->
+<!--      </div>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -59,9 +60,11 @@
 // import Qs from "qs";
 
 import Qs from "qs";
+import ClubList from "@/components/ClubList";
 
 export default {
   name: "FindClub-1",
+  components: {ClubList},
   // components: {ClubList},
   data(){
     return{
