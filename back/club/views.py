@@ -22,14 +22,12 @@ def loginUser(request):
         # vars
         userId = request.POST.get('user_id')
         password = request.POST.get('password')
-        code = jwt.encode(payload={'user_id': 'a', 'time': str(datetime.now())}, algorithm='HS256', key='123456',
+        code = jwt.encode(payload={'user_id': userId, 'time': str(datetime.now())}, algorithm='HS256', key='123456',
                           headers={'typ': 'JWT', 'alg': 'HS256'})
         data = jwt.decode(jwt=code.decode(), key='123456', algorithms='HS256')
         print(data)
         # logics
-        print(code)
         print(request.POST)
-        print(userId, password)
         result = mysqlPack.getUser(userId)
         print(result)
         if result:
@@ -74,8 +72,9 @@ def createClub(request):
         # vars
         name = request.POST.get('name')
         clubType = request.POST.get('type')
-        masterId = request.POST.get('masterId')
         intro = request.POST.get('intro')
+        codeStr = request.POST.get('code')
+        masterId = jwt.decode(jwt=codeStr, key='123456', algorithms='HS256')['user_id']
         try:
             mysqlPack.createClub(name, clubType, masterId, intro)
             return JsonResponse({'code': 0, 'message': ''})
