@@ -23,19 +23,22 @@ def loginUser(request):
         userId = request.POST.get('user_id')
         password = request.POST.get('password')
         code = jwt.encode(payload={'user_id': 'a', 'time': str(datetime.now())}, algorithm='HS256', key='123456',
-                          headers={"typ": "JWT", "alg": "HS256"})
+                          headers={'typ': 'JWT', 'alg': 'HS256'})
         # logics
+        print(request.POST)
+        print(userId, password)
         result = mysqlPack.getUser(userId)
+        print(result)
         if result:
             if result[0][1] != password:
                 # code = 3
                 # message = 'wrong password'
                 # return render(request, 'api/login.html'， locals()), code.encode()
-                return JsonResponse({'code': 3, 'message': 'wrong password'}), code.decode()
+                return JsonResponse({'code': 3, 'message': 'wrong password'})
             else:
-                return JsonResponse({'code': 0, 'message': 'login succeed'}), code.decode()
+                return JsonResponse({'code': 0, 'message': 'login succeess', 'jwt': code.decode()})
         else:
-            return JsonResponse({'code': 2, 'message': 'user not found'}), code.decode()
+            return JsonResponse({'code': 2, 'message': 'user not found'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
