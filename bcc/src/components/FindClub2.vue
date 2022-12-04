@@ -31,6 +31,7 @@
             <el-option label="实践" value="实践"></el-option>
             <el-option label="体育" value="体育"></el-option>
             <el-option label="艺术" value="艺术"></el-option>
+            <el-option label="其它" value="其它"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item prop="introduction">
@@ -45,6 +46,8 @@
 </template>
 
 <script>
+
+import Qs from "qs";
 
 export default {
   name: "FindClub2",
@@ -73,25 +76,22 @@ export default {
     create: function () {
       let con = {};
       con['imageUrl'] = this.createClubForm.imageUrl;
-      con['clubName'] = this.createClubForm.clubName;
-      con['clubType'] = this.createClubForm.clubType;
-      con['introduction'] = this.createClubForm.introduction;
+      con['name'] = this.createClubForm.clubName;
+      con['type'] = this.createClubForm.clubType;
+      con['intro'] = this.createClubForm.introduction;
+      con['code'] = localStorage.getItem('Token');
       //console.log(con);
       this.$axios({
-        url: '',
+        url: 'http://127.0.0.1:8000/api/create_club',
         method: 'post',
-        data: JSON.stringify(con),
+        data: Qs.stringify(con),
       }).then((ret) => {
-        if (ret.data.errno === 0) {
+        if (ret.data.code === 0) {
           this.$message.success("申请成功，请等待审批");
-          this.createUserForm = {
-            imageUrl: '',
-            clubName: '',
-            clubType: '',
-            introduction: '',
-            reason: ''
-          };
-        } else this.$notify.error(ret.data.msg + "，申请失败");
+          this.createClubForm.clubName = '';
+          this.createClubForm.clubType = '';
+          this.createClubForm.introduction = '';
+        } else this.$notify.error(ret.data.message + "，申请失败");
       })
     },
     handleExceed(files, fileList) {

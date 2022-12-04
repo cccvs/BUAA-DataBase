@@ -46,8 +46,8 @@
       <div class="clubBar" v-for="item in selectedList" :key="item.data" @click="gotoClub(item)">
         <div class="club_picture"><img src="../assets/logo.png"></div>
         <div class="club_name">{{item.name}}</div>
-        <div class="club_info">{{item.type}} {{item.level}}星级 {{item.time}}</div>
-        <div class="club_dis">{{item.description}}</div>
+        <div class="club_info">{{item.type}} {{item.star}}星级 {{item.time.substr(0,10)}}</div>
+        <div class="club_dis">{{item.intro}}</div>
       </div>
     </div>
   </div>
@@ -55,12 +55,14 @@
 
 <script>
 // import qs from "qs";
-import ClubList from "@/components/ClubList";
+// import ClubList from "@/components/ClubList";
+// import Qs from "qs";
+
 import Qs from "qs";
 
 export default {
   name: "FindClub-1",
-  components: {ClubList},
+  // components: {ClubList},
   data(){
     return{
       searchClubName: '',
@@ -73,7 +75,6 @@ export default {
         clubName:"",
         clubId:0,
       },
-      clubList: [],
       levelList: [],
       typeList: [],
       tmpList: [
@@ -111,31 +112,24 @@ export default {
           level: 2
         }
       ],
-      selectedList: this.tmpList
+      selectedList: []
     }
   },
   methods:{
     searchClub(){
-      // this.$axios.post(
-      //     "http://43.138.22.20:8000/api/user/search_project",
-      //     qs.stringify({
-      //       content: this.searchClubName,
-      //     })
-      // ).then((res)=>{
-      //   if(res.data.errno===0){
-      //     this.clubList = [];
-      //     let array = res.data.data;
-      //     for(let i in array){
-      //       this.clubList.push({
-      //         id: array[i].club_id,
-      //         name: array[i].name,
-      //         time: array[i].time
-      //       });
-      //     }
-      //   } else this.$notify.error(res.data.msg)
-      // }).catch((error)=>{
-      //   console.log(error)
-      // })
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/find_club",
+          Qs.stringify({
+            key_word: this.searchClubName,
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          console.log(res.data)
+          this.selectedList = res.data.club_dist;
+        } else this.$notify.error(res.data.msg)
+      }).catch((error)=>{
+        console.log(error)
+      })
     },
     handleSort(command){
       switch (command){
@@ -254,7 +248,10 @@ export default {
       }
       this.selectType();
       this.sortClubs();
-    }
+    },
+  },
+  mounted() {
+    this.searchClub();
   }
 }
 </script>
