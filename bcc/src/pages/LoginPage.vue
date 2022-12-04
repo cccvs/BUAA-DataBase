@@ -72,6 +72,7 @@
 
 <script>
 import axios from "axios";
+import Qs from "qs";
 
 export default {
   name: "LoginPage",
@@ -158,7 +159,7 @@ export default {
       this.$axios({
         url: 'http://127.0.0.1:8000/api/login',
         method: 'post',
-        data: JSON.stringify(con),
+        data: Qs.stringify(con),
       }).then((ret) => {
         console.log(ret);
         console.log("正在执行");

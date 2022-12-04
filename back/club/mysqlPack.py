@@ -1,13 +1,15 @@
 # coding=utf-8
 import pymysql
+from back.settings import DATABASES
 
 clubTypeToNum = {'科技': 0, '人文': 1, '实践': 2, '体育': 3, '艺术': 4, '其它': 5}
 numToClubType = ['科技', '人文', '实践', '体育', '艺术', '其它']
 
 
 def connectDatabase():
-    connect = pymysql.connect(host="localhost", db="club_system", user="root",
-                              passwd="123456", charset="utf8")  # replace my password with 123456
+    database = DATABASES['default']
+    connect = pymysql.connect(host=database['HOST'], db=database['NAME'], user=database['USER'],
+                              passwd=database['PASSWORD'], charset="utf8")  # replace my password with 123456
     cursor = connect.cursor()
     return connect, cursor
 
