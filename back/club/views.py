@@ -2,6 +2,7 @@
 from datetime import datetime
 
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from club import mysqlPack
 import jwt
@@ -15,6 +16,7 @@ def hash_code(s, salt='log_reg_sys'):
     return h.hexdigest()
 
 
+@csrf_exempt
 def loginUser(request):
     if request.method == 'POST':
         # vars
