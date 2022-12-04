@@ -43,6 +43,7 @@ def loginUser(request):
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
+
 @csrf_exempt
 def registerUser(request):
     if request.method == 'POST':
@@ -50,21 +51,20 @@ def registerUser(request):
         userId = request.POST.get('user_id')
         name = request.POST.get('name')
         password = request.POST.get('password')
+        sex = request.POST.get('sex')
+        institute = request.POST.get('institute')
         email = request.POST.get('email')
-        verifyCode = request.POST.get('verify_code')
+
+        # verifyCode = request.POST.get('verify_code')
         # logics
         try:
-            mysqlPack.createUser(userId, password, name, email)
+            mysqlPack.createUser(userId, password, name, sex, institute, email)
             return JsonResponse({'code': 0, 'message': 'create user successfully!'})
         except Exception as e:
-            print(e)
             return JsonResponse({'code': 4, 'message': 'duplicated user name'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
-
-def checkEmail(request):
-    pass
 
 @csrf_exempt
 def createClub(request):
@@ -83,6 +83,7 @@ def createClub(request):
             return JsonResponse({'code': 7, 'message': 'error in createClub'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
 
 @csrf_exempt
 def findClub(request):

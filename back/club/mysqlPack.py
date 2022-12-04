@@ -19,11 +19,11 @@ def closeDatabase(connect, cursor):
     cursor.close()
 
 
-def createUser(userId: str, password: str, name: str, email: str):
+def createUser(userId: str, password: str, name: str, sex: str, institute: str, email: str):
     connect, cursor = connectDatabase()
     try:
-        ins = 'insert into user(user_id, password, time, real_name, email, followers, following) values (%s, %s, CURRENT_TIMESTAMP, %s, %s, 0, 0);'
-        cursor.execute(ins, [userId, password, name, email])
+        ins = 'insert into user(user_id, password, time, real_name, sex, institute, email, followers, following) values (%s, %s, CURRENT_TIMESTAMP, %s, %s, %s, %s, 0, 0);'
+        cursor.execute(ins, [userId, password, name, sex, institute, email])
         connect.commit()
     except Exception as e:
         print(e)
