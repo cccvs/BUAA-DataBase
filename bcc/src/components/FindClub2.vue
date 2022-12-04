@@ -9,8 +9,6 @@
             drag
             action="api"
             :show-file-list="false"
-            :data="fileData"
-            :headers="headers"
             :on-success="handleSuccess"
             :before-upload="beforeUpload"
             :limit="1"
@@ -49,14 +47,9 @@ export default {
   name: "FindClub2",
   data() {
     return {
-      fileData: {   // 接口需要的额外参数
-        category: 12
-      },
-      headers: {  // 请求头部参数
-        accessToken: ''
-      },
       createClubForm: {
-        imageUrl:'../assets/logo.png',
+        //imageUrl:'../assets/logo.png',
+        imageUrl:'',
         clubName:'',
         clubType:'',
         introduction:'',

@@ -27,6 +27,7 @@ def createUser(userId: str, password: str, name: str, email: str):
     except Exception as e:
         print(e)
         connect.rollback()
+        raise e
     connect.commit()
     return
 

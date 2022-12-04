@@ -178,14 +178,14 @@ export default {
       con['name'] = this.createUserForm.name;
       con['password'] = this.createUserForm.password1;
       con['email'] = this.createUserForm.email;
-      con['code'] = this.createUserForm.verifyCode;
-      //console.log(con);
+      con['verify_code'] = this.createUserForm.verifyCode;
+      // console.log(con);
       this.$axios({
-        url: 'http://101.42.160.94:8000/api/user_web/register',
+        url: 'http://127.0.0.1:8000/api/register',
         method: 'post',
-        data: JSON.stringify(con),
+        data: Qs.stringify(con),
       }).then((ret) => {
-        if (ret.data.errno === 0) {
+        if (ret.data.code === 0) {
           this.$message.success("注册成功");
           this.isLogin = !this.isLogin;
           this.createUserForm = {
@@ -196,7 +196,7 @@ export default {
             email: '',
             verifyCode: '',
           };
-        } else this.$notify.error(ret.data.msg+"，注册失败");
+        } else this.$notify.error(ret.data.message+"，注册失败");
       })
     },
     verify: function () {
@@ -310,7 +310,7 @@ export default {
     top: 0;
     left: 0;
     height: 100%;
-    width: 300px;
+    width: 400px;
     padding: 50px;
     z-index: 200;
     transition: 1.25s;

@@ -42,7 +42,7 @@ def loginUser(request):
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
-
+@csrf_exempt
 def registerUser(request):
     if request.method == 'POST':
         # vars
@@ -53,7 +53,7 @@ def registerUser(request):
         verifyCode = request.POST.get('verify_code')
         # logics
         try:
-            mysqlPack.createUser(userId, name, password, email)
+            mysqlPack.createUser(userId, password, name, email)
             return JsonResponse({'code': 0, 'message': 'create user successfully!'})
         except Exception as e:
             print(e)
@@ -65,7 +65,7 @@ def registerUser(request):
 def checkEmail(request):
     pass
 
-
+@csrf_exempt
 def createClub(request):
     if request.method == 'POST':
         # vars
@@ -81,7 +81,7 @@ def createClub(request):
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
-
+@csrf_exempt
 def findClub(request):
     retDict = dict()
     if request.method == 'POST':
