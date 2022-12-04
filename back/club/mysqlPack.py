@@ -24,11 +24,13 @@ def createUser(userId: str, password: str, name: str, email: str):
     try:
         ins = 'insert into user(user_id, password, time, real_name, email, followers, following) values (%s, %s, CURRENT_TIMESTAMP, %s, %s, 0, 0);'
         cursor.execute(ins, [userId, password, name, email])
+        connect.commit()
     except Exception as e:
         print(e)
         connect.rollback()
         raise e
-    connect.commit()
+    finally:
+        closeDatabase(connect, cursor)
     return
 
 
@@ -43,20 +45,24 @@ def getUser(userId: str):
     except Exception as e:
         connect.rollback()
         raise e
-    closeDatabase(connect, cursor)
+    finally:
+        closeDatabase(connect, cursor)
     return result
 
 
-def createClub(name: str, type: str, masterId: str):
+def createClub(name: str, type: str, masterId: str, intro: str):
     typeNum = clubTypeToNum[type]
     connect, cursor = connectDatabase()
     try:
-        ins = 'insert into club(club_id, name, member_count, type, master_id, time) value (UUID_TO_BIN(UUID()), %s, 0, %s, %s, CURRENT_TIMESTAMP);'
-        cursor.execute(ins, [name, typeNum, masterId])
+        ins = 'insert into club(club_id, name, member_count, type, master_id, time, intro) value (UUID_TO_BIN(UUID()), %s, 0, %s, %s, CURRENT_TIMESTAMP, %s);'
+        cursor.execute(ins, [name, typeNum, masterId, intro])
+        connect.commit()
     except Exception as e:
         print(e)
         connect.rollback()
-    closeDatabase(connect, cursor)
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
     return
 
 
@@ -70,7 +76,8 @@ def findClub(keyWord: str):
     except Exception as e:
         print(e)
         connect.rollback()
-    closeDatabase(connect, cursor)
+    finally:
+        closeDatabase(connect, cursor)
     return result
 
 # createUser('a', 'b', 'c', 'd')
