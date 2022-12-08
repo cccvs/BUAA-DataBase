@@ -80,6 +80,21 @@ def findClub(keyWord: str):
         closeDatabase(connect, cursor)
     return result
 
+
+def updateUserClubLabel(userId: str, clubId: str, label: str):
+    connect, cursor = connectDatabase()
+    result = ''
+    try:
+        ins = 'update user_club set label = %s where user_id = %s and club_id = %s;'
+        cursor.execute(ins, [label, userId, clubId])
+        result = cursor.fetchall()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
 # createUser('a', 'b', 'c', 'd')
 # createUser('aa', 'bb', 'cc', 'dd')
 

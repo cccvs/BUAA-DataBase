@@ -15,3 +15,6 @@ insert into club(club_id, name, member_count, type, master_id, time, intro) valu
 select *
 from club
 where name like '%%s%';
+
+# updateUserClubLabel
+update user_club set label = '%s' where user_id = '%s' and club_id = '%s';

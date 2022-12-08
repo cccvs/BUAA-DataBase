@@ -4,9 +4,15 @@ from datetime import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from . import mysqlPack
+from club import mysqlPack
 import jwt
 import hashlib
+
+userField = ['user_id', 'password', 'avatar', 'time', 'real_name', 'sex', 'institute', 'phone', 'email', 'level',
+             'following', 'followers']
+clubField = ['club_id', 'name', 'type', 'star', 'member_count', 'score', 'time', 'intro', 'master_id', 'cover']
+eventField = ['event_id', 'club_id', 'user_id', 'intro', 'time', 'apply_time', 'expired_time', 'begin_time', 'end_time',
+              'member_count', 'limit']
 
 
 def hash_code(s, salt='log_reg_sys'):
@@ -96,14 +102,8 @@ def findClub(request):
             resultList = list()
             for data in result:
                 resultItem = dict()
-                resultItem['name'] = data[1]
-                resultItem['type'] = data[2]
-                resultItem['star'] = data[3]
-                resultItem['member_count'] = data[4]
-                resultItem['score'] = data[5]
-                resultItem['time'] = data[6]
-                resultItem['intro'] = data[7]
-                resultItem['cover'] = data[9]
+                for num, field in enumerate(userField):
+                    resultItem[field] = data[num]
                 resultList.append(resultItem)
             retDict['club_dist'] = resultList
             retDict['code'] = 0
@@ -115,6 +115,21 @@ def findClub(request):
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
+
+@csrf_exempt
+def changePosition(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        clubId = request.POST.get('club_id')
+        label = request.POST.get('label')
+        try:
+            mysqlPack.updateUserClubLabel(userId, clubId, label)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 9, 'message': 'error in changing position'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 # class TestRequest:
 #     def __init__(self, str):
 #         self.method = str
