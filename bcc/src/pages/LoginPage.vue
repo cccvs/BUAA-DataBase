@@ -165,7 +165,9 @@ export default {
         console.log("正在执行");
         if (ret.data.code === 0) {
           localStorage.clear();
-          localStorage.setItem('Token',ret.data.jwt);
+          localStorage.setItem('user_id',ret.data.jwt.user_id);
+          localStorage.setItem('code',ret.data.jwt.code);
+          localStorage.setItem('time',ret.data.jwt.time);
           this.$message.success("登录成功");
           console.log("我要跳转啦");
           this.$router.push('/mainpage');

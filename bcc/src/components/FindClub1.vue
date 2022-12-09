@@ -80,6 +80,7 @@ export default {
       },
       levelList: [],
       typeList: [],
+      clubList: [],
       tmpList: [
         {
           id: 1,
@@ -128,8 +129,9 @@ export default {
       ).then((res)=>{
         if(res.data.code===0){
           console.log(res.data)
+          this.clubList = res.data.club_dist;
           this.selectedList = res.data.club_dist;
-        } else this.$notify.error(res.data.msg)
+        } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)
       })
@@ -191,12 +193,12 @@ export default {
         }
       } else {
         if (this.level == null) {
-          this.levelList = this.tmpList;
+          this.levelList = this.clubList;
         } else {
           let j = 0;
-          for(let i = 0; i < this.tmpList.length; i++){
-            if (this.tmpList[i].level === this.level){
-              this.levelList[j++] = this.tmpList[i];
+          for(let i = 0; i < this.clubList.length; i++){
+            if (this.clubList[i].level === this.level){
+              this.levelList[j++] = this.clubList[i];
             }
           }
         }
@@ -229,12 +231,12 @@ export default {
         }
       } else {
         if (this.type == null) {
-          this.typeList = this.tmpList;
+          this.typeList = this.clubList;
         } else {
           let j = 0;
-          for(let i = 0; i < this.tmpList.length; i++){
-            if (this.tmpList[i].type === this.type){
-              this.typeList[j++] = this.tmpList[i];
+          for(let i = 0; i < this.clubList.length; i++){
+            if (this.clubList[i].type === this.type){
+              this.typeList[j++] = this.clubList[i];
             }
           }
         }
