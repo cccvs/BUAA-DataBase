@@ -52,9 +52,11 @@ create table `notice`
     `title`     varchar(31),
     `content`   varchar(1022),
     `user_id`   varchar(31),
+    `club_id`   binary(16),
     `top`       smallint,
     primary key (`notice_id`),
     foreign key (`user_id`) references `user` (`user_id`),
+    foreign key (`club_id`) references `club` (`club_id`),
     check ( `top` = 0 or `top` = 1 )
 );
 
