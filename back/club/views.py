@@ -117,7 +117,7 @@ def findClub(request):
             resultList = list()
             for data in result:
                 resultItem = dict()
-                for num, field in enumerate(userField):
+                for num, field in enumerate(clubField):
                     resultItem[field] = data[num]
                 resultList.append(resultItem)
             retDict['club_dist'] = resultList
