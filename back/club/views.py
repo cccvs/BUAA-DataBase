@@ -42,8 +42,7 @@ def loginUser(request):
         curTime = str(datetime.now())
         code = jwt.encode(payload={'user_id': userId, 'time': curTime}, algorithm='HS256', key=jwtKey,
                           headers={'typ': 'JWT', 'alg': 'HS256'})
-        data = jwt.decode(jwt=code.decode(), key=jwtKey, algorithms='HS256')
-        print(data)
+        jwtDict = {'code': code.decode(), 'user_id': userId, 'time': curTime}
         # logics
         print(request.POST)
         result = mysqlPack.getUser(userId)
@@ -56,8 +55,7 @@ def loginUser(request):
                 return JsonResponse({'code': 3, 'message': 'wrong password'})
             else:
                 return JsonResponse(
-                    {'code': 0, 'message': 'login succeess', 'jwt': {'code': code.decode(), 'user_id': userId,
-                                                                     'time': curTime}})
+                    {'code': 0, 'message': 'login succeess', 'jwt': jwtDict})
         else:
             return JsonResponse({'code': 2, 'message': 'user not found'})
     else:
