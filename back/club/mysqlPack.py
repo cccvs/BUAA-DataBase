@@ -1,5 +1,6 @@
 # coding=utf-8
 import pymysql
+import os
 from back.settings import DATABASES
 
 clubTypeToNum = {'科技': 0, '人文': 1, '实践': 2, '体育': 3, '艺术': 4, '其它': 5}
@@ -19,6 +20,18 @@ def closeDatabase(connect, cursor):
     cursor.close()
 
 
+def initDatabase():
+    database = DATABASES['default']
+    base = 'back/database/'
+    sqlFiles = ['create.sql', 'function.sql', 'procedure.sql',
+                'trigger.sql', 'init.sql']
+    # excute
+    os.system('mysql -V')
+    for name in sqlFiles:
+        os.system('mysql -u root -p' + database['PASSWORD'] + ' < ' + base + name)
+
+
+# func
 def createUser(userId: str, password: str, name: str, sex: str, institute: str, email: str):
     connect, cursor = connectDatabase()
     try:
@@ -95,11 +108,15 @@ def updateUserClubLabel(userId: str, clubId: str, label: str):
         closeDatabase(connect, cursor)
     return result
 
+
 # createUser('a', 'b', 'c', 'd')
 # createUser('aa', 'bb', 'cc', 'dd')
 
 # conn, cursor = connectDatabase()
-# cursor.execute('show databases')
-# cursor.execute('select * from user')
+# x = 0
+# res = cursor.callproc('getUser', args=('u_b', x))
 # x = cursor.fetchall()
 # print(x)
+
+
+# initDatabase()

@@ -27,13 +27,13 @@ create table `user`
 drop table if exists `club`;
 create table `club`
 (
-    `club_id`      binary(16)  not null,
-    `name`         varchar(31) not null,
-    `type`         smallint    not null,
+    `club_id`      int auto_increment not null,
+    `name`         varchar(31)        not null,
+    `type`         smallint           not null,
     `star`         smallint,
-    `member_count` int         not null,
+    `member_count` int                not null,
     `score`        float,
-    `time`         timestamp   not null,
+    `time`         timestamp          not null,
     `intro`        varchar(1022),
     `master_id`    varchar(31),
     `cover`        varchar(255),
@@ -48,11 +48,11 @@ create table `club`
 drop table if exists `notice`;
 create table `notice`
 (
-    `notice_id` binary(16) not null,
+    `notice_id` int auto_increment not null,
     `title`     varchar(31),
     `content`   varchar(1022),
     `user_id`   varchar(31),
-    `club_id`   binary(16),
+    `club_id`   int,
     `top`       smallint,
     primary key (`notice_id`),
     foreign key (`user_id`) references `user` (`user_id`),
@@ -63,34 +63,34 @@ create table `notice`
 drop table if exists `event`;
 create table `event`
 (
-    `event_id`     binary(16) not null,
-    `club_id`      binary(16) not null,
+    `event_id`     int auto_increment not null,
+    `club_id`      int                not null,
     `user_id`      varchar(31),
     `intro`        varchar(255),
-    `time`         timestamp  not null,
+    `time`         timestamp          not null,
     `apply_time`   timestamp,
     `expired_time` timestamp,
     `begin_time`   timestamp,
     `end_time`     timestamp,
     `member_count` int,
-    `limit`        int,
+    `member_limit` int,
     primary key (`event_id`),
     foreign key (`club_id`) references `club` (`club_id`),
     foreign key (`user_id`) references `user` (`user_id`),
     check ( `member_count` >= 0),
-    check ( `limit` >= 0 )
+    check ( `member_limit` >= 0 )
 );
 
 drop table if exists `post`;
 create table `post`
 (
-    `post_id` binary(16)    not null,
-    `club_id` binary(16),
-    `time`    timestamp     not null,
-    `title`   varchar(31)   not null,
-    `content` varchar(1022) not null,
-    `like`    int           not null,
-    `dislike` int           not null,
+    `post_id` int auto_increment not null,
+    `club_id` int,
+    `time`    timestamp          not null,
+    `title`   varchar(31)        not null,
+    `content` varchar(1022)      not null,
+    `like`    int                not null,
+    `dislike` int                not null,
     primary key (`post_id`),
     foreign key (`club_id`) references `club` (`club_id`),
     check ( `like` >= 0 ),
@@ -100,12 +100,12 @@ create table `post`
 drop table if exists `reply`;
 create table `reply`
 (
-    `reply_id` binary(16)    not null,
-    `post_id`  binary(16)    not null,
-    `time`     varchar(31)   not null,
-    `content`  varchar(1022) not null,
-    `like`     int           not null,
-    `dislike`  int           not null,
+    `reply_id` int auto_increment not null,
+    `post_id`  int                not null,
+    `time`     varchar(31)        not null,
+    `content`  varchar(1022)      not null,
+    `like`     int                not null,
+    `dislike`  int                not null,
     primary key (`reply_id`),
     check ( `like` >= 0 ),
     check ( `dislike` >= 0)
@@ -114,14 +114,14 @@ create table `reply`
 drop table if exists `comment`;
 create table `comment`
 (
-    `comment_id` binary(16)  not null,
-    `user_id`    varchar(31) not null,
-    `event_id`   binary(16)  not null,
-    `time`       timestamp   not null,
+    `comment_id` int auto_increment not null,
+    `user_id`    varchar(31)        not null,
+    `event_id`   int                not null,
+    `time`       timestamp          not null,
     `content`    varchar(1022),
-    `score`      float       not null,
-    `like`       int         not null,
-    `dislike`    int         not null,
+    `score`      float              not null,
+    `like`       int                not null,
+    `dislike`    int                not null,
     primary key (`comment_id`),
     foreign key (`user_id`) references `user` (`user_id`),
     foreign key (`event_id`) references `event` (`event_id`),
@@ -133,13 +133,13 @@ create table `comment`
 drop table if exists `establishing_club`;
 create table `establishing_club`
 (
-    `form_id`      binary(16)  not null,
-    `applicant_id` varchar(31) not null,
+    `form_id`      int auto_increment not null,
+    `applicant_id` varchar(31)        not null,
     `verifier_id`  varchar(31),
-    `status`       smallint    not null,
-    `club_name`    varchar(31) not null,
-    `type`         smallint    not null,
-    `apply_time`   timestamp   not null,
+    `status`       smallint           not null,
+    `club_name`    varchar(31)        not null,
+    `type`         smallint           not null,
+    `apply_time`   timestamp          not null,
     `verify_time`  timestamp,
     `content`      varchar(1022),
     primary key (`form_id`),
@@ -152,11 +152,11 @@ create table `establishing_club`
 drop table if exists `joining_club`;
 create table `joining_club`
 (
-    `form_id`      binary(16) not null,
+    `form_id`      int auto_increment not null,
     `applicant_id` varchar(31),
-    `club_id`      binary(16),
-    `status`       smallint   not null,
-    `time`         timestamp  not null,
+    `club_id`      int,
+    `status`       smallint           not null,
+    `time`         timestamp          not null,
     primary key (`form_id`),
     foreign key (`applicant_id`) references `user` (`user_id`),
     foreign key (`club_id`) references `club` (`club_id`),
@@ -168,7 +168,7 @@ drop table if exists `user_club`;
 create table `user_club`
 (
     `user_id`  varchar(31) not null,
-    `club_id`  binary(16)  not null,
+    `club_id`  int         not null,
     `identity` smallint    not null,
     `label`    varchar(31),
     primary key (`user_id`, `club_id`),
@@ -181,7 +181,7 @@ drop table if exists `user_event`;
 create table `user_event`
 (
     `user_id`  varchar(31) not null,
-    `event_id` binary(16)  not null,
+    `event_id` int         not null,
     `identity` smallint    not null,
     primary key (`user_id`, `event_id`),
     foreign key (`user_id`) references `user` (`user_id`),
@@ -193,7 +193,7 @@ drop table if exists `score`;
 create table `score`
 (
     `user_id` varchar(31) not null,
-    `club_id` binary(16)  not null,
+    `club_id` int         not null,
     `score`   float       not null,
     primary key (`user_id`, `club_id`),
     foreign key (`user_id`) references `user` (`user_id`),
@@ -205,7 +205,7 @@ drop table if exists `user_post`;
 create table `user_post`
 (
     `user_id` varchar(31) not null,
-    `post_id` binary(16)  not null,
+    `post_id` int         not null,
     `action`  smallint    not null,
     primary key (`user_id`, `post_id`),
     foreign key (`user_id`) references `user` (`user_id`),
@@ -217,7 +217,7 @@ drop table if exists `user_reply`;
 create table `user_reply`
 (
     `user_id`  varchar(31) not null,
-    `reply_id` binary(16)  not null,
+    `reply_id` int         not null,
     `action`   smallint    not null,
     primary key (`user_id`, `reply_id`),
     foreign key (`user_id`) references `user` (`user_id`),
@@ -233,4 +233,13 @@ create table `follow`
     primary key (`follower_id`, `friend_id`),
     foreign key (`follower_id`) references `user` (`user_id`),
     foreign key (`friend_id`) references `user` (`user_id`)
+);
+
+# alloc id
+drop table if exists `id_allocator`;
+create table `id_allocator`
+(
+    `global_id` int not null,
+    primary key (`global_id`)
 )
+
