@@ -1,34 +1,56 @@
 <template>
   <v-list>
-    <v-subheader>{{ text }}</v-subheader>
+    <v-row style="margin-left: 10px">
+      <v-icon color="blue">mdi-bulletin-board</v-icon>
+      <h1 style="margin-left: 10px;margin-top: 10px">{{ text }}</h1>
+    </v-row>
     <v-list-item
         v-for="activity in activities"
-        :key="activity.id"
-        style="margin-top: 20px"
+        :key="activity.event_id"
+        style="margin-top: 20px; max-width: 350px; float: left"
     >
       <v-card
           class="mx-auto"
       >
         <v-list-item>
           <v-list-item-avatar color="grey">
-            <img src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" alt="头像">
+            <img :src="activity.club_face" alt="头像">
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title class="headline">{{activity.title}}</v-list-item-title>
-            <v-list-item-subtitle>{{activity.user_id}}，发布时间</v-list-item-subtitle>
+            <v-list-item-title class="headline">{{ activity.title }}</v-list-item-title>
+            <v-list-item-subtitle>
+              {{ activity.club_name }}
+            </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
         <v-img
             src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg"
             height="194"
         ></v-img>
-        <v-card-text>
-          报名时间：{{activity.apply_time}}
-        </v-card-text>
-        <v-card-text>
-          活动时间：{{activity.begin_time}}
-        </v-card-text>
-        <v-rating v-model="rating" dense color="yellow" style="margin-left: 10px"></v-rating>
+        <div style="float: right">
+          {{ activity.real_name }} 发布于：{{ activity.time }}
+        </div>
+        <div class="desBlock">
+          报名时间：{{ activity.apply_time }}
+          <v-btn small style="float: right" color="purple lighten-5" v-show="!audit">
+            报名
+          </v-btn>
+        </div>
+        <div v-show="!audit">
+          报名人数：{{ activity.member_count }} / {{ activity.limit }}
+        </div>
+        <div v-show="audit">
+          活动人数上限：{{ activity.limit }}
+        </div>
+        <div>
+          活动时间：{{ activity.begin_time }}
+        </div>
+        <div v-show="!audit">
+          评价该活动：（{{ activity.score }}），平均评分：（{{ activity.avg_score }}）
+          <v-rating v-model="activity.score"
+                    dense color="yellow"
+                    style="margin-left: 10px"></v-rating>
+        </div>
         <v-card-actions>
           <v-btn
               text
@@ -38,47 +60,63 @@
             查看详情
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn icon>
+          <v-btn icon color="deep-orange" v-show="!audit">
             <v-icon>mdi-thumb-up</v-icon>
           </v-btn>
-          <v-btn icon>
+          <div v-show="!audit">{{ activity.like }}</div>
+          <v-btn icon color="blue-grey darken-2" v-show="!audit">
             <v-icon>mdi-thumb-down</v-icon>
           </v-btn>
-          <v-btn icon>
-            <v-icon>mdi-chat</v-icon>
+          <div v-show="!audit">{{ activity.dislike }}</div>
+          <v-btn v-show="audit" elevation="10" icon circle color="green" @click="handlePass(member.user_id)"
+                 style="margin-right: 20px">
+            <v-icon>
+              mdi-check
+            </v-icon>
+          </v-btn>
+          <v-btn v-show="audit" elevation="10" icon color="red" @click="handleFailPass(member.user_id)"
+                 style="margin-right: 5px">
+            <v-icon>
+              mdi-close
+            </v-icon>
           </v-btn>
         </v-card-actions>
-        <v-expand-transition>
-          <div v-show="activity.show">
-            <v-divider></v-divider>
-            <v-card-text>
-              {{activity.content}}
+        <v-dialog v-model="activity.show">
+          <v-card>
+            <v-card-title>
+              <span class="headline">{{ activity.title }}</span>
+            </v-card-title>
+            <v-card-text style="margin-top: 20px">
+              <pre>
+                  {{ activity.intro }}
+              </pre>
             </v-card-text>
-          </div>
-        </v-expand-transition>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" text @click="activity.show = false">关闭</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-card>
     </v-list-item>
   </v-list>
-
 </template>
 
 <script>
 export default {
   name: "ActivityList",
-  props: ['activities', 'text'],
-  data() {
-    return {
-      rating: 4.6
-    }
-  },
-  methods: {
-    detailOfActivity() {
-      this.show = true
-    }
-  }
+  props: ['activities', 'text', 'audit'],
 }
 </script>
 
 <style scoped>
+pre {
+  tab-size: 2;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
 
+.desBlock {
+  margin-top: 30px;
+}
 </style>
