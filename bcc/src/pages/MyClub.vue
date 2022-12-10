@@ -64,6 +64,7 @@ import ActivityList from "@/components/ActivityList";
 import NoticeList from "@/components/NoticeList";
 import * as echarts from "echarts";
 import PostList from "@/components/PostList";
+import Qs from "qs";
 
 export default {
   name: "MyClub",
@@ -304,9 +305,25 @@ export default {
       window.addEventListener("resize", () => {
         myChart.resize();
       });
-    }
+    },
+    myClub: function () {
+      let con = {};
+      con['jwt'] = {"code":localStorage.getItem('code'),"time":localStorage.getItem('time'),"user_id":localStorage.getItem('user_id')};
+      console.log("myClub");
+      console.log(con.jwt.user_id);
+      this.$axios({
+        url: 'http://127.0.0.1:8000/api/find_club',
+        method: 'post',
+        data: Qs.stringify(con),
+      }).then((ret) => {
+        if (ret.data.code === 0) {
+          console.log(ret.data);
+        } else this.$notify.error(ret.data.message);
+      })
+    },
   },
   mounted() {
+    this.myClub();
     /*
     FIXME:注意JS的数据格式，===如果两边类型不一致不会相等
      */

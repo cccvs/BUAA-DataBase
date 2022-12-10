@@ -4,28 +4,45 @@ from datetime import datetime
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from . import mysqlPack
+from club import mysqlPack
 import jwt
 import hashlib
 
+jwtKey = '123456'
+userField = ['user_id', 'password', 'avatar', 'time', 'real_name', 'sex', 'institute', 'phone', 'email', 'level',
+             'following', 'followers']
+clubField = ['club_id', 'name', 'type', 'star', 'member_count', 'score', 'time', 'intro', 'master_id', 'cover']
+eventField = ['event_id', 'club_id', 'user_id', 'intro', 'time', 'apply_time', 'expired_time', 'begin_time', 'end_time',
+              'member_count', 'limit']
 
-def hash_code(s, salt='log_reg_sys'):
+
+def hashCode(s, salt='club_system'):
     h = hashlib.sha256()
     s += salt
     h.update(s.encode())
     return h.hexdigest()
 
 
+def checkJwt(jwtDict: dict) -> bool:
+    codeStr: str = jwtDict['code']
+    userId = jwtDict['user_id']
+    time = jwtDict['time']
+    newCodeStr: str = jwt.encode(payload={'user_id': userId, 'time': time}, algorithm='HS256', key=jwtKey,
+                                 headers={'typ': 'JWT', 'alg': 'HS256'}).decode()
+    return codeStr.__eq__(newCodeStr)
+
+
+# login views
 @csrf_exempt
 def loginUser(request):
     if request.method == 'POST':
         # vars
         userId = request.POST.get('user_id')
         password = request.POST.get('password')
-        code = jwt.encode(payload={'user_id': userId, 'time': str(datetime.now())}, algorithm='HS256', key='123456',
+        curTime = str(datetime.now())
+        code = jwt.encode(payload={'user_id': userId, 'time': curTime}, algorithm='HS256', key=jwtKey,
                           headers={'typ': 'JWT', 'alg': 'HS256'})
-        data = jwt.decode(jwt=code.decode(), key='123456', algorithms='HS256')
-        print(data)
+        jwtDict = {'code': code.decode(), 'user_id': userId, 'time': curTime}
         # logics
         print(request.POST)
         result = mysqlPack.getUser(userId)
@@ -37,7 +54,8 @@ def loginUser(request):
                 # return render(request, 'api/login.html'， locals()), code.encode()
                 return JsonResponse({'code': 3, 'message': 'wrong password'})
             else:
-                return JsonResponse({'code': 0, 'message': 'login succeess', 'jwt': code.decode()})
+                return JsonResponse(
+                    {'code': 0, 'message': 'login succeess', 'jwt': jwtDict})
         else:
             return JsonResponse({'code': 2, 'message': 'user not found'})
     else:
@@ -54,18 +72,19 @@ def registerUser(request):
         sex = request.POST.get('sex')
         institute = request.POST.get('institute')
         email = request.POST.get('email')
-
         # verifyCode = request.POST.get('verify_code')
         # logics
         try:
             mysqlPack.createUser(userId, password, name, sex, institute, email)
             return JsonResponse({'code': 0, 'message': 'create user successfully!'})
         except Exception as e:
+            print(e)
             return JsonResponse({'code': 4, 'message': 'duplicated user name'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
 
+# club views
 @csrf_exempt
 def createClub(request):
     if request.method == 'POST':
@@ -73,8 +92,10 @@ def createClub(request):
         name = request.POST.get('name')
         clubType = request.POST.get('type')
         intro = request.POST.get('intro')
-        codeStr = request.POST.get('code')
-        masterId = jwt.decode(jwt=codeStr, key='123456', algorithms='HS256')['user_id']
+        jwtDict = request.POST.get('jwt')
+        masterId = jwtDict['user_id']
+        if not checkJwt(jwtDict):
+            return JsonResponse({'code': -1, 'message': 'jwt error'})
         try:
             mysqlPack.createClub(name, clubType, masterId, intro)
             return JsonResponse({'code': 0, 'message': ''})
@@ -96,14 +117,8 @@ def findClub(request):
             resultList = list()
             for data in result:
                 resultItem = dict()
-                resultItem['name'] = data[1]
-                resultItem['type'] = data[2]
-                resultItem['star'] = data[3]
-                resultItem['member_count'] = data[4]
-                resultItem['score'] = data[5]
-                resultItem['time'] = data[6]
-                resultItem['intro'] = data[7]
-                resultItem['cover'] = data[9]
+                for num, field in enumerate(clubField):
+                    resultItem[field] = data[num]
                 resultList.append(resultItem)
             retDict['club_dist'] = resultList
             retDict['code'] = 0
@@ -115,10 +130,18 @@ def findClub(request):
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
-# class TestRequest:
-#     def __init__(self, str):
-#         self.method = str
-#
-# testPost = TestRequest('POST')
-# testGet = TestRequest('GET')
-# loginUser(testPost)
+
+@csrf_exempt
+def changePosition(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        clubId = request.POST.get('club_id')
+        label = request.POST.get('label')
+        try:
+            mysqlPack.updateUserClubLabel(userId, clubId, label)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 9, 'message': 'error in changing position'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})

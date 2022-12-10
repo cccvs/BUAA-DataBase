@@ -20,5 +20,6 @@ urlpatterns = [
     path('login', views.loginUser),
     path('register', views.registerUser),
     path('find_club', views.findClub),
-    path('create_club', views.createClub)
+    path('create_club', views.createClub),
+    path('change_position', views.changePosition)
 ]
