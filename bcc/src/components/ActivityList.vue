@@ -68,13 +68,13 @@
             <v-icon>mdi-thumb-down</v-icon>
           </v-btn>
           <div v-show="!audit">{{ activity.dislike }}</div>
-          <v-btn v-show="audit" elevation="10" icon circle color="green" @click="handlePass(member.user_id)"
+          <v-btn v-show="audit" elevation="10" icon circle color="green" @click="handlePass(activity.event_id)"
                  style="margin-right: 20px">
             <v-icon>
               mdi-check
             </v-icon>
           </v-btn>
-          <v-btn v-show="audit" elevation="10" icon color="red" @click="handleFailPass(member.user_id)"
+          <v-btn v-show="audit" elevation="10" icon color="red" @click="handleFailPass(activity.event_id)"
                  style="margin-right: 5px">
             <v-icon>
               mdi-close
@@ -106,6 +106,20 @@
 export default {
   name: "ActivityList",
   props: ['activities', 'text', 'audit'],
+  methods:{
+    handlePass(id) {
+      /*
+      TODO:团委老师通过活动审批
+       */
+      console.log(id);
+    },
+    handleFailPass(id) {
+      /*
+      TODO:团委老师拒绝了活动
+       */
+      console.log(id);
+    }
+  }
 }
 </script>
 

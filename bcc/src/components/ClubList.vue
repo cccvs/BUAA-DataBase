@@ -13,13 +13,13 @@
 <!--              inactive-color="#ff4949"-->
 <!--              active-text="通过">-->
 <!--          </el-switch>-->
-          <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(member.user_id)"
+          <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club.id)"
                  style="margin-right: 20px">
             <v-icon>
               mdi-check
             </v-icon>
           </v-btn>
-          <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(member.user_id)"
+          <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(club.id)"
                  style="margin-right: 5px">
             <v-icon>
               mdi-close
@@ -44,6 +44,20 @@ export default {
         this.$router.push({
           path
         });
+      }
+    },
+    methods:{
+      handlePass(id) {
+        /*
+        TODO:团委老师通过社团审批
+         */
+        console.log(id);
+      },
+      handleFailPass(id) {
+        /*
+        TODO:团委老师拒绝了社团申请
+         */
+        console.log(id);
       }
     }
   }

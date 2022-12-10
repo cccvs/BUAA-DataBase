@@ -33,7 +33,7 @@ export default {
         reply_id: 2,
         like: 22,
         dislike: 0,
-        content: "省流不看版 ..."
+        content: "哈哈哈哈哈"
       }],
     }
   },
