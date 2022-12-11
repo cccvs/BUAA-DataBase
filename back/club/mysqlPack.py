@@ -67,6 +67,7 @@ def updateUserField(userId: str, realName: str, userSex: str, userInstitute: str
     try:
         cursor.callproc('updateUserField',
                         (userId, realName, userSex, userInstitute, userPhone, userEmail))
+        connect.commit()
     except Exception as e:
         print(e)
         connect.rollback()
@@ -79,6 +80,7 @@ def updateUserPassword(userId: str, userPassword: str):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('updatePassword', (userId, userPassword))
+        connect.commit()
     except Exception as e:
         print(e)
         connect.rollback()
@@ -91,6 +93,7 @@ def updateUserAvatar(userId: str, userAvatar: str):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('updateAvatar', (userId, userAvatar))
+        connect.commit()
     except Exception as e:
         print(e)
         connect.rollback()
@@ -103,6 +106,7 @@ def handleFollowing(followerId: str, friendId: str):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('handleFollowing', (followerId, friendId))
+        connect.commit()
     except Exception as e:
         print(e)
         connect.rollback()
@@ -115,6 +119,7 @@ def handleUnfollowing(followerId: str, friendId: str):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('handleUnfollowing', (followerId, friendId))
+        connect.commit()
     except Exception as e:
         print(e)
         connect.rollback()
@@ -228,6 +233,7 @@ def updateUserClubLabel(userId: str, clubId: str, label: str):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('updateUserClubLabel', (label, userId, clubId))
+        connect.commit()
     except Exception as e:
         print(e)
         connect.rollback()
@@ -240,6 +246,7 @@ def handleJoiningClub(op: int, formId: str):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('handleJoiningClub', (op, formId))
+        connect.commit()
     except Exception as e:
         print(e)
         connect.rollback()
@@ -256,6 +263,7 @@ def createEvent(clubId: int, userId: str, eventTitle: str, eventCover: str, even
         cursor.callproc('createEvent',
                         (clubId, userId, eventTitle, eventCover, eventContent, applyTime,
                          expiredTime, beginTime, endTime, memberLimit))
+        connect.commit()
     except Exception as e:
         print(e)
         connect.rollback()
