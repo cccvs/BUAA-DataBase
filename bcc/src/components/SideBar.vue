@@ -59,7 +59,7 @@ export default {
         name: "篮球裁判社"
       }, {
         id: 3,
-        name: "篮球裁判社"
+        name: "科协"
       }]
     };
   },

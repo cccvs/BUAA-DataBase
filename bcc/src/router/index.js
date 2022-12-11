@@ -6,6 +6,7 @@ import MainPage from "@/pages/MainPage";
 import MyClub from "@/pages/MyClub";
 import UserCenter from "@/pages/UserCenter";
 import LoginPage from "@/pages/LoginPage";
+import PostPage from "@/pages/PostPage";
 
 const router = new VueRouter({
     // mode: 'hash', //hash||history
@@ -38,12 +39,18 @@ const router = new VueRouter({
         {
             name: "myclub",
             path: '/myclub/:id/:name',
-            component: MyClub
+            component: MyClub,
+
         },
         {
             name: "usercenter",
             path: '/usercenter/:id/:name',
-            component: UserCenter
+            component: UserCenter,
+        },
+        {
+            name: "post",
+            path: '/post/:id',
+            component: PostPage
         }
     ]
 })

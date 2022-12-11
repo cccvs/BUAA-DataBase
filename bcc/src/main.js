@@ -11,9 +11,11 @@ import * as echarts from "echarts";
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from "axios";
 import vuetify from './plugins/vuetify'
+import 'mavon-editor/dist/css/index.css'
+import mavonEditor from 'mavon-editor'
 Vue.use(ElementUI)
 Vue.use(Vuetify)
-
+Vue.use(mavonEditor)
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.prototype.$axios = axios;
