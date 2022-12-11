@@ -15,6 +15,9 @@
           <el-form-item prop="studentID">
             <el-input v-model="createUserForm.studentID" class="form__input" type="text" placeholder="学号"/>
           </el-form-item>
+          <el-form-item prop="name">
+            <el-input v-model="createUserForm.name" class="form__input" type="text" placeholder="姓名"/>
+          </el-form-item>
           <el-form-item prop="password1">
             <el-input v-model="createUserForm.password1" class="form__input" type="password" placeholder="密码" show-password/>
           </el-form-item>
@@ -23,12 +26,19 @@
           </el-form-item>
           <el-form-item prop="email">
             <div style="display: flex;">
-              <el-input v-model="createUserForm.email" class="form__input" type="text" placeholder="邮箱" style="width: 260px;"/>
-              <div class="verify-btn" @click="verify">发送验证码</div>
+              <el-input v-model="createUserForm.email" class="form__input" type="text" placeholder="邮箱"/>
+<!--                        style="width: 260px;"-->
+<!--              <div class="verify-btn" @click="verify">发送验证码</div>-->
             </div>
           </el-form-item>
-          <el-form-item prop="verifyCode">
-            <el-input v-model="createUserForm.verifyCode" class="form__input" type="text" placeholder="验证码"/>
+<!--          <el-form-item prop="verifyCode">-->
+<!--            <el-input v-model="createUserForm.verifyCode" class="form__input" type="text" placeholder="验证码"/>-->
+<!--          </el-form-item>-->
+          <el-form-item prop="sex">
+            <el-input v-model="createUserForm.sex" class="form__input" type="text" placeholder="性别"/>
+          </el-form-item>
+          <el-form-item prop="institute">
+            <el-input v-model="createUserForm.institute" class="form__input" type="text" placeholder="学院"/>
           </el-form-item>
           <el-form-item>
             <div class="primary-btn" @click="register">立即注册</div>
@@ -118,6 +128,8 @@ export default {
         password2: '',
         email: '',
         verifyCode: '',
+        sex:'',
+        institute:''
       },
       loginRules: {
         studentID: [{required: true, message: '请输入学号', trigger: 'blur'}, {validator: checkStudentID, trigger: 'blur'}],
@@ -128,28 +140,13 @@ export default {
         password1: [{required: true, message: '请输入密码', trigger: 'blur'}, {validator: checkNewPwd, trigger: 'blur'}],
         password2: [{required: true, message: '请确认密码', trigger: 'blur'}, {validator: checkNewPwd2, trigger: 'blur'}],
         email: [{required: true, message: '请输入邮箱', trigger: 'blur'}, {validator: checkEmail, trigger: 'blur'}],
-        verifyCode: [{required: true, message: '请输入验证码', trigger: 'blur'}]
+        verifyCode: [{required: true, message: '请输入验证码', trigger: 'blur'}],
+        sex: [{required: true, message: '请输入性别', trigger: 'blur'}],
+        institute: [{required: true, message: '请输入学院', trigger: 'blur'}]
       },
     }
   },
   methods:{
-    getNowUser() {
-      axios({
-            method : 'post',
-            url : 'http://101.42.160.94:8000/api/user_web/get_user',
-            headers:{
-              'Authorization':localStorage.getItem('Token'),
-            }
-          }
-      ).then((ret) => {
-        console.log(ret);
-        if (ret.data.errno === 0) {
-          //console.log(ret.data.data);
-          this.$notify.info('已检测到登录信息,即将跳转...')
-          setTimeout(()=>{this.$router.push('/team');},2000)
-        } else if(ret.data.errno !== 5003)this.$notify.error(ret.data.msg);
-      }).catch((error)=>{console.log(error)})
-    },
     login: function () {
       let con = {};
       con['user_id'] = this.loginForm.studentID;
@@ -157,7 +154,7 @@ export default {
       console.log(con);
       console.log("尝试登陆！！！");
       this.$axios({
-        url: 'http://127.0.0.1:8000/api/login',
+        url: 'http://127.0.0.1:8000/api/login_user',
         method: 'post',
         data: Qs.stringify(con),
       }).then((ret) => {
@@ -180,10 +177,12 @@ export default {
       con['name'] = this.createUserForm.name;
       con['password'] = this.createUserForm.password1;
       con['email'] = this.createUserForm.email;
-      con['verify_code'] = this.createUserForm.verifyCode;
+      // con['verify_code'] = this.createUserForm.verifyCode;
+      con['sex'] = this.createUserForm.sex;
+      con['institute'] = this.createUserForm.institute;
       // console.log(con);
       this.$axios({
-        url: 'http://127.0.0.1:8000/api/register',
+        url: 'http://127.0.0.1:8000/api/register_user',
         method: 'post',
         data: Qs.stringify(con),
       }).then((ret) => {
@@ -197,6 +196,8 @@ export default {
             password2: '',
             email: '',
             verifyCode: '',
+            sex: '',
+            institute: ''
           };
         } else this.$notify.error(ret.data.message+"，注册失败");
       })
@@ -232,7 +233,7 @@ export default {
   width: 66%;
   min-width: 1000px;
   min-height: 600px;
-  height: 600px;
+  height: 650px;
   padding: 25px;
   background-color: #ecf0f3;
   box-shadow: 10px 10px 10px #d1d9e6, -10px -10px 10px #f9f9f9;
@@ -269,8 +270,8 @@ export default {
       }
       .form__input {
         width: 350px;
-        height: 40px;
-        margin: 4px 0;
+        height: 35px;
+        margin: 0px 0;
         padding-left: 25px;
         font-size: 13px;
         letter-spacing: 0.15px;
