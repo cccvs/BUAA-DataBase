@@ -12,7 +12,7 @@
       <div class="block">
         <span class="demonstration">报名起止时间：</span>
         <el-date-picker
-            value-format="timestamp"
+            value-format="yyyy-MM-dd HH:mm:ss"
             style="margin-left: 15px"
             v-model="activity.apply_time"
             type="datetimerange"
@@ -27,7 +27,7 @@
       <div class="block">
         <span class="demonstration">活动起止时间：</span>
         <el-date-picker
-            value-format="timestamp"
+            value-format="yyyy-MM-dd HH:mm:ss"
             style="margin-left: 15px"
             v-model="activity.begin_time"
             type="datetimerange"
@@ -92,6 +92,11 @@ export default {
     TODO:发布活动的接口，这里是否考虑加入活动封面？
      */
     handleApply() {
+      console.log(this.activity.apply_time[0])
+      console.log(typeof this.activity.apply_time[0])
+      console.log(this.activity.apply_time[1])
+      console.log(this.activity.apply_time)
+      console.log("here")
       this.$bus.$emit('showSnackBar', "活动已发布！")
     },
     zoomIn() {
