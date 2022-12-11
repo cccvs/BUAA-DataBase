@@ -3,8 +3,10 @@ use club_system;
 
 delimiter ;;
 # createUser
-create definer=root@localhost procedure createUser(in userId varchar(31), in UserPassword smallint, in realName varchar(31),
-                            in userEmail varchar(31))
+create
+    definer = root@localhost procedure createUser(in userId varchar(31), in UserPassword smallint,
+                                                  in realName varchar(31),
+                                                  in userEmail varchar(31))
 begin
     declare error int default 0;
     declare continue handler for sqlexception set error = 1;
@@ -61,25 +63,17 @@ delimiter ;
 
 delimiter ;;
 # updateUserField
-create procedure updateUserField(in userId varchar(31), in userPassword varchar(255), in userAvatar varchar(255),
-                                 in userTime timestamp, in realName varchar(31), in userSex varchar(1),
-                                 in userInstitute varchar(31), in userPhone varchar(31), in userEmail varchar(31),
-                                 in userLevel smallint, in userFollowing int, in userFollowers int)
+create procedure updateUserField(in userId varchar(31), in realName varchar(31), in userSex varchar(3),
+                                 in userInstitute varchar(31), in userPhone varchar(31), in userEmail varchar(31))
 begin
     declare error int default 0;
     declare continue handler for sqlexception set error = 1;
     update user
-    set password  = userPassword,
-        avatar    = userAvatar,
-        time      = userTime,
-        real_name = realName,
+    set real_name = realName,
         sex       = userSex,
         institute = userInstitute,
         phone     = userPhone,
-        email     = userEmail,
-        level     = userLevel,
-        following = userFollowing,
-        followers = userFollowers
+        email     = userEmail
     where user_id = userId;
     # end
     if error = 1 then
@@ -91,16 +85,16 @@ end;;
 delimiter ;
 
 delimiter ;;
-# handleJoining
-create procedure handleJoining(in type smallint, in formId binary(16))
+# handleJoiningClub
+create procedure handleJoiningClub(in op smallint, in formId int)
 begin
     # type: 0->accept, 1->reject
     # status: 0->处理中, 1->已拒绝, 2->已接受
     declare applicantId varchar(31);
-    declare clubId binary(16);
+    declare clubId int;
     declare error int default 0;
     declare continue handler for sqlexception set error = 1;
-    if type = 0 then
+    if op = 0 then
         set applicantId = (select applicant_id from joining_club where form_id = formId);
         set clubId = (select club_id from joining_club where form_id = formId);
         update joining_club set status = 2 where form_id = formId;
@@ -117,5 +111,85 @@ begin
 end;;
 delimiter ;
 
+delimiter ;;
 # createEvent
-# insert into event(event_id, club_id, user_id, intro, time, apply_time, expired_time, begin_time, end_time, member_count, `limit`) values ('%s')
+create procedure createEvent(in clubId int, in userId varchar(31), in eventTitle varchar(31),in eventCover varchar(255),in eventContent varchar(255), in applyTime timestamp, in expiredTime timestamp, in beginTime timestamp, in endTime timestamp, in memberLimit int)
+begin
+    declare eventId int;
+    declare error int default 0;
+    declare continue handler for sqlexception set error = 1;
+    set eventId = allocId();
+    insert into event(event_id, club_id, user_id, title, cover, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) VALUE (eventId, clubId, userId,eventTitle,eventCover, eventContent, CURRENT_TIMESTAMP, applyTime, expiredTime, beginTime, endTime, 0, memberLimit);
+    insert into user_event(user_id, event_id, identity) values (userId, eventId, 2);
+    # end
+    if error = 1 then
+        rollback;
+    else
+        commit;
+    end if;
+end;;
+delimiter ;
+
+delimiter ;;
+# handleFollowing
+create procedure handleFollowing(in followerId varchar(31), in friendId varchar(31))
+begin
+    declare error int default 0;
+    declare continue handler for sqlexception set error = 1;
+    insert into follow(follower_id, friend_id) value (followerId, friendId);
+    # end
+    if error = 1 then
+        rollback;
+    else
+        commit;
+    end if;
+end;;
+delimiter ;
+
+delimiter ;;
+# handleUnfollowing
+create procedure handleUnfollowing(in followerId varchar(31), in friendId varchar(31))
+begin
+    declare error int default 0;
+    declare continue handler for sqlexception set error = 1;
+    delete from follow where friend_id = friendId and follower_id = followerId;
+    # end
+    if error = 1 then
+        rollback;
+    else
+        commit;
+    end if;
+end;;
+delimiter ;
+
+delimiter ;;
+# updatePassword
+create procedure updatePassword(in userId varchar(31), in userPassword varchar(255))
+begin
+    declare error int default 0;
+    declare continue handler for sqlexception set error = 1;
+    update user set password = userPassword where user_id = userId;
+    # end
+    if error = 1 then
+        rollback;
+    else
+        commit;
+    end if;
+end;;
+delimiter ;
+
+delimiter ;;
+# updateAvatar
+create procedure updateAvatar(in userId varchar(31), in userAvatar varchar(255))
+begin
+    declare error int default 0;
+    declare continue handler for sqlexception set error = 1;
+    update user set avatar = userAvatar where user_id = userId;
+    # end
+    if error = 1 then
+        rollback;
+    else
+        commit;
+    end if;
+end;;
+delimiter ;

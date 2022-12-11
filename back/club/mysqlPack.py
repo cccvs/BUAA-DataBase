@@ -1,10 +1,16 @@
 # coding=utf-8
 import pymysql
 import os
+import datetime
 from back.settings import DATABASES
 
 clubTypeToNum = {'科技': 0, '人文': 1, '实践': 2, '体育': 3, '艺术': 4, '其它': 5}
 numToClubType = ['科技', '人文', '实践', '体育', '艺术', '其它']
+
+
+# util
+def strToTime(timeStr: str):
+    return datetime.datetime.strptime(timeStr, '%Y-%m-%d %H:%M:%S')
 
 
 def connectDatabase():
@@ -31,12 +37,11 @@ def initDatabase():
         os.system('mysql -u root -p' + database['PASSWORD'] + ' < ' + base + name)
 
 
-# func
+# user
 def createUser(userId: str, password: str, name: str, sex: str, institute: str, email: str):
     connect, cursor = connectDatabase()
     try:
-        ins = 'insert into user(user_id, password, time, real_name, sex, institute, email, followers, following) values (%s, %s, CURRENT_TIMESTAMP, %s, %s, %s, %s, 0, 0);'
-        cursor.execute(ins, [userId, password, name, sex, institute, email])
+        cursor.callproc('createUser', (userId, password, name, sex, institute, email))
         connect.commit()
     except Exception as e:
         print(e)
@@ -47,10 +52,9 @@ def createUser(userId: str, password: str, name: str, sex: str, institute: str, 
     return
 
 
-# 需要userId和用户Id完全匹配
 def getUser(userId: str):
+    # 需要userId和用户Id完全匹配
     connect, cursor = connectDatabase()
-    result = ''
     try:
         ins = 'select * from user where user_id = %s;'
         cursor.execute(ins, [userId])
@@ -63,12 +67,74 @@ def getUser(userId: str):
     return result
 
 
-def createClub(name: str, type: str, masterId: str, intro: str):
-    typeNum = clubTypeToNum[type]
+def updateUserField(userId: str, realName: str, userSex: str, userInstitute: str,
+                    userPhone: str, userEmail: str, ):
     connect, cursor = connectDatabase()
     try:
-        ins = 'insert into club(club_id, name, member_count, type, master_id, time, intro) value (UUID_TO_BIN(UUID()), %s, 0, %s, %s, CURRENT_TIMESTAMP, %s);'
-        cursor.execute(ins, [name, typeNum, masterId, intro])
+        cursor.callproc('updateUserField',
+                        (userId, realName, userSex, userInstitute, userPhone, userEmail))
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def updateUserPassword(userId: str, userPassword: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('updatePassword', (userId, userPassword))
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def updateUserAvatar(userId: str, userAvatar: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('updateAvatar', (userId, userAvatar))
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def handleFollowing(followerId: str, friendId: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('handleFollowing', (followerId, friendId))
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def handleUnfollowing(followerId: str, friendId: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('handleUnfollowing', (followerId, friendId))
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+# club
+def createClub(name: str, clubType: str, masterId: str, intro: str):
+    typeNum = clubTypeToNum[clubType]
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('createClub', (name, typeNum, masterId, intro))
         connect.commit()
     except Exception as e:
         print(e)
@@ -81,7 +147,6 @@ def createClub(name: str, type: str, masterId: str, intro: str):
 
 def findClub(keyWord: str):
     connect, cursor = connectDatabase()
-    result = ''
     try:
         ins = 'select * from club where name like %s;'
         cursor.execute(ins, ['%' + keyWord + '%'])  # 子串匹配
@@ -89,6 +154,77 @@ def findClub(keyWord: str):
     except Exception as e:
         print(e)
         connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+def getClubList(userId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select * from club where club_id in (select club_id from user_club where user_id = %s)'
+        cursor.execute(ins, [userId])
+        result = cursor.fetchall()
+    except Exception as e:
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+def getClubMembers(clubId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select * from user where user_id in (select user_id from user_club where club_id = %s)'
+        cursor.execute(ins, [clubId])
+        result = cursor.fetchall()
+    except Exception as e:
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+def getClubEvents(clubId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select * from event where club_id = %s'
+        cursor.execute(ins, [clubId])
+        result = cursor.fetchall()
+    except Exception as e:
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+def getClubNotices(clubId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select * from notice where club_id = %s'
+        cursor.execute(ins, [clubId])
+        result = cursor.fetchall()
+    except Exception as e:
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+def getClubRequests(clubId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select * from user where user_id in (select applicant_id from joining_club where (club_id = %s and status = 0))'
+        cursor.execute(ins, [clubId])
+        result = cursor.fetchall()
+    except Exception as e:
+        connect.rollback()
+        raise e
     finally:
         closeDatabase(connect, cursor)
     return result
@@ -96,27 +232,51 @@ def findClub(keyWord: str):
 
 def updateUserClubLabel(userId: str, clubId: str, label: str):
     connect, cursor = connectDatabase()
-    result = ''
     try:
-        ins = 'update user_club set label = %s where user_id = %s and club_id = %s;'
-        cursor.execute(ins, [label, userId, clubId])
-        result = cursor.fetchall()
+        cursor.callproc('updateUserClubLabel', (label, userId, clubId))
     except Exception as e:
         print(e)
         connect.rollback()
+        raise e
     finally:
         closeDatabase(connect, cursor)
-    return result
 
 
-# createUser('a', 'b', 'c', 'd')
-# createUser('aa', 'bb', 'cc', 'dd')
+def handleJoiningClub(op: int, formId: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('handleJoiningClub', (op, formId))
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
 
-# conn, cursor = connectDatabase()
-# x = 0
-# res = cursor.callproc('getUser', args=('u_b', x))
-# x = cursor.fetchall()
-# print(x)
+
+# others
+def createEvent(clubId: int, userId: str, eventTitle: str, eventCover: str, eventContent: str, applyTime: str,
+                expiredTime: str, beginTime: str, endTime: str, memberLimit: int):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('createEvent',
+                        (clubId, userId, eventTitle, eventCover, eventContent, strToTime(applyTime),
+                         strToTime(expiredTime), strToTime(beginTime),
+                         strToTime(endTime), memberLimit))
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
 
 
-# initDatabase()
+def test():
+    conn, cursor = connectDatabase()
+    ins = 'insert into event(event_id, club_id, user_id, intro, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2001, 1001, %s, %s, %s, %s, %s, %s, %s, 1, 200)'
+    cursor.execute(ins, ['20373743', 1002, datetime.datetime.now(), datetime.datetime.now(), datetime.datetime.now(),
+                         datetime.datetime.now(), datetime.datetime.now()])
+    conn.commit()
+    closeDatabase(conn, cursor)
+
+# test()

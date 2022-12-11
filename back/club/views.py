@@ -9,11 +9,13 @@ import jwt
 import hashlib
 
 jwtKey = '123456'
+jwtFailedDict = {'code': 666, 'message': 'jwt verified error'}
 userField = ['user_id', 'password', 'avatar', 'time', 'real_name', 'sex', 'institute', 'phone', 'email', 'level',
              'following', 'followers']
 clubField = ['club_id', 'name', 'type', 'star', 'member_count', 'score', 'time', 'intro', 'master_id', 'cover']
-eventField = ['event_id', 'club_id', 'user_id', 'intro', 'time', 'apply_time', 'expired_time', 'begin_time', 'end_time',
-              'member_count', 'limit']
+eventField = ['event_id', 'club_id', 'user_id', 'title', 'cover', 'content', 'time', 'apply_time', 'expired_time',
+              'begin_time', 'end_time', 'member_count', 'member_limit']
+noticeField = ['notice_id', 'title', 'content', 'user_id', 'club_id', 'top']
 
 
 def hashCode(s, salt='club_system'):
@@ -32,7 +34,7 @@ def checkJwt(jwtDict: dict) -> bool:
     return codeStr.__eq__(newCodeStr)
 
 
-# login views
+# user
 @csrf_exempt
 def loginUser(request):
     if request.method == 'POST':
@@ -44,14 +46,9 @@ def loginUser(request):
                           headers={'typ': 'JWT', 'alg': 'HS256'})
         jwtDict = {'code': code.decode(), 'user_id': userId, 'time': curTime}
         # logics
-        print(request.POST)
         result = mysqlPack.getUser(userId)
-        print(result)
         if result:
-            if result[0][1] != password:
-                # code = 3
-                # message = 'wrong password'
-                # return render(request, 'api/login.html'， locals()), code.encode()
+            if result[0][1] != hashCode(password):
                 return JsonResponse({'code': 3, 'message': 'wrong password'})
             else:
                 return JsonResponse(
@@ -75,7 +72,7 @@ def registerUser(request):
         # verifyCode = request.POST.get('verify_code')
         # logics
         try:
-            mysqlPack.createUser(userId, password, name, sex, institute, email)
+            mysqlPack.createUser(userId, hashCode(password), name, sex, institute, email)
             return JsonResponse({'code': 0, 'message': 'create user successfully!'})
         except Exception as e:
             print(e)
@@ -84,7 +81,74 @@ def registerUser(request):
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
 
-# club views
+@csrf_exempt
+def updateUserInformation(request):
+    if request.method == 'POST':
+        userDict = request.POST.get('user')
+        userId = userDict['user_id']
+        realName = userDict['real_name']
+        sex = userDict['sex']
+        institute = userDict['institute']
+        phone = userDict['phone']
+        email = userDict['email']
+        try:
+            mysqlPack.updateUserField(userId, realName, sex, institute, phone, email)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 14, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getUserInformation(request):
+    if request.method == 'POST':
+        jwtDict = request.POST.get('jwt')
+        if not checkJwt(jwtDict):
+            return JsonResponse(jwtFailedDict)
+        userId = jwtDict['user_id']
+        try:
+            userResultDict = dict()
+            result = mysqlPack.getUser(userId)
+            for num, field in enumerate(userField):
+                userResultDict[field] = result[0][num]
+            return JsonResponse({'code': 0, 'message': '', 'user': userResultDict})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 15, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def modifyPassword(request):
+    if request.method == 'POST':
+        jwtDict = request.POST.get('jwt')
+        if not checkJwt(jwtDict):
+            return JsonResponse(jwtFailedDict)
+        oldPassword = request.POST.get('old_password')
+        newPassword = request.POST.get('new_password')
+        userId = jwtDict['user_id']
+        # check password
+        userResult = mysqlPack.getUser(userId)
+        if userResult:
+            if userResult[0][1] != hashCode(oldPassword):
+                return JsonResponse({'code': 3, 'message': 'wrong password'})
+        else:
+            return JsonResponse({'code': 2, 'message': 'user not found'})
+        # change password
+        try:
+            mysqlPack.updateUserPassword(userId, hashCode(newPassword))
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 22, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+# club
 @csrf_exempt
 def createClub(request):
     if request.method == 'POST':
@@ -95,7 +159,7 @@ def createClub(request):
         jwtDict = request.POST.get('jwt')
         masterId = jwtDict['user_id']
         if not checkJwt(jwtDict):
-            return JsonResponse({'code': -1, 'message': 'jwt error'})
+            return JsonResponse(jwtFailedDict)
         try:
             mysqlPack.createClub(name, clubType, masterId, intro)
             return JsonResponse({'code': 0, 'message': ''})
@@ -114,13 +178,13 @@ def findClub(request):
         keyWord = request.POST.get('key_word')
         try:
             result = mysqlPack.findClub(keyWord)
-            resultList = list()
+            resultList = []
             for data in result:
                 resultItem = dict()
                 for num, field in enumerate(clubField):
                     resultItem[field] = data[num]
                 resultList.append(resultItem)
-            retDict['club_dist'] = resultList
+            retDict['club_list'] = resultList
             retDict['code'] = 0
             retDict['message'] = ''
             return JsonResponse(retDict)
@@ -143,5 +207,172 @@ def changePosition(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 9, 'message': 'error in changing position'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getClubList(request):
+    if request.method == 'POST':
+        jwtDict = request.POST.get('jwt')
+        if not checkJwt(jwtDict):
+            return JsonResponse(jwtFailedDict)
+        userId = jwtDict['user_id']
+        try:
+            result = mysqlPack.getClubList(userId)
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(clubField):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'club_list': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 10, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getClubMembers(request):
+    if request.method == 'POST':
+        clubId = request.POST.get('club_id')
+        try:
+            result = mysqlPack.getClubMembers(clubId)
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(userField):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'member_list': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 11, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getClubEvents(request):
+    if request.method == 'POST':
+        clubId = request.POST.get('club_id')
+        try:
+            result = mysqlPack.getClubEvents(clubId)
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(eventField):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'event_list': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 12, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getClubNotices(request):
+    if request.method == 'POST':
+        clubId = request.POST.get('club_id')
+        try:
+            result = mysqlPack.getClubNotices(clubId)
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(noticeField):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'notice_list': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 13, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getClubRequests(request):
+    if request.method == 'POST':
+        clubId = request.POST.get('club_id')
+        try:
+            mysqlPack.getClubRequests(clubId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 16, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def handleJoiningClub(request):
+    if request.method == 'POST':
+        op = request.POST.get('op')
+        formId = request.POST.get('request_id')
+        try:
+            mysqlPack.handleJoiningClub(op, formId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 17, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+# others
+@csrf_exempt
+def createEvent(request):
+    if request.method == 'POST':
+        clubId = request.POST.get('club_id')
+        userId = request.POST.get('user_id')
+        title = request.POST.get('title')
+        cover = request.POST.get('cover')
+        content = request.POST.get('content')
+        applyTime = request.POST.get('apply_time')
+        expiredTime = request.POST.get('expired_time')
+        beginTime = request.POST.get('begin_time')
+        endTime = request.POST.get('end_time')
+        limit = request.POST.get('limit')
+        try:
+            mysqlPack.createEvent(clubId, userId, title, cover, content, applyTime, expiredTime, beginTime, endTime,
+                                  limit)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 18, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def handleFollowing(request):
+    if request.method == 'POST':
+        followerId = request.POST.get('follower_id')
+        friendId = request.POST.get('friend_id')
+        try:
+            mysqlPack.handleFollowing(followerId, friendId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 19, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def handleUnfollowing(request):
+    if request.method == 'POST':
+        followerId = request.POST.get('follower_id')
+        friendId = request.POST.get('friend_id')
+        try:
+            mysqlPack.handleUnfollowing(followerId, friendId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 20, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})

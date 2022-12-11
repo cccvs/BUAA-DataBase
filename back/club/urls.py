@@ -17,9 +17,24 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('login', views.loginUser),
-    path('register', views.registerUser),
-    path('find_club', views.findClub),
+    # user
+    path('login_user', views.loginUser),
+    path('register_user', views.registerUser),
+    path('update_user_information', views.updateUserInformation),
+    path('get_user_information', views.getUserInformation),
+    path('modify_password', views.modifyPassword),
+    # club
     path('create_club', views.createClub),
-    path('change_position', views.changePosition)
+    path('find_club', views.findClub),
+    path('change_position', views.changePosition),
+    path('get_club_list', views.getClubList),
+    path('get_club_members', views.getClubMembers),
+    path('get_club_events', views.getClubEvents),
+    path('get_club_notices', views.getClubNotices),
+    path('get_club_requests', views.getClubRequests),
+    path('handle_joining_club', views.handleJoiningClub),
+    # others
+    path('create_event', views.createEvent),
+    path('handle_following', views.handleFollowing),
+    path('handle_unfollowing', views.handleUnfollowing),
 ]
