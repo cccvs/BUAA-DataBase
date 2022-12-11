@@ -1,16 +1,10 @@
 # coding=utf-8
 import pymysql
 import os
-import datetime
 from back.settings import DATABASES
 
 clubTypeToNum = {'科技': 0, '人文': 1, '实践': 2, '体育': 3, '艺术': 4, '其它': 5}
 numToClubType = ['科技', '人文', '实践', '体育', '艺术', '其它']
-
-
-# util
-def strToTime(timeStr: str):
-    return datetime.datetime.strptime(timeStr, '%Y-%m-%d %H:%M:%S')
 
 
 def connectDatabase():
@@ -260,9 +254,8 @@ def createEvent(clubId: int, userId: str, eventTitle: str, eventCover: str, even
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('createEvent',
-                        (clubId, userId, eventTitle, eventCover, eventContent, strToTime(applyTime),
-                         strToTime(expiredTime), strToTime(beginTime),
-                         strToTime(endTime), memberLimit))
+                        (clubId, userId, eventTitle, eventCover, eventContent, applyTime,
+                         expiredTime, beginTime, endTime, memberLimit))
     except Exception as e:
         print(e)
         connect.rollback()
@@ -274,8 +267,8 @@ def createEvent(clubId: int, userId: str, eventTitle: str, eventCover: str, even
 def test():
     conn, cursor = connectDatabase()
     ins = 'insert into event(event_id, club_id, user_id, intro, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2001, 1001, %s, %s, %s, %s, %s, %s, %s, 1, 200)'
-    cursor.execute(ins, ['20373743', 1002, datetime.datetime.now(), datetime.datetime.now(), datetime.datetime.now(),
-                         datetime.datetime.now(), datetime.datetime.now()])
+    cursor.execute(ins, ['20373743', 1002, '2022-12-11 20:12:43', '2022-12-11 20:12:43', '2022-12-11 20:12:43',
+                         '2022-12-11 20:12:43', '2022-12-11 20:12:43'])
     conn.commit()
     closeDatabase(conn, cursor)
 
