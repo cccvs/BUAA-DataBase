@@ -7,7 +7,7 @@
     <v-list-item
         v-for="activity in activities"
         :key="activity.event_id"
-        style="margin-top: 20px; max-width: 350px; float: left"
+        style="margin-top: 20px; max-width: 500px; float: left"
     >
       <v-card
           class="mx-auto"
@@ -32,12 +32,12 @@
         </div>
         <div class="desBlock">
           报名时间：{{ activity.apply_time }}
-          <v-btn small style="float: right" color="purple lighten-5" v-show="!audit">
-            报名
-          </v-btn>
         </div>
         <div v-show="!audit">
           报名人数：{{ activity.member_count }} / {{ activity.limit }}
+          <v-btn small style="margin-left: 10px" color="purple lighten-5" v-show="!audit">
+            报名
+          </v-btn>
         </div>
         <div v-show="audit">
           活动人数上限：{{ activity.limit }}
