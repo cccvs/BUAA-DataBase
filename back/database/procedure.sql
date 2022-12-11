@@ -5,12 +5,13 @@ delimiter ;;
 # createUser
 create
     definer = root@localhost procedure createUser(in userId varchar(31), in UserPassword smallint,
-                                                  in realName varchar(31),
-                                                  in userEmail varchar(31))
+                                                  in realName varchar(31), in userSex varchar(31),
+                                                  in userInstitute varchar(31), in userEmail varchar(31))
 begin
     declare error int default 0;
     declare continue handler for sqlexception set error = 1;
-    insert into user(user_id, password, time, real_name, email, followers, following) value (userId, UserPassword, from_unixtime(unix_timestamp()), realName, userEmail, 0, 0);
+    insert into user(user_id, password, time, real_name, sex, institute, email, followers, following) value
+        (userId, UserPassword, from_unixtime(unix_timestamp()), userSex, userInstitute, realName, userEmail, 0, 0);
     # end
     if error = 1 then
         rollback;
@@ -30,7 +31,10 @@ begin
     declare error int default 0;
     declare continue handler for sqlexception set error = 1;
     set clubId = allocId();
-    insert into club(club_id, name, member_count, type, master_id, time, intro) value (clubId, clubName, 0, clubType, masterId, from_unixtime(unix_timestamp()), clubIntro);
+    insert into club(club_id, name, member_count, type, master_id, time, intro) value (clubId, clubName, 0, clubType,
+                                                                                       masterId,
+                                                                                       from_unixtime(unix_timestamp()),
+                                                                                       clubIntro);
     # 0:普通社员 1:管理员 2:社长
     insert into user_club(user_id, club_id, identity, label) value (masterId, clubId, 2, '社长');
     # end
@@ -113,13 +117,20 @@ delimiter ;
 
 delimiter ;;
 # createEvent
-create procedure createEvent(in clubId int, in userId varchar(31), in eventTitle varchar(31),in eventCover varchar(255),in eventContent varchar(255), in applyTime varchar(31), in expiredTime varchar(31), in beginTime varchar(31), in endTime varchar(31), in memberLimit int)
+create procedure createEvent(in clubId int, in userId varchar(31), in eventTitle varchar(31),
+                             in eventCover varchar(255), in eventContent varchar(255), in applyTime varchar(31),
+                             in expiredTime varchar(31), in beginTime varchar(31), in endTime varchar(31),
+                             in memberLimit int)
 begin
     declare eventId int;
     declare error int default 0;
     declare continue handler for sqlexception set error = 1;
     set eventId = allocId();
-    insert into event(event_id, club_id, user_id, title, cover, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) VALUE (eventId, clubId, userId,eventTitle,eventCover, eventContent, from_unixtime(unix_timestamp()), applyTime, expiredTime, beginTime, endTime, 0, memberLimit);
+    insert into event(event_id, club_id, user_id, title, cover, content, time, apply_time, expired_time, begin_time,
+                      end_time, member_count, member_limit) VALUE (eventId, clubId, userId, eventTitle, eventCover,
+                                                                   eventContent, from_unixtime(unix_timestamp()),
+                                                                   applyTime, expiredTime, beginTime, endTime, 0,
+                                                                   memberLimit);
     insert into user_event(user_id, event_id, identity) values (userId, eventId, 2);
     # end
     if error = 1 then
