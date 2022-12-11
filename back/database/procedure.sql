@@ -4,7 +4,7 @@ use club_system;
 delimiter ;;
 # createUser
 create
-    definer = root@localhost procedure createUser(in userId varchar(31), in UserPassword smallint,
+    definer = root@localhost procedure createUser(in userId varchar(31), in UserPassword varchar(255),
                                                   in realName varchar(31), in userSex varchar(31),
                                                   in userInstitute varchar(31), in userEmail varchar(31))
 begin
@@ -67,7 +67,7 @@ delimiter ;
 
 delimiter ;;
 # updateUserField
-create procedure updateUserField(in userId varchar(31), in realName varchar(31), in userSex varchar(3),
+create procedure updateUserField(in userId varchar(31), in realName varchar(31), in userSex varchar(31),
                                  in userInstitute varchar(31), in userPhone varchar(31), in userEmail varchar(31))
 begin
     declare error int default 0;

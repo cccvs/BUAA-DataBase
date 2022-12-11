@@ -11,7 +11,7 @@ create table `user`
     `avatar`    varchar(255),
     `time`      varchar(31)  not null,
     `real_name` varchar(31),
-    `sex`       varchar(3),
+    `sex`       varchar(31),
     `institute` varchar(31),
     `phone`     varchar(31),
     `email`     varchar(31)  not null,

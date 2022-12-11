@@ -47,8 +47,7 @@ def loginUser(request):
         jwtDict = {'code': code.decode(), 'user_id': userId, 'time': curTime}
         # logics
         result = mysqlPack.getUser(userId)
-        print(result[0][1])
-        print(hashCode(password))
+        print(result)
         if result:
             if result[0][1] != hashCode(password):
                 return JsonResponse({'code': 3, 'message': 'wrong password'})
