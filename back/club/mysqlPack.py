@@ -35,7 +35,7 @@ def initDatabase():
 def createUser(userId: str, password: str, name: str, sex: str, institute: str, email: str):
     connect, cursor = connectDatabase()
     try:
-        cursor.callproc('createUser', (userId, password, name, sex, institute, email))
+        cursor.callproc('createUser', args=(userId, password, name, sex, institute, email))
         connect.commit()
     except Exception as e:
         print(e)
@@ -274,7 +274,7 @@ def createEvent(clubId: int, userId: str, eventTitle: str, eventCover: str, even
 
 def test():
     conn, cursor = connectDatabase()
-    ins = 'insert into event(event_id, club_id, user_id, intro, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2001, 1001, %s, %s, %s, %s, %s, %s, %s, 1, 200)'
+    ins = 'insert into event(event_id, club_id, user_id, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2001, 1001, %s, %s, %s, %s, %s, %s, %s, 1, 200)'
     cursor.execute(ins, ['20373743', 1002, '2022-12-11 20:12:43', '2022-12-11 20:12:43', '2022-12-11 20:12:43',
                          '2022-12-11 20:12:43', '2022-12-11 20:12:43'])
     conn.commit()

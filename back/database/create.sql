@@ -19,7 +19,6 @@ create table `user`
     `following` int          not null,
     `followers` int          not null,
     primary key (`user_id`),
-    check (`sex` in ('M', 'F')),
     check ( 0 <= `level` and `level` <= 3 ) # 不同学生/管理员权限
 );
 
