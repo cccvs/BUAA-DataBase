@@ -9,7 +9,7 @@ create
                                                   in userInstitute varchar(31), in userEmail varchar(31))
 begin
     insert into user(user_id, password, time, real_name, sex, institute, email, followers, following) value
-        (userId, UserPassword, from_unixtime(unix_timestamp()), userSex, userInstitute, realName, userEmail, 0, 0);
+        (userId, UserPassword, from_unixtime(unix_timestamp()), realName, userSex, userInstitute, userEmail, 0, 0);
     # end
 end;;
 delimiter ;

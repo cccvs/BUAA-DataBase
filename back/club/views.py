@@ -105,7 +105,8 @@ def updateUserInformation(request):
 @csrf_exempt
 def getUserInformation(request):
     if request.method == 'POST':
-        jwtDict = request.POST.get('jwt')
+        jwtDict = {'code': request.POST.get('jwt[code]'), 'user_id': request.POST.get('jwt[user_id]'),
+                   'time': request.POST.get('jwt[time]')}
         if not checkJwt(jwtDict):
             return JsonResponse(jwtFailedDict)
         userId = jwtDict['user_id']
@@ -125,7 +126,8 @@ def getUserInformation(request):
 @csrf_exempt
 def modifyPassword(request):
     if request.method == 'POST':
-        jwtDict = request.POST.get('jwt')
+        jwtDict = {'code': request.POST.get('jwt[code]'), 'user_id': request.POST.get('jwt[user_id]'),
+                   'time': request.POST.get('jwt[time]')}
         if not checkJwt(jwtDict):
             return JsonResponse(jwtFailedDict)
         oldPassword = request.POST.get('old_password')
@@ -157,7 +159,8 @@ def createClub(request):
         name = request.POST.get('name')
         clubType = request.POST.get('type')
         intro = request.POST.get('intro')
-        jwtDict = request.POST.get('jwt')
+        jwtDict = {'code': request.POST.get('jwt[code]'), 'user_id': request.POST.get('jwt[user_id]'),
+                   'time': request.POST.get('jwt[time]')}
         masterId = jwtDict['user_id']
         if not checkJwt(jwtDict):
             return JsonResponse(jwtFailedDict)
@@ -215,7 +218,8 @@ def changePosition(request):
 @csrf_exempt
 def getClubList(request):
     if request.method == 'POST':
-        jwtDict = request.POST.get('jwt')
+        jwtDict = {'code': request.POST.get('jwt[code]'), 'user_id': request.POST.get('jwt[user_id]'),
+                   'time': request.POST.get('jwt[time]')}
         if not checkJwt(jwtDict):
             return JsonResponse(jwtFailedDict)
         userId = jwtDict['user_id']
