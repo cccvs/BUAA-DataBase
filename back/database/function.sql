@@ -11,7 +11,7 @@ begin
     if init = 0 then
         insert into id_allocator(global_id) values (0);
     end if;
-    set idCount = (select global_id from id_allocator limit 0);
+    set idCount = (select global_id from id_allocator limit 1);
     update id_allocator set global_id = (global_id + 1);
     return idCount;
 end;;
