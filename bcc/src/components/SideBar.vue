@@ -44,6 +44,8 @@
 
 <script>
 
+import Qs from "qs";
+
 export default {
   name: "SideBar",
   data() {
@@ -65,12 +67,48 @@ export default {
     };
   },
   methods: {
+    getClubList(){
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_club_list",
+          Qs.stringify({
+            jwt: {'code':localStorage.getItem('code'),'user_id':localStorage.getItem('user_id'),'time':localStorage.getItem('time')}
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          console.log(res.data)
+          this.myClub = res.data.club_list;
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    },
+    getMasterClubList(){
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_master_club_list",
+          Qs.stringify({
+            jwt: {'code':localStorage.getItem('code'),'user_id':localStorage.getItem('user_id'),'time':localStorage.getItem('time')}
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          console.log(res.data)
+          if (res.data.club_list.length > 0) {
+            this.hasClub = true;
+          }
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    },
     mouseOver() {
       this.isCollapse = false
     },
     mouseLeave() {
       this.isCollapse = true
     }
+  },
+  created() {
+    this.getClubList();
+    this.getMasterClubList();
   }
 }
 </script>

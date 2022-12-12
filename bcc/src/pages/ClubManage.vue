@@ -53,9 +53,55 @@ import PublishNotice from "@/components/PublishNotice";
 import CreateActivity from "@/components/CreateActivity";
 import FindClub2 from "@/components/FindClub2";
 import ChangePosition from "@/components/ChangePosition";
+import Qs from "qs";
 export default {
   name: "ClubManage",
   components: {ChangePosition, FindClub2, CreateActivity, PublishNotice, CheckInfo, MyHeader, SideBar},
+  data() {
+    return {
+      masterClub:[],
+      clubMembers:[],
+      clubId:''
+    }
+  },
+  methods: {
+    getMasterClubList(){
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_master_club_list",
+          Qs.stringify({
+            jwt: {'code':localStorage.getItem('code'),'user_id':localStorage.getItem('user_id'),'time':localStorage.getItem('time')}
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          console.log(res.data)
+          this.masterClub = res.data.club_list;
+          this.clubId = this.masterClub[0].club_id;
+          this.getClubMembers();
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    },
+    getClubMembers(){
+      console.log(this.clubId)
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_club_members",
+          Qs.stringify({
+            club_id: this.clubId
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          console.log(res.data)
+          this.clubMembers = res.data.member_list;
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    },
+  },
+  created() {
+    this.getMasterClubList();
+  }
 }
 </script>
 
