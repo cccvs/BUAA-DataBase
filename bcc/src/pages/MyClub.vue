@@ -75,6 +75,7 @@ export default {
      members是当前社团的所有成员，activities是当前社团的所有活动，notices是当前社团的所有公告
      */
     return {
+      myClubList:[],
       curClub: [{
         id: 1,
         name: "凌峰社",
@@ -256,6 +257,71 @@ export default {
     }
   },
   methods: {
+    getClubList(){
+      return new Promise((resolve)=>{
+        this.$axios.post(
+            "http://127.0.0.1:8000/api/get_club_list",
+            Qs.stringify({
+              jwt: {'code':localStorage.getItem('code'),'user_id':localStorage.getItem('user_id'),'time':localStorage.getItem('time')}
+            })
+        ).then((res)=>{
+          if(res.data.code===0){
+            this.myClubList = res.data.club_list;
+            let id = Number(this.$router.history.current.params.id);
+            this.curClub = this.myClubList.filter((club) => {
+              return club.club_id === id
+            })
+            resolve();
+          } else this.$notify.error(res.data.message)
+        }).catch((error)=>{
+          console.log(error)
+        })
+      })
+    },
+    getMembers(){
+      console.log(this.curClub[0].club_id)
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_club_members",
+          Qs.stringify({
+            club_id: this.curClub[0].club_id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          this.members = res.data.member_list;
+          console.log(this.members)
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    },
+    getActivities(){
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_club_events",
+          Qs.stringify({
+            club_id: this.curClub[0].club_id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          this.activities = res.data.event_list;
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    },
+    getNotices(){
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_club_events",
+          Qs.stringify({
+            club_id: this.curClub[0].club_id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          this.notices = res.data.notice_list;
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    },
     showCharts() {
       if (this.firstClick) {
         this.initEcharts()
@@ -306,110 +372,93 @@ export default {
         myChart.resize();
       });
     },
-    myClub: function () {
-      let con = {};
-      con['jwt'] = {"code":localStorage.getItem('code'),"time":localStorage.getItem('time'),"user_id":localStorage.getItem('user_id')};
-      console.log("myClub");
-      console.log(con.jwt.user_id);
-      this.$axios({
-        url: 'http://127.0.0.1:8000/api/find_club',
-        method: 'post',
-        data: Qs.stringify(con),
-      }).then((ret) => {
-        if (ret.data.code === 0) {
-          console.log(ret.data);
-        } else this.$notify.error(ret.data.message);
+    init() {
+      Promise.all([this.getClubList()])
+      .then(()=>{
+        this.getMembers();
+        this.getActivities();
+        this.getNotices();
       })
-    },
+    }
   },
   mounted() {
-    this.myClub();
-    /*
-    FIXME:注意JS的数据格式，===如果两边类型不一致不会相等
-     */
-    let id = Number(this.$router.history.current.params.id);
-    /*
-    TODO: myClubList是假设从后端获取的当前用户所在社团的列表
-     */
-    let myClubList = [
-      {
-        id: 1,
-        name: "凌峰社",
-        time: '2010.11.11',
-        type: "体育",
-        description: "是一个以攀岩、暑期登山、科考，以及其他户外活动为特色的北航“明星社团”",
-        num: 200,
-        level: 5
-      },
-      {
-        id: 2,
-        name: "篮球裁判社",
-        type: "体育",
-        time: '2011.11.11',
-        num: 50,
-        level: 4
-      },
-      {
-        id: 3,
-        name: "科协",
-        type: "科技",
-        time: '2012.11.11',
-        num: 150,
-        level: 3
-      },
-      {
-        id: 4,
-        name: "知行学社",
-        type: "人文",
-        time: '2013.11.11',
-        num: 100,
-        level: 2
-      }
-    ];
-    this.curClub = myClubList.filter((club) => {
-      return club.id === id
-    })
+    this.init();
+    // let myClubList = [
+    //   {
+    //     id: 1,
+    //     name: "凌峰社",
+    //     time: '2010.11.11',
+    //     type: "体育",
+    //     description: "是一个以攀岩、暑期登山、科考，以及其他户外活动为特色的北航“明星社团”",
+    //     num: 200,
+    //     level: 5
+    //   },
+    //   {
+    //     id: 2,
+    //     name: "篮球裁判社",
+    //     type: "体育",
+    //     time: '2011.11.11',
+    //     num: 50,
+    //     level: 4
+    //   },
+    //   {
+    //     id: 3,
+    //     name: "科协",
+    //     type: "科技",
+    //     time: '2012.11.11',
+    //     num: 150,
+    //     level: 3
+    //   },
+    //   {
+    //     id: 4,
+    //     name: "知行学社",
+    //     type: "人文",
+    //     time: '2013.11.11',
+    //     num: 100,
+    //     level: 2
+    //   }
+    // ];
   },
   beforeRouteUpdate(to, from, next) {
     if (to.params && from.params && to.params.id !== from.params.id) {
       console.log("update");
       let id = Number(to.params.id);
-      let myClubList = [
-        {
-          id: 1,
-          name: "凌峰社",
-          time: '2010.11.11',
-          type: "体育",
-          description: "是一个以攀岩、暑期登山、科考，以及其他户外活动为特色的北航“明星社团”",
-          num: 200,
-          level: 5
-        },
-        {
-          id: 2,
-          name: "篮球裁判社",
-          type: "体育",
-          time: '2011.11.11',
-          num: 50,
-          level: 4
-        },
-        {
-          id: 3,
-          name: "科协",
-          type: "科技",
-          time: '2012.11.11',
-          num: 150,
-          level: 3
-        },
-        {
-          id: 4,
-          name: "知行学社",
-          type: "人文",
-          time: '2013.11.11',
-          num: 100,
-          level: 2
-        }
-      ];
-      this.curClub = myClubList.filter((club) => {
+      // let myClubList = [
+      //   {
+      //     id: 1,
+      //     name: "凌峰社",
+      //     time: '2010.11.11',
+      //     type: "体育",
+      //     description: "是一个以攀岩、暑期登山、科考，以及其他户外活动为特色的北航“明星社团”",
+      //     num: 200,
+      //     level: 5
+      //   },
+      //   {
+      //     id: 2,
+      //     name: "篮球裁判社",
+      //     type: "体育",
+      //     time: '2011.11.11',
+      //     num: 50,
+      //     level: 4
+      //   },
+      //   {
+      //     id: 3,
+      //     name: "科协",
+      //     type: "科技",
+      //     time: '2012.11.11',
+      //     num: 150,
+      //     level: 3
+      //   },
+      //   {
+      //     id: 4,
+      //     name: "知行学社",
+      //     type: "人文",
+      //     time: '2013.11.11',
+      //     num: 100,
+      //     level: 2
+      //   }
+      // ];
+      this.curClub = this.myClubList.filter((club) => {
         return club.id === id
       })
       next();

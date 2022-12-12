@@ -22,7 +22,7 @@
           <span slot="title">我的社团</span>
         </template>
         <el-menu-item v-for="club in myClub"
-        :key="club.id" :index="`/myclub/${club.id}/${club.name}`" router>
+        :key="club.id" :index="`/myclub/${club.club_id}/${club.name}`" router>
           {{club.name}}
         </el-menu-item>
       </el-submenu>
