@@ -76,7 +76,7 @@ def updateUserField(userId: str, realName: str, userSex: str, userInstitute: str
         closeDatabase(connect, cursor)
 
 
-def updateUserPassword(userId: str, userPassword: str):
+def updateUserPassword(userg, userPassword: str):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('updatePassword', (userId, userPassword))
