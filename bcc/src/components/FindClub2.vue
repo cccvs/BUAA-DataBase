@@ -79,8 +79,9 @@ export default {
       con['name'] = this.createClubForm.clubName;
       con['type'] = this.createClubForm.clubType;
       con['intro'] = this.createClubForm.introduction;
-      con['code'] = localStorage.getItem('Token');
-      //console.log(con);
+      con['jwt'] = {'code':localStorage.getItem('code'),'user_id':localStorage.getItem('user_id'),'time':localStorage.getItem('time')};
+
+      console.log(con);
       this.$axios({
         url: 'http://127.0.0.1:8000/api/create_club',
         method: 'post',

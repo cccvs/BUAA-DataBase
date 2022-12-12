@@ -129,8 +129,9 @@ export default {
       ).then((res)=>{
         if(res.data.code===0){
           console.log(res.data)
-          this.clubList = res.data.club_dist;
-          this.selectedList = res.data.club_dist;
+          this.clubList = res.data.club_list;
+          this.selectType();
+          this.selectLevel();
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)
