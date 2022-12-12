@@ -28,6 +28,7 @@ urlpatterns = [
     path('find_club', views.findClub),
     path('change_position', views.changePosition),
     path('get_club_list', views.getClubList),
+    path('get_master_club_list', views.getMasterClubList),
     path('get_club_members', views.getClubMembers),
     path('get_club_events', views.getClubEvents),
     path('get_club_notices', views.getClubNotices),

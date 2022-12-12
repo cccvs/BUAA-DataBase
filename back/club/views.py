@@ -240,6 +240,30 @@ def getClubList(request):
 
 
 @csrf_exempt
+def getMasterClubList(request):
+    if request.method == 'POST':
+        jwtDict = {'code': request.POST.get('jwt[code]'), 'user_id': request.POST.get('jwt[user_id]'),
+                   'time': request.POST.get('jwt[time]')}
+        if not checkJwt(jwtDict):
+            return JsonResponse(jwtFailedDict)
+        userId = jwtDict['user_id']
+        try:
+            result = mysqlPack.getMasterClubList(userId)
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(clubField):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'club_list': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 23, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
 def getClubMembers(request):
     if request.method == 'POST':
         clubId = request.POST.get('club_id')
