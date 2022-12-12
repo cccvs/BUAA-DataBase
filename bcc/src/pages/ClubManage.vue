@@ -36,7 +36,7 @@
                 <FindClub2 style="margin-top: 10px"></FindClub2>
               </v-tab-item>
               <v-tab-item>
-                <ChangePosition></ChangePosition>
+                <ChangePosition :members="clubMembers" :club-id="clubId"></ChangePosition>
               </v-tab-item>
             </v-tabs>
         </v-app>

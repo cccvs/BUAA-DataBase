@@ -17,44 +17,54 @@
 <script>
 import MemberList from "@/components/MemberList";
 import MySnackBar from "@/components/MySnackBar";
+import Qs from "qs";
 
 export default {
   name: "ChangePosition",
   components: {MySnackBar, MemberList},
+  props: ["members","clubId"],
   data() {
-    /*
-    TODO: 前端容器，保存社团成员，应该在挂载时获取。
-     */
     return {
-      members: [{
-        user_id: "20373021",
-        real_name: "陈俊杰",
-        avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-        label: "社长"
-      }, {
-        user_id: "123",
-        real_name: "蒋博文",
-        avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        label: "副社长"
-      }, {
-        user_id: "124",
-        real_name: "陈楚岩",
-        avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        label: "办公室部长"
-      }]
+      // member: [{
+      //   user_id: "20373021",
+      //   real_name: "陈俊杰",
+      //   avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+      //   label: "社长"
+      // }, {
+      //   user_id: "123",
+      //   real_name: "蒋博文",
+      //   avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+      //   label: "副社长"
+      // }, {
+      //   user_id: "124",
+      //   real_name: "陈楚岩",
+      //   avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+      //   label: "办公室部长"
+      // }]
     }
   },
   methods: {
-    /*
-    TODO:确认修改的接口，这里只修改了前端容器，需要同步到后端，可以写一个触发器，验证某种职务是否人数已满
-     */
     handelChangePosition(id) {
       let newLabel
       this.members.forEach((member) => {
         if (member.user_id === id) newLabel = member.label
       })
-      console.log(newLabel);
-      this.$bus.$emit('showSnackBar', "修改成功，该学生已成为社团" + newLabel)
+      console.log(this.clubId)
+      // console.log(newLabel);
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/change_position",
+          Qs.stringify({
+            user_id:id,
+            club_id: this.clubId,
+            label:newLabel
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          this.$bus.$emit('showSnackBar', "修改成功，该学生已成为社团" + newLabel)
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
     }
   },
   mounted() {
