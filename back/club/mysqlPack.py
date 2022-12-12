@@ -173,6 +173,20 @@ def getClubList(userId: str):
     return result
 
 
+def getMasterClubList(userId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select * from club where club_id in (select club_id from user_club where user_id = %s and identity = 2)'
+        cursor.execute(ins, [userId])
+        result = cursor.fetchall()
+    except Exception as e:
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
 def getClubMembers(clubId: str):
     connect, cursor = connectDatabase()
     try:
