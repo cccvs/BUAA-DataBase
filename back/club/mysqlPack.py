@@ -187,7 +187,7 @@ def getMasterClubList(userId: str):
     return result
 
 
-def getClubMembers(clubId: str):
+def getClubMembers(clubId: int):
     connect, cursor = connectDatabase()
     try:
         ins = 'select * from user where user_id in (select user_id from user_club where club_id = %s)'
@@ -201,7 +201,7 @@ def getClubMembers(clubId: str):
     return result
 
 
-def getClubEvents(clubId: str):
+def getClubEvents(clubId: int):
     connect, cursor = connectDatabase()
     try:
         ins = 'select * from event where club_id = %s'
@@ -215,7 +215,7 @@ def getClubEvents(clubId: str):
     return result
 
 
-def getClubNotices(clubId: str):
+def getClubNotices(clubId: int):
     connect, cursor = connectDatabase()
     try:
         ins = 'select * from notice where club_id = %s'
@@ -229,7 +229,7 @@ def getClubNotices(clubId: str):
     return result
 
 
-def getClubRequests(clubId: str):
+def getClubRequests(clubId: int):
     connect, cursor = connectDatabase()
     try:
         ins = 'select * from user where user_id in (select applicant_id from joining_club where (club_id = %s and status = 0))'
@@ -243,7 +243,7 @@ def getClubRequests(clubId: str):
     return result
 
 
-def updateUserClubLabel(userId: str, clubId: str, label: str):
+def updateUserClubLabel(userId: str, clubId: int, label: str):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('updateUserClubLabel', (label, userId, clubId))
@@ -256,7 +256,7 @@ def updateUserClubLabel(userId: str, clubId: str, label: str):
         closeDatabase(connect, cursor)
 
 
-def handleJoiningClub(op: int, formId: str):
+def handleJoiningClub(op: int, formId: int):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('handleJoiningClub', (op, formId))
