@@ -30,7 +30,7 @@
         <i class="el-icon-user-solid"></i>
         <span slot="title">个人中心</span>
       </el-menu-item>
-      <el-menu-item index="/clubmanage" router>
+      <el-menu-item index="/clubmanage" router :class="[{'hid': !hasClub}]">
         <i class="el-icon-s-order"></i>
         <span slot="title">社团管理</span>
       </el-menu-item>
@@ -48,6 +48,7 @@ export default {
   name: "SideBar",
   data() {
     return {
+      hasClub: false,
       isCollapse: true,
       user_id: "20373021",
       user_name: "陈俊杰",
@@ -73,3 +74,8 @@ export default {
   }
 }
 </script>
+<style>
+.hid{
+  display: none;
+}
+</style>
