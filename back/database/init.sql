@@ -1,4 +1,7 @@
 use club_system;
+
+select allocId();
+
 insert into user(`user_id`, `password`, `time`, `email`, `followers`, `following`)
 values ('u_c', 'c', from_unixtime(unix_timestamp()), 'sb', 0, 0),
        ('u_b', 'b', from_unixtime(unix_timestamp()), 'sb', 0, 0),
@@ -10,4 +13,4 @@ insert into club(club_id, name, member_count, type, master_id, time, intro) valu
 # select * from club;
 
 insert into event(event_id, club_id, user_id, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2001, 1001, '20373743', 'event1', from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), 1, 200);
-insert into event(event_id, club_id, user_id, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2002, 1001, '20373743', 'event2', from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), 1, 300)
+insert into event(event_id, club_id, user_id, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2002, 1001, '20373743', 'event2', from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), 1, 300);

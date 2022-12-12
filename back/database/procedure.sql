@@ -26,8 +26,10 @@ begin
                                                                                        masterId,
                                                                                        from_unixtime(unix_timestamp()),
                                                                                        clubIntro);
+    commit ;    # 需要commit，否则外键约束失效
     # 0:普通社员 1:管理员 2:社长
     insert into user_club(user_id, club_id, identity, label) value (masterId, clubId, 2, '社长');
+    commit ;
     # end
 end;;
 delimiter ;
