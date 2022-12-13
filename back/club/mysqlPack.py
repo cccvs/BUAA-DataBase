@@ -233,7 +233,7 @@ def getClubRequests(clubId: int):
     connect, cursor = connectDatabase()
     try:
         # TODO 交申请时覆盖同一个社团前一次申请, 此处默认user_id, club_id也为joining_club候选码
-        ins = 'select * from user, joining_club where user_id in (select applicant_id from joining_club where (club_id = %s and status = 0) and user_id = applicant_id)'
+        ins = 'select * from user, joining_club where user_id in (select applicant_id from joining_club where (club_id = %s and status = 0)) and user_id = applicant_id'
         cursor.execute(ins, [clubId])
         result = cursor.fetchall()
     except Exception as e:
