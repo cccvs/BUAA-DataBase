@@ -25,6 +25,9 @@
           <el-dialog :visible.sync="dialogFormVisible">
             <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px"
                      class="demo-ruleForm">
+              <el-form-item label="原始密码" prop="oldPass">
+                <el-input type="password" v-model="ruleForm.oldPass" autocomplete="off"></el-input>
+              </el-form-item>
               <el-form-item label="密码" prop="pass">
                 <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
               </el-form-item>
@@ -60,6 +63,7 @@
 
 <script>
 import MySnackBar from "@/components/MySnackBar";
+import Qs from "qs";
 
 export default {
   name: "MyUserCenterHeader",
@@ -88,10 +92,18 @@ export default {
         callback();
       }
     };
+    let validatePass3 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入原始密码'));
+      } else {
+        callback();
+      }
+    };
     return {
       avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
       dialogFormVisible: false,
       ruleForm: {
+        oldPass: '',
         pass: '',
         checkPass: '',
       },
@@ -101,20 +113,40 @@ export default {
         ],
         checkPass: [
           {validator: validatePass2, trigger: 'blur'}
+        ],
+        oldPass: [
+          {validator: validatePass3, trigger: 'blur'}
         ]
       }
     }
   },
   methods: {
     /*
-    TODO: 验证密码正确性的接口
+    DO: 验证密码正确性的接口
      */
     submitForm(formName) {
       console.log("验证密码正确性")
+      console.log(formName)
       this.$refs[formName].validate((valid) => {
+        console.log(valid)
         if (valid) {
-          this.dialogFormVisible = false
-          this.$bus.$emit("showSnackBar", "修改密码成功！")
+          this.$axios.post(
+              "http://127.0.0.1:8000/api/modify_password",
+              Qs.stringify({
+                jwt: {'code':localStorage.getItem('code'),'user_id':localStorage.getItem('user_id'),'time':localStorage.getItem('time')},
+                old_password:this.ruleForm.oldPass,
+                new_password:this.ruleForm.pass
+              })
+          ).then((res)=>{
+            if(res.data.code===0){
+              this.dialogFormVisible = false
+              this.$bus.$emit("showSnackBar", "修改密码成功！")
+            } else if (res.data.code===3){
+              this.$bus.$emit("showSnackBar", "初始密码错误！")
+            } else this.$notify.error(res.data.message)
+          }).catch((error)=>{
+            console.log(error)
+          })
         } else {
           console.log('error submit!!');
           return false;

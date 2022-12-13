@@ -71,7 +71,7 @@ export default {
   components: {PostList, NoticeList, ActivityList, MemberList, ClubList, MyHeader, SideBar},
   data() {
     /*
-    TODO: 前端容器，curClub是当前的社团【挂载和路由更新时获取】，注意是数组格式，但只含一个元素
+    DO: 前端容器，curClub是当前的社团【挂载和路由更新时获取】，注意是数组格式，但只含一个元素
      members是当前社团的所有成员，activities是当前社团的所有活动，notices是当前社团的所有公告
      */
     return {

@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import Qs from "qs";
+
 export default {
   name: "MemberList",
   props: ["members", "checkInfo", "text", "changePosition", "follow"],
@@ -69,10 +71,24 @@ export default {
   },
   methods: {
     /*
-    TODO: 关注/取消关注接口
+    DO: 关注/取消关注接口
      */
     handelFollow(id) {
-      console.log(id)
+      // console.log(id)
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/handle_following",
+          Qs.stringify({
+            'follower_id':localStorage.getItem('user_id'),
+            'friend_id':id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          // console.log(res.data)
+          this.$bus.$emit('showSnackBar', "你已成功关注！")
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
     },
     handlePass(id) {
       this.$bus.$emit('handlePass', id)

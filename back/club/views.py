@@ -85,7 +85,7 @@ def registerUser(request):
 @csrf_exempt
 def updateUserInformation(request):
     if request.method == 'POST':
-        userDict = request.POST.get('user')
+        userDict = request.POST
         userId = userDict['user_id']
         realName = userDict['real_name']
         sex = userDict['sex']
