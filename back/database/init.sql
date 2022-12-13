@@ -14,3 +14,7 @@ insert into club(club_id, name, member_count, type, master_id, time, intro) valu
 
 insert into event(event_id, club_id, user_id, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2001, 1001, '20373743', 'event1', from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), 1, 200);
 insert into event(event_id, club_id, user_id, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2002, 1001, '20373743', 'event2', from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), 1, 300);
+
+insert into joining_club values (3, '20373743', 1001, 0, from_unixtime(unix_timestamp()));
+
+select * from user, joining_club where user_id in (select applicant_id from joining_club where (club_id = 1001 and status = 0))

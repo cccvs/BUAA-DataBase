@@ -25,3 +25,7 @@ ALTER user 'root' @ 'localhost' IDENTIFIED BY '123456';
 ```
 
 * `python`连接`mysql`数据库，用`pycharm`下载安装包会连接超时。于是用浏览器去下载[连接器](https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.25/mysql-connector-java-8.0.25.jar)，参考[教程](https://blog.csdn.net/fan521dan/article/details/104902294)进行配置即可。
+
+#### 1212
+
+* 可以参考P162，CASADE实现级联删除。

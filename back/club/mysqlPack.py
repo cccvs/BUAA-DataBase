@@ -232,7 +232,8 @@ def getClubNotices(clubId: int):
 def getClubRequests(clubId: int):
     connect, cursor = connectDatabase()
     try:
-        ins = 'select * from user where user_id in (select applicant_id from joining_club where (club_id = %s and status = 0))'
+        # TODO 交申请时覆盖同一个社团前一次申请, 此处默认user_id, club_id也为joining_club候选码
+        ins = 'select * from user, joining_club where user_id in (select applicant_id from joining_club where (club_id = %s and status = 0))'
         cursor.execute(ins, [clubId])
         result = cursor.fetchall()
     except Exception as e:
