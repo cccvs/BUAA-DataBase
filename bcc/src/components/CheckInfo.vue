@@ -47,14 +47,15 @@ export default {
     DO: 申请加入社团请求通过的接口
      */
     handlePass(id) {
-      let curRequest = this.props.requests.filter((request) => {
+      let curRequest = this.requests.filter((request) => {
         return request.user_id === id;
       })
+      console.log(curRequest)
       this.$axios.post(
           "http://127.0.0.1:8000/api/handle_joining_club",
           Qs.stringify({
             op: 0,
-            request_id: curRequest.form_id
+            request_id: curRequest[0].form_id
           })
       ).then((res)=>{
         if(res.data.code===0){
@@ -68,7 +69,7 @@ export default {
     DO: 申请加入社团请求拒绝的接口
      */
     handleFailPass(id) {
-      let curRequest = this.props.requests.filter((request) => {
+      let curRequest = this.requests.filter((request) => {
         return request.user_id === id;
       })
       this.$axios.post(
