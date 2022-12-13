@@ -16,16 +16,18 @@
 <script>
 import MySnackBar from "@/components/MySnackBar";
 import MemberList from "@/components/MemberList";
+import Qs from "qs";
 export default {
   name: "CheckInfo",
   components: {MemberList, MySnackBar},
+  props: ["requests"],
   data() {
     return {
       /*
-      TODO: 前端容器requests，也需要在挂载的时候从后端获取，
+      DO: 前端容器requests，也需要在挂载的时候从后端获取，
        只需要将容器传递给MemberList，模式设定为check-info，requset是否需要自己的id？
        */
-      requests: [{
+      request: [{
         user_id: "20373021",
         real_name: "陈俊杰",
         avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
@@ -42,22 +44,46 @@ export default {
   },
   methods: {
     /*
-    TODO: 申请加入社团请求通过的接口
+    DO: 申请加入社团请求通过的接口
      */
     handlePass(id) {
-      this.requests = this.requests.filter((request) => {
-        return request.user_id !== id;
+      let curRequest = this.props.requests.filter((request) => {
+        return request.user_id === id;
       })
-      this.$bus.$emit('showSnackBar', "审核成功，该学生成功加入社团！")
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/handle_joining_club",
+          Qs.stringify({
+            op: 0,
+            request_id: curRequest.form_id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          this.$bus.$emit('showSnackBar', "审核成功，该学生成功加入社团！")
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
     },
     /*
-    TODO: 申请加入社团请求拒绝的接口
+    DO: 申请加入社团请求拒绝的接口
      */
     handleFailPass(id) {
-      this.requests = this.requests.filter((request) => {
-        return request.user_id !== id;
+      let curRequest = this.props.requests.filter((request) => {
+        return request.user_id === id;
       })
-      this.$bus.$emit('showSnackBar', "已拒绝该学生成功加入社团")
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/handle_joining_club",
+          Qs.stringify({
+            op: 1,
+            request_id: curRequest.form_id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          this.$bus.$emit('showSnackBar', "已拒绝该学生成功加入社团")
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
     }
   },
   mounted() {

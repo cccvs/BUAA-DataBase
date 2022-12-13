@@ -20,7 +20,7 @@
               <v-tab>修改社团信息</v-tab>
               <v-tab>职务变动</v-tab>
               <v-tab-item>
-                <CheckInfo></CheckInfo>
+                <CheckInfo :requests="clubRequests"></CheckInfo>
               </v-tab-item>
               <v-tab-item>
                 <PublishNotice></PublishNotice>
@@ -61,6 +61,7 @@ export default {
     return {
       masterClub:[],
       clubMembers:[],
+      clubRequests:[],
       clubId:''
     }
   },
@@ -77,6 +78,7 @@ export default {
           this.masterClub = res.data.club_list;
           this.clubId = this.masterClub[0].club_id;
           this.getClubMembers();
+          this.getClubRequests();
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)
@@ -93,6 +95,22 @@ export default {
         if(res.data.code===0){
           console.log(res.data)
           this.clubMembers = res.data.member_list;
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    },
+    getClubRequests(){
+      // console.log(this.clubId)
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_club_requests",
+          Qs.stringify({
+            club_id: this.clubId
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          console.log(res.data)
+          this.clubRequests = res.data.requests;
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)
