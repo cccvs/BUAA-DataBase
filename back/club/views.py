@@ -16,6 +16,7 @@ clubField = ['club_id', 'name', 'type', 'star', 'member_count', 'score', 'time',
 eventField = ['event_id', 'club_id', 'user_id', 'title', 'cover', 'content', 'time', 'apply_time', 'expired_time',
               'begin_time', 'end_time', 'member_count', 'member_limit']
 noticeField = ['notice_id', 'title', 'content', 'user_id', 'club_id', 'top']
+joiningClubField = ['form_id', 'applicant_id', 'club_id', 'status', 'time']
 
 
 def hashCode(s, salt='club_system'):
@@ -328,8 +329,14 @@ def getClubRequests(request):
     if request.method == 'POST':
         clubId = request.POST.get('club_id')
         try:
-            mysqlPack.getClubRequests(clubId)
-            return JsonResponse({'code': 0, 'message': ''})
+            result = mysqlPack.getClubRequests(clubId)
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(userField + joiningClubField):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'requests': resultList})
         except Exception as e:
             print(e)
             return JsonResponse({'code': 16, 'message': 'error'})
