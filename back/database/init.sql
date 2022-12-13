@@ -16,5 +16,6 @@ insert into event(event_id, club_id, user_id, content, time, apply_time, expired
 insert into event(event_id, club_id, user_id, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2002, 1001, '20373743', 'event2', from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), 1, 300);
 
 insert into joining_club values (3, '20373743', 1001, 0, from_unixtime(unix_timestamp()));
+# call handleJoiningClub(0, 3);
 
 select * from user, joining_club where user_id in (select applicant_id from joining_club where (club_id = 1001 and status = 0))
