@@ -57,7 +57,7 @@
         clearable
         clear-icon="mdi-close"
         label="活动内容"
-        :value="activity.content"
+        v-model="activity.content"
         style="margin-top: 10px; margin-left: 5px"
     ></v-textarea>
     <v-btn color="primary" @click="handleApply">
@@ -71,9 +71,11 @@
 
 <script>
 import MySnackBar from "@/components/MySnackBar";
+import Qs from "qs";
 export default {
   name: "CreateActivity",
   components: {MySnackBar},
+  props: ['club_id'],
   data() {
     return {
       activity: {
@@ -89,15 +91,31 @@ export default {
   },
   methods: {
     /*
-    TODO:发布活动的接口，这里是否考虑加入活动封面？
+    DO:发布活动的接口，这里是否考虑加入活动封面？
      */
     handleApply() {
-      console.log(this.activity.apply_time[0])
-      console.log(typeof this.activity.apply_time[0])
-      console.log(this.activity.apply_time[1])
-      console.log(this.activity.apply_time)
-      console.log("here")
-      this.$bus.$emit('showSnackBar', "活动已发布！")
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/create_event",
+          Qs.stringify({
+            club_id:this.club_id,
+            user_id:localStorage.getItem('user_id'),
+            title:this.activity.title,
+            cover:'',
+            content:this.activity.content,
+            applyTime:this.activity.apply_time[0],
+            expiredTime:this.activity.apply_time[1],
+            beginTime:this.activity.begin_time[0],
+            endTime:this.activity.begin_time[1],
+            limit:this.activity.limit
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          console.log(this.activity.content)
+          this.$bus.$emit('showSnackBar', "活动已发布！")
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
     },
     zoomIn() {
       this.activity.limit++;
