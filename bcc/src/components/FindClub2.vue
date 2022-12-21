@@ -11,7 +11,7 @@
               :limit=1
               :data="{user_id:this.user_id}"
               accept=".png,.jpg,.jepg"
-              action="http://127.0.0.1:8000/api/update_avatar"
+              action="http://127.0.0.1:8000/upload/img"
               list-type="picture-card"
               ref="upload"
               style="margin-bottom: 20px">
@@ -75,13 +75,12 @@ export default {
   name: "FindClub2",
   data() {
     return {
-      image:'',
       dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
       user_id:localStorage.getItem('user_id'),
       createClubForm: {
-        imageUrl: '../assets/logo.png',
+        imageUrl: '',
         clubName: '',
         clubType: '',
         introduction: '',
@@ -96,13 +95,11 @@ export default {
   methods: {
     create: function () {
       let con = {};
-      con['imageUrl'] = this.dialogImageUrl;
+      con['imageUrl'] = this.createClubForm.imageUrl;
       con['name'] = this.createClubForm.clubName;
       con['type'] = this.createClubForm.clubType;
       con['intro'] = this.createClubForm.introduction;
       con['jwt'] = {'code':localStorage.getItem('code'),'user_id':localStorage.getItem('user_id'),'time':localStorage.getItem('time')};
-
-      console.log(this.image);
       this.$axios({
         url: 'http://127.0.0.1:8000/api/create_club',
         method: 'post',
@@ -110,6 +107,8 @@ export default {
       }).then((ret) => {
         if (ret.data.code === 0) {
           this.$message.success("申请成功，请等待审批");
+          this.$refs.upload.clearFiles();
+          this.createClubForm.imageUrl = '';
           this.createClubForm.clubName = '';
           this.createClubForm.clubType = '';
           this.createClubForm.introduction = '';
@@ -137,13 +136,13 @@ export default {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
-    handleAvatarSuccess (res, file) {
-      console.log(res)
-      console.log(file.url)
-      if (res.code !== 200) {
+    handleAvatarSuccess (res) {
+      if (res.code !== 0) {
         this.$message.error(res.message)
         return false
       }
+      this.createClubForm.imageUrl = res.image_path
+      console.log(this.createClubForm.imageUrl)
       this.$message.success('上传成功')
     },
   }
