@@ -45,12 +45,16 @@
                 <h1 style="margin-left: 10px;margin-top: 5px">查看社团内的成员</h1>
               </v-row>
               <MemberList :members="members" follow="true" text="您可以关注同社团的小伙伴"></MemberList>
-              <v-btn @click="showCharts">查看成员男女比</v-btn>
-              <v-btn @click="getPdf('#'+'mychart', '男女比')" v-show="charts">导出男女比PDF</v-btn>
-              <v-btn @click="showChartsBar" style="margin-left: 20px">查看成员分布</v-btn>
-              <v-btn @click="getPdf('#'+'mychart2', '成员分布')" v-show="chartsBar">导出成员分布PDF</v-btn>
-              <v-btn @click="toExcel" style="margin-left: 20px">导出成员数据</v-btn>
-              <v-btn style="margin-left: 20px">
+              <v-btn @click="showCharts" color="blue lighten-3">查看成员男女比</v-btn>
+              <v-btn @click="getPdf('#'+'mychart', '男女比')" v-show="charts" color="blue lighten-3"
+                     style="margin-left: 10px">导出男女比PDF
+              </v-btn>
+              <v-btn @click="showChartsBar" style="margin-left: 20px" color="blue lighten-3">查看成员分布</v-btn>
+              <v-btn @click="getPdf('#'+'mychart2', '成员分布')" v-show="chartsBar" color="blue lighten-3"
+                     style="margin-left: 10px">导出成员分布PDF
+              </v-btn>
+              <v-btn @click="toExcel" style="margin-left: 20px" color="blue lighten-3">导出成员数据</v-btn>
+              <v-btn style="margin-left: 20px" color="blue lighten-3">
                 Excel上传至数据库
                 <input
                     type="file"
@@ -123,17 +127,20 @@ export default {
         user_id: "20373021",
         real_name: "陈俊杰",
         avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-        label: "社长"
+        label: "社长",
+        following: true,
       }, {
         user_id: "123",
         real_name: "蒋博文",
         avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        label: "副社长"
+        label: "副社长",
+        following: false,
       }, {
         user_id: "124",
         real_name: "陈楚岩",
         avatar: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        label: "办公室部长"
+        label: "办公室部长",
+        following: true,
       }],
       activities: [{
         event_id: 1,

@@ -13,10 +13,10 @@
 <!--              inactive-color="#ff4949"-->
 <!--              active-text="通过">-->
 <!--          </el-switch>-->
-          <v-btn v-show="joinClub">
+          <v-btn v-show="joinClub" style="margin-right: 5px" color="blue lighten-3">
             加入社团
           </v-btn>
-          <v-btn v-show="leaveClub" style="margin-right: 5px">
+          <v-btn v-show="leaveClub" style="margin-right: 5px" color="yellow lighten-3">
             退出社团
           </v-btn>
           <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club.id)"
