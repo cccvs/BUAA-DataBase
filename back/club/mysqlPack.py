@@ -117,11 +117,11 @@ def getFriendIds(userId: str):
 
 
 # club
-def createClub(name: str, clubType: str, masterId: str, intro: str):
+def createClub(name: str, clubType: str, masterId: str, intro: str, cover: str):
     typeNum = clubTypeToNum[clubType]
     connect, cursor = connectDatabase()
     try:
-        cursor.callproc('createClub', (name, typeNum, masterId, intro))
+        cursor.callproc('createClub', (name, typeNum, masterId, intro, cover))
         connect.commit()
     except Exception as e:
         print(e)

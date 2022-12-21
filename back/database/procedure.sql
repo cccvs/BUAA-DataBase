@@ -18,14 +18,14 @@ delimiter ;
 delimiter ;;
 # createClub
 create procedure createClub(in clubName varchar(31), in clubType smallint, in masterId varchar(31),
-                            in clubIntro varchar(1022))
+                            in clubIntro varchar(1022), in clubCover varchar(255))
 begin
     declare clubId int;
     set clubId = allocId();
-    insert into club(club_id, name, member_count, type, master_id, time, intro) value (clubId, clubName, 0, clubType,
+    insert into club(club_id, name, member_count, type, master_id, time, intro, cover) value (clubId, clubName, 0, clubType,
                                                                                        masterId,
                                                                                        from_unixtime(unix_timestamp()),
-                                                                                       clubIntro);
+                                                                                       clubIntro, clubCover);
     commit;
     # 需要commit，否则外键约束失效
     # 0:普通社员 1:管理员 2:社长

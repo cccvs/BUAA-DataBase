@@ -173,18 +173,18 @@ def updateAvatar(request):
 @csrf_exempt
 def createClub(request):
     if request.method == 'POST':
-        print(request.POST.get('imageUrl'))
         # vars
         name = request.POST.get('name')
         clubType = request.POST.get('type')
         intro = request.POST.get('intro')
+        cover = request.POST.get('image_url')
         jwtDict = {'code': request.POST.get('jwt[code]'), 'user_id': request.POST.get('jwt[user_id]'),
                    'time': request.POST.get('jwt[time]')}
         masterId = jwtDict['user_id']
         if not checkJwt(jwtDict):
             return JsonResponse(jwtFailedDict)
         try:
-            mysqlPack.createClub(name, clubType, masterId, intro)
+            mysqlPack.createClub(name, clubType, masterId, intro, cover)
             return JsonResponse({'code': 0, 'message': ''})
         except Exception as e:
             print(e)

@@ -9,7 +9,20 @@
         <v-list-item-content style="padding-left: 10px" v-text="reply.content">
         </v-list-item-content>
         <v-spacer></v-spacer>
-        <v-list-item-content style="margin-right: 10px">2022-10-15 10:04</v-list-item-content>
+        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
+        <v-btn icon color="deep-orange">
+          <v-icon>mdi-thumb-up</v-icon>
+        </v-btn>
+        <div>{{ reply.like }}</div>
+        <v-btn icon color="blue-grey darken-2">
+          <v-icon>mdi-thumb-down</v-icon>
+        </v-btn>
+        <div>{{ reply.dislike }}</div>
+        <v-list-item-content style="margin-right: 10px;margin-left: 20px">2022-10-15 10:04</v-list-item-content>
       </v-list-item>
     </v-list>
     <v-card-text style="margin-top: 30px">以陈俊杰的身份参与讨论：</v-card-text>
