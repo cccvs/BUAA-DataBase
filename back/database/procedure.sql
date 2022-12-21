@@ -149,3 +149,14 @@ begin
     insert into notice(notice_id, title, content, user_id, club_id, top) values (noticeId, noticeTitle, noticeContent, userId, clubId, noticeTop);
 end ;;
 delimiter ;
+
+delimiter ;;
+# joinClub
+create procedure joinClub(in noticeTitle varchar(31), in noticeContent varchar(1022), in userId varchar(31), in clubId int,
+                               in noticeTop smallint)
+begin
+    declare noticeId int;
+    set noticeId = allocId();
+    insert into notice(notice_id, title, content, user_id, club_id, top) values (noticeId, noticeTitle, noticeContent, userId, clubId, noticeTop);
+end ;;
+delimiter ;

@@ -173,6 +173,7 @@ create table `message`
     `club_id`    int,
     `time`       varchar(31)        not null,
     `content`    varchar(255)       not null,
+    primary key (`message_id`),
     foreign key (`club_id`) references club (`club_id`)
 );
 
