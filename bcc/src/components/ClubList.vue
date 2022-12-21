@@ -13,10 +13,10 @@
 <!--              inactive-color="#ff4949"-->
 <!--              active-text="通过">-->
 <!--          </el-switch>-->
-          <v-btn v-show="joinClub" @click="joinInClub(club.club_id)">
+          <v-btn v-show="joinClub" style="margin-right: 5px" color="blue lighten-3" @click="joinInClub(club.club_id)">
             加入社团
           </v-btn>
-          <v-btn v-show="leaveClub" style="margin-right: 5px">
+          <v-btn v-show="leaveClub" style="margin-right: 5px" color="yellow lighten-3">
             退出社团
           </v-btn>
           <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club.id)"
@@ -40,8 +40,6 @@
 </template>
 
 <script>
-import Qs from "qs";
-
 export default {
   name: "ClubList",
   props: ["clubs", "rateClub", "checkInfo", "joinClub", "leaveClub"],
@@ -53,21 +51,6 @@ export default {
           path
         });
       }
-    },
-    joinInClub(id) {
-      this.$axios.post(
-          "http://127.0.0.1:8000/api/join_club",
-          Qs.stringify({
-            user_id:localStorage.getItem('user_id'),
-            club_id:id
-          })
-      ).then((res)=>{
-        if(res.data.code===0){
-          console.log("成功加入社团")
-        } else this.$notify.error(res.data.message)
-      }).catch((error)=>{
-        console.log(error)
-      })
     },
     methods:{
       handlePass(id) {

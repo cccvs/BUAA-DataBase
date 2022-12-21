@@ -29,3 +29,6 @@ select * from user where user_id in (select applicant_id from joining_club where
 # quitClub(get master, name)
 select master_id from club where club_id = '%s';
 select name from club where club_id = '%s';
+
+# getMessages
+select * from message where receiver_id = '%s';

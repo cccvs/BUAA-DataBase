@@ -160,7 +160,6 @@ begin
 end ;;
 delimiter ;
 
-
 delimiter ;;
 # quitClub
 create procedure quitClub(in userId varchar(31), in masterId varchar(31), in clubId int, in clubName varchar(31))
@@ -169,5 +168,28 @@ begin
     set masterId = allocId();
     delete from user_club where user_id = userId and club_id = clubId;
     insert into message(message_id, receiver_id, time, content) values (messageId, masterId, from_unixtime(unix_timestamp()), userId + ' has quit club ' + clubName + '.');
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure addComment(in userId varchar(31), in eventId int, in commentContent varchar(1022))
+begin
+    declare commentId int;
+    set commentId = allocId();
+    insert into comment(comment_id, user_id, event_id, time, content, score, `like`, dislike) values (commentId, userId, eventId, from_unixtime(unix_timestamp()), commentContent, null, 0, 0);
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure deleteMessage(in messageId int)
+begin
+   delete from message where message_id = messageId;
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure deleteAllMessages(in userId int)
+begin
+   delete from message where receiver_id = userId;
 end ;;
 delimiter ;

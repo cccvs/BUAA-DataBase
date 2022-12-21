@@ -48,7 +48,7 @@ export default {
     // 提交
     submit(){
       console.log(this.newReply.content); //内容
-      console.log(this.newReply.html);
+      // console.log(this.newReply.html);
       /*
       TODO:将这里的数据传到后端，在后端存储生成id存储
        */
