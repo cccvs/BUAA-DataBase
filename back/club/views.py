@@ -18,6 +18,7 @@ eventField = ['event_id', 'club_id', 'user_id', 'title', 'cover', 'content', 'ti
 noticeField = ['notice_id', 'title', 'content', 'user_id', 'club_id', 'top']
 joiningClubField = ['form_id', 'applicant_id', 'club_id', 'status', 'time']
 messageField = ['message_id', 'receiver_id', 'time', 'content']
+PIC_ROOTS = 'http://127.0.0.1:8000/pics/'
 
 
 def hashCode(s, salt='club_system'):
@@ -149,6 +150,31 @@ def modifyPassword(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 22, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def updateAvatar(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        # file template
+        file = request.FILES.get('file')
+        fileName = request.FILES.get('file_name')
+        imageFormat = fileName.split('.')[-1]
+        if imageFormat not in ['jpeg', 'jpg', 'png', 'bmp', 'tif', 'gif']:
+            return JsonResponse({'code': -2, 'message': '图片格式有误'})
+        imagePath = PIC_ROOTS + 'avatar' + userId + imageFormat
+        with open(imagePath, 'wb') as f:
+            for chunk in file.chunks():
+                f.write(chunk)
+        # end of file template
+        try:
+            mysqlPack.updateUserAvatar(userId, imagePath)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 29, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
