@@ -40,6 +40,8 @@
 </template>
 
 <script>
+import Qs from "qs";
+
 export default {
   name: "ClubList",
   props: ["clubs", "rateClub", "checkInfo", "joinClub", "leaveClub"],
@@ -51,6 +53,21 @@ export default {
           path
         });
       }
+    },
+    joinInClub(id) {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/join_club",
+          Qs.stringify({
+            user_id:localStorage.getItem('user_id'),
+            club_id:id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          console.log("成功加入社团")
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
     },
     methods:{
       handlePass(id) {

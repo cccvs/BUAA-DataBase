@@ -371,6 +371,7 @@ def handleJoiningClub(request):
 @csrf_exempt
 def joinClub(request):
     if request.method == 'POST':
+        print(request.POST)
         userId = request.POST.get('user_id')
         clubId = request.POST.get('club_id')
         try:
