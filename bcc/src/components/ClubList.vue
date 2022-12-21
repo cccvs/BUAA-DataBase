@@ -16,7 +16,7 @@
           <v-btn v-show="joinClub" style="margin-right: 5px" color="blue lighten-3" @click="joinInClub(club.club_id)">
             加入社团
           </v-btn>
-          <v-btn v-show="leaveClub" style="margin-right: 5px" color="yellow lighten-3">
+          <v-btn v-show="leaveClub" style="margin-right: 5px" color="yellow lighten-3" @click="quitClub(club.club_id)">
             退出社团
           </v-btn>
           <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club.id)"
@@ -64,6 +64,21 @@ export default {
       ).then((res)=>{
         if(res.data.code===0){
           console.log("成功加入社团")
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    },
+    quitClub(id) {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/quit_club",
+          Qs.stringify({
+            user_id:localStorage.getItem('user_id'),
+            club_id:id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          console.log("成功退出社团")
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)

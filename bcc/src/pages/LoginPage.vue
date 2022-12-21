@@ -151,22 +151,22 @@ export default {
       let con = {};
       con['user_id'] = this.loginForm.studentID;
       con['password'] = this.loginForm.password;
-      console.log(con);
-      console.log("尝试登陆！！！");
+      // console.log(con);
+      // console.log("尝试登陆！！！");
       this.$axios({
         url: 'http://127.0.0.1:8000/api/login_user',
         method: 'post',
         data: Qs.stringify(con),
       }).then((ret) => {
-        console.log(ret);
-        console.log("正在执行");
+        // console.log(ret);
+        // console.log("正在执行");
         if (ret.data.code === 0) {
           localStorage.clear();
           localStorage.setItem('user_id',ret.data.jwt.user_id);
           localStorage.setItem('code',ret.data.jwt.code);
           localStorage.setItem('time',ret.data.jwt.time);
           this.$message.success("登录成功");
-          console.log("我要跳转啦");
+          // console.log("我要跳转啦");
           this.$router.push('/mainpage');
         } else this.$notify.error(ret.data.message+"，登录失败");
       })
@@ -219,9 +219,6 @@ export default {
         }
       })
     },
-  },
-  created() {
-    this.getNowUser();
   }
 }
 </script>

@@ -76,7 +76,7 @@ export default {
           })
       ).then((res)=>{
         if(res.data.code===0){
-          // console.log(res.data)
+          console.log(res.data)
           this.myClub = res.data.club_list;
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{

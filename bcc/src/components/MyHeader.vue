@@ -18,9 +18,9 @@
             <v-list-item-title v-text="message.time"></v-list-item-title>
             <v-card-text v-text="message.content"></v-card-text>
           </v-list-item-content>
-          <el-button type="success" icon="el-icon-check" circle></el-button>
+          <el-button type="success" icon="el-icon-check" circle @click="deleteMessage(message.message_id)"></el-button>
         </v-list-item>
-        <el-button icon="el-icon-finished" style="margin-left: 10px">全部已读</el-button>
+        <el-button icon="el-icon-finished" style="margin-left: 10px" @click="deleteAllMessages">全部已读</el-button>
         <v-divider></v-divider>
       </v-list>
     </el-drawer>
@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import Qs from "qs";
+
 export default {
   name: "MyHeader",
   data() {
@@ -47,6 +49,56 @@ export default {
         content: "你创建的社团已通过审批"
       },]
     }
+  },
+  methods: {
+    getMessages(){
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_messages",
+          Qs.stringify({
+            user_id:localStorage.getItem('user_id')
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          // console.log(res.data)
+          this.messages = res.data.messages
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    },
+    deleteMessage(id){
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/delete_message",
+          Qs.stringify({
+            message_id:id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          this.messages = this.messages.filter((message) => {
+            return message.message_id !== id
+          })
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    },
+    deleteAllMessages(){
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/delete_all_messages",
+          Qs.stringify({
+            user_id:localStorage.getItem('user_id')
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          this.messages = []
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    }
+  },
+  mounted() {
+    this.getMessages()
   }
 }
 </script>

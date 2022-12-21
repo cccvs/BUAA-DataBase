@@ -275,8 +275,9 @@ def quitClub(userId: str, clubId: int):
     connect, cursor = connectDatabase()
     try:
         cursor.execute('select master_id, name from club where club_id = %s', clubId)
-        masterId = cursor.fetchall()[0][0]
-        clubName = cursor.fetchall()[0][1]
+        clubInfo = cursor.fetchall()
+        masterId = clubInfo[0][0]
+        clubName = clubInfo[0][1]
         cursor.callproc('quitClub', (userId, masterId, clubId, clubName))
         connect.commit()
     except Exception as e:
