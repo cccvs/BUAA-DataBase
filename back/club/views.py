@@ -17,6 +17,7 @@ eventField = ['event_id', 'club_id', 'user_id', 'title', 'cover', 'content', 'ti
               'begin_time', 'end_time', 'member_count', 'member_limit', 'status']
 noticeField = ['notice_id', 'title', 'content', 'user_id', 'club_id', 'top']
 joiningClubField = ['form_id', 'applicant_id', 'club_id', 'status', 'time']
+messageField = ['message_id', 'receiver_id', 'time', 'content']
 
 
 def hashCode(s, salt='club_system'):
@@ -503,5 +504,25 @@ def deleteAllMessages(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 28, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getMessages(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        try:
+            result = mysqlPack.getMessages(userId)
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(messageField):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'messages': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 29, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})

@@ -368,6 +368,22 @@ def deleteAllMessages(userId: str):
         closeDatabase(connect, cursor)
 
 
+def getMessages(userId: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.execute('select * from message where receiver_id = %s'
+                       , userId)
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
 def test():
     conn, cursor = connectDatabase()
     ins = 'insert into event(event_id, club_id, user_id, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2001, 1001, %s, %s, %s, %s, %s, %s, %s, 1, 200)'

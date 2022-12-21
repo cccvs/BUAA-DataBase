@@ -43,5 +43,6 @@ urlpatterns = [
     path('publish_notice', views.publishNotice),
     path('add_comment', views.addComment),
     path('delete_message', views.deleteMessage),
-    path('delete_all_messages', views.deleteAllMessages)
+    path('delete_all_messages', views.deleteAllMessages),
+    path('get_messages', views.getMessages)
 ]
