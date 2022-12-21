@@ -173,7 +173,6 @@ def updateAvatar(request):
 @csrf_exempt
 def createClub(request):
     if request.method == 'POST':
-        print(request.POST.get('imageUrl'))
         # vars
         name = request.POST.get('name')
         clubType = request.POST.get('type')
