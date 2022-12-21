@@ -25,3 +25,7 @@ select * from notice where club_id = '%s';
 
 # getClubRequests(返回user列表, 并且要求请求未处理(status=0))
 select * from user where user_id in (select applicant_id from joining_club where (club_id = '%s' and status = 0));
+
+# quitClub(get master, name)
+select master_id from club where club_id = '%s';
+select name from club where club_id = '%s';

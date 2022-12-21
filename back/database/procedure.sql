@@ -152,11 +152,22 @@ delimiter ;
 
 delimiter ;;
 # joinClub
-create procedure joinClub(in noticeTitle varchar(31), in noticeContent varchar(1022), in userId varchar(31), in clubId int,
-                               in noticeTop smallint)
+create procedure joinClub(in userId varchar(31), in clubId int)
 begin
-    declare noticeId int;
-    set noticeId = allocId();
-    insert into notice(notice_id, title, content, user_id, club_id, top) values (noticeId, noticeTitle, noticeContent, userId, clubId, noticeTop);
+    declare formId int;
+    set formId = allocId();
+    insert into joining_club(form_id, applicant_id, club_id, status, time) values (formId, userId, clubId, 0, from_unixtime(unix_timestamp()));
+end ;;
+delimiter ;
+
+
+delimiter ;;
+# quitClub
+create procedure quitClub(in userId varchar(31), in masterId varchar(31), in clubId int, in clubName varchar(31))
+begin
+    declare messageId int;
+    set masterId = allocId();
+    delete from user_club where user_id = userId and club_id = clubId;
+    insert into message(message_id, receiver_id, time, content) values (messageId, masterId, from_unixtime(unix_timestamp()), userId + ' has quit club ' + clubName + '.');
 end ;;
 delimiter ;

@@ -102,32 +102,6 @@ def updateUserAvatar(userId: str, userAvatar: str):
         closeDatabase(connect, cursor)
 
 
-def handleFollowing(followerId: str, friendId: str):
-    connect, cursor = connectDatabase()
-    try:
-        cursor.callproc('handleFollowing', (followerId, friendId))
-        connect.commit()
-    except Exception as e:
-        print(e)
-        connect.rollback()
-        raise e
-    finally:
-        closeDatabase(connect, cursor)
-
-
-def handleUnfollowing(followerId: str, friendId: str):
-    connect, cursor = connectDatabase()
-    try:
-        cursor.callproc('handleUnfollowing', (followerId, friendId))
-        connect.commit()
-    except Exception as e:
-        print(e)
-        connect.rollback()
-        raise e
-    finally:
-        closeDatabase(connect, cursor)
-
-
 # club
 def createClub(name: str, clubType: str, masterId: str, intro: str):
     typeNum = clubTypeToNum[clubType]
@@ -270,6 +244,35 @@ def handleJoiningClub(op: int, formId: int):
         closeDatabase(connect, cursor)
 
 
+def joinClub(userId: str, clubId: int):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('joinClub', (userId, clubId))
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def quitClub(userId: str, clubId: int):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.execute('select master_id, name from club where club_id = %s', clubId)
+        masterId = cursor.fetchall()[0][0]
+        clubName = cursor.fetchall()[0][1]
+        cursor.callproc('quitClub', (userId, masterId, clubId, clubName))
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
 # others
 def createEvent(clubId: int, userId: str, eventTitle: str, eventCover: str, eventContent: str, applyTime: str,
                 expiredTime: str, beginTime: str, endTime: str, memberLimit: int):
@@ -278,6 +281,45 @@ def createEvent(clubId: int, userId: str, eventTitle: str, eventCover: str, even
         cursor.callproc('createEvent',
                         (clubId, userId, eventTitle, eventCover, eventContent, applyTime,
                          expiredTime, beginTime, endTime, memberLimit))
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def handleFollowing(followerId: str, friendId: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('handleFollowing', (followerId, friendId))
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def handleUnfollowing(followerId: str, friendId: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('handleUnfollowing', (followerId, friendId))
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def publishNotice(noticeTitle: str, noticeContent: str, userId: str, clubId: int, noticeTop: int):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('publishNotice', (noticeTitle, noticeContent, userId, clubId, noticeTop))
         connect.commit()
     except Exception as e:
         print(e)

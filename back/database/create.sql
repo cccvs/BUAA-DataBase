@@ -169,12 +169,12 @@ create table `joining_club`
 drop table if exists `message`;
 create table `message`
 (
-    `message_id` int auto_increment not null,
-    `club_id`    int,
-    `time`       varchar(31)        not null,
-    `content`    varchar(255)       not null,
+    `message_id`  int auto_increment not null,
+    `receiver_id` varchar(31),
+    `time`        varchar(31)        not null,
+    `content`     varchar(255)       not null,
     primary key (`message_id`),
-    foreign key (`club_id`) references club (`club_id`)
+    foreign key (`receiver_id`) references user (`user_id`)
 );
 
 # relation
