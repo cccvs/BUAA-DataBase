@@ -359,7 +359,7 @@ def handleJoiningClub(request):
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
-
+@csrf_exempt
 def joinClub(request):
     if request.method == 'POST':
         userId = request.POST.get('user_id')
