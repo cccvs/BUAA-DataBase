@@ -40,9 +40,23 @@
              color="blue lighten-3"
              @click="handelChangePosition(member.user_id)">确认修改
       </v-btn>
-      <v-btn v-show="follow"
+      <v-btn v-show="follow&&!member.following"
              color="blue lighten-3"
-             @click="handelFollow(member.user_id)">关注
+             @click="handelFollow(member.user_id)"
+             style="min-width: 120px">
+        <v-icon>
+          mdi-account-heart
+        </v-icon>
+        关注
+      </v-btn>
+      <v-btn v-show="follow&&member.following"
+             color="orange lighten-3"
+             @click="handleUnFollow(member.user_id)"
+      >
+        <v-icon>
+          mdi-account-cancel
+        </v-icon>
+        取消关注
       </v-btn>
     </v-list-item>
   </v-list>
@@ -67,23 +81,6 @@ export default {
         id: 3,
         label: "办公室部长"
       }],
-      tableData: [
-        {index: 1, name: '我是1号', age: 18, sex: '男', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 2, name: '我是2号', age: 18, sex: '男', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 3, name: '我是3号', age: 18, sex: '男', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 4, name: '我是4号', age: 18, sex: '男', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 5, name: '我是5号', age: 18, sex: '男', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 6, name: '我是6号', age: 18, sex: '女', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 7, name: '我是7号', age: 18, sex: '女', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 8, name: '我是8号', age: 18, sex: '女', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 9, name: '我是9号', age: 18, sex: '女', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 10, name: '我是10号', age: 18, sex: '女', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 11, name: '我是11号', age: 18, sex: '男', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 12, name: '我是12号', age: 18, sex: '男', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 13, name: '我是13号', age: 18, sex: '女', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 14, name: '我是14号', age: 18, sex: '女', hobby: 'web', hair: 'thick', salaried: '99999999'},
-        {index: 15, name: '我是15号', age: 18, sex: '男', hobby: 'web', hair: 'thick', salaried: '99999999'}
-      ],
     }
   },
   methods: {
@@ -106,6 +103,9 @@ export default {
       }).catch((error) => {
         console.log(error)
       })
+    },
+    handleUnFollow(id) {
+      console.log(id);
     },
     handlePass(id) {
       this.$bus.$emit('handlePass', id)
