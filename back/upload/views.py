@@ -1,3 +1,5 @@
+import time
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import os
@@ -10,7 +12,7 @@ PIC_URL = 'http://localhost:8000/upload/img/'
 def uploadImage(request):
     # file template
     file = request.FILES.get('file')
-    userId = request.POST.get('user_id')
+    # userId = request.POST.get('user_id')
     fileName = file.name
     try:
         # 图片格式
@@ -20,7 +22,7 @@ def uploadImage(request):
         # 图片路径
         if not os.path.exists(PIC_ROOT):
             os.makedirs(PIC_ROOT)
-        imagePath = PIC_ROOT + '/' + 'avatar_' + userId + imageFormat
+        imagePath = PIC_ROOT + '/' + str(time.time()) + fileName
         # 导入图片
         with open(imagePath, 'wb+') as f:
             for chunk in file.chunks():
