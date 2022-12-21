@@ -34,8 +34,11 @@ urlpatterns = [
     path('get_club_notices', views.getClubNotices),
     path('get_club_requests', views.getClubRequests),
     path('handle_joining_club', views.handleJoiningClub),
+    path('join_club', views.joinClub),
+    path('quit_club', views.quitClub),
     # others
     path('create_event', views.createEvent),
     path('handle_following', views.handleFollowing),
     path('handle_unfollowing', views.handleUnfollowing),
+    path('publish_notice', views.publishNotice)
 ]

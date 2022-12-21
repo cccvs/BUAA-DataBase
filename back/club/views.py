@@ -360,6 +360,34 @@ def handleJoiningClub(request):
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
 
+def joinClub(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        clubId = request.POST.get('club_id')
+        try:
+            mysqlPack.joinClub(userId, clubId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 24, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+def quitClub(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        clubId = request.POST.get('club_id')
+        try:
+            mysqlPack.quitClub(userId, clubId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 25, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
 # others
 @csrf_exempt
 def createEvent(request):
@@ -411,5 +439,23 @@ def handleUnfollowing(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 20, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def publishNotice(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        userId = request.POST.get('user_id')
+        clubId = request.POST.get('club_id')
+        top = request.POST.get('top')
+        try:
+            mysqlPack.publishNotice(title, content, userId, clubId, top)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 25, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})

@@ -1,15 +1,6 @@
 <template>
   <v-list subheader>
     <v-subheader>{{ text }}</v-subheader>
-    <v-btn @click="toExcel">导出成员数据</v-btn>
-    <span class="file-box">
-      Excel上传
-      <input
-          type="file"
-          accept=".xls,.xlsx"
-          class="upload-file"
-          @change="Excel($event)"/>
-    </span>
     <v-list-item
         v-for="member in members"
         :key="member.user_id"
@@ -59,8 +50,6 @@
 
 <script>
 import Qs from "qs";
-import transform from "@/components/exportToExcel";
-import * as XLSX from "xlsx";
 
 export default {
   name: "MemberList",
@@ -98,60 +87,6 @@ export default {
     }
   },
   methods: {
-    toExcel() {
-      transform(this.tableData, "文件名", this.callback);
-    },
-    callback(info) {
-      console.log(info)
-    },
-    Excel(e) {
-      let that = this
-      // 错误情况判断
-      const files = e.target.files
-      if (files.length <= 0) {
-        return false;
-      } else if (!/\.(xls|xlsx)$/.test(files[0].name.toLowerCase())) {
-        this.$message({
-          message: "上传格式不正确，请上传xls或者xlsx格式",
-          type: "warning"
-        });
-        return false
-      } else {
-        that.upload_file = files[0].name
-      }
-      // 读取表格
-      const fileReader = new FileReader()
-      fileReader.onload = ev => {
-        try {
-          const data = ev.target.result;
-          const workbook = XLSX.read(data, {
-            type: "binary"
-          })
-          // 读取第一张表
-          const wsname = workbook.SheetNames[0]
-          const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])
-          // 打印 ws 就可以看到读取出的表格数据
-          // 定义一个新数组，存放处理后的表格数据
-          that.lists = []
-          ws.forEach(item => {
-            console.log(item);
-            that.lists.push({
-              // 对ws进行处理后放进lists内
-              item
-            })
-          })
-          // 调用方法将lists数组发送给后端
-          this.submit_form(that.lists)
-        } catch (e) {
-          return false
-        }
-      }
-      fileReader.readAsBinaryString(files[0])
-    },
-    submit_form(data) {
-      // 在这里发送数据
-      console.log(data)
-    },
     /*
     DO: 关注/取消关注接口
      */
@@ -192,29 +127,5 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.file-box {
-  position: relative;
-  display: block;
-  border: none;
-  border-radius: 4px;
-  background-color: #409eff;
-  height: 35px;
-  width: 98px;
-  text-align: center;
-  line-height: 35px;
-  *zoom: 1;
-  color: #FFFFFF;
-}
-.upload-file {
-  font-size: 20px;
-  opacity: 0;
-  position: absolute;
-  left: 0;
-  top: 0;
-  filter: alpha(opacity=0);
-  width: 100%;
-}
-
+<style>
 </style>
