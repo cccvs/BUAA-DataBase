@@ -26,7 +26,7 @@
                 <PublishNotice></PublishNotice>
               </v-tab-item>
               <v-tab-item>
-                <CreateActivity></CreateActivity>
+                <CreateActivity :club_id="this.clubId"></CreateActivity>
               </v-tab-item>
               <v-tab-item>
                 <v-row style="margin-left: 10px;margin-top: 5px">

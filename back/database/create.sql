@@ -75,11 +75,13 @@ create table `event`
     `end_time`     varchar(31),
     `member_count` int,
     `member_limit` int,
+    `status`       smallint,
     primary key (`event_id`),
     foreign key (`club_id`) references `club` (`club_id`),
     foreign key (`user_id`) references `user` (`user_id`),
     check ( `member_count` >= 0),
-    check ( `member_limit` >= 0 )
+    check ( `member_limit` >= 0 ),
+    check ( `status` in (0, 1, 2) )
 );
 
 drop table if exists `post`;
@@ -162,6 +164,16 @@ create table `joining_club`
     foreign key (`applicant_id`) references `user` (`user_id`),
     foreign key (`club_id`) references `club` (`club_id`),
     check ( 0 <= `status` and `status` <= 2)
+);
+
+drop table if exists `message`;
+create table `message`
+(
+    `message_id` int auto_increment not null,
+    `club_id`    int,
+    `time`       varchar(31)        not null,
+    `content`    varchar(255)       not null,
+    foreign key (`club_id`) references club (`club_id`)
 );
 
 # relation
