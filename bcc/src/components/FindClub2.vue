@@ -5,20 +5,41 @@
         <h2 class="title">社团基本信息</h2>
         <el-form-item class="pic">
           <el-upload
-              class="upload"
-              drag
-              action="api"
-              :show-file-list="false"
-              :data="fileData"
-              :headers="headers"
-              :on-success="handleSuccess"
-              :before-upload="beforeUpload"
-              :limit="1"
-              :on-exceed="handleExceed">
-            <img v-if="createClubForm.imageUrl" src="../assets/logo.png" class="avatar"/>
-            <i v-else class="el-icon-upload"></i>
-            <div class="el-upload__text">将社团头像拖到此处，或<em>点击上传</em></div>
+              :auto-upload="true"
+              :before-upload="beforeAvatarUpload"
+              :on-success="handleAvatarSuccess"
+              :limit=1
+              accept=".png,.jpg,.jepg"
+              action="http://127.0.0.1:8000/api/update_avatar"
+              list-type="picture-card"
+              ref="upload"
+              style="margin-bottom: 20px">
+            <i slot="default" class="el-icon-plus"></i>
+            <div slot="file" slot-scope="{file}">
+              <img
+                  class="el-upload-list__item-thumbnail"
+                  :src="file.url" alt=""
+              >
+              <span class="el-upload-list__item-actions">
+                    <span
+                        class="el-upload-list__item-preview"
+                        @click="handlePictureCardPreview(file)"
+                    >
+                      <i class="el-icon-zoom-in"></i>
+                    </span>
+                    <span
+                        v-if="!disabled"
+                        class="el-upload-list__item-delete"
+                        @click="handleRemove(file)"
+                    >
+                      <i class="el-icon-delete"></i>
+                      </span>
+                  </span>
+            </div>
           </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="">
+          </el-dialog>
         </el-form-item>
         <el-form-item prop="clubName">
           <el-input v-model="createClubForm.clubName" class="form__input" type="text" placeholder="社团名称"/>
@@ -53,12 +74,10 @@ export default {
   name: "FindClub2",
   data() {
     return {
-      fileData: {   // 接口需要的额外参数
-        category: 12
-      },
-      headers: {  // 请求头部参数
-        accessToken: ''
-      },
+      image:'',
+      dialogImageUrl: '',
+      dialogVisible: false,
+      disabled: false,
       createClubForm: {
         imageUrl: '../assets/logo.png',
         clubName: '',
@@ -75,13 +94,13 @@ export default {
   methods: {
     create: function () {
       let con = {};
-      con['imageUrl'] = this.createClubForm.imageUrl;
+      con['imageUrl'] = this.dialogImageUrl;
       con['name'] = this.createClubForm.clubName;
       con['type'] = this.createClubForm.clubType;
       con['intro'] = this.createClubForm.introduction;
       con['jwt'] = {'code':localStorage.getItem('code'),'user_id':localStorage.getItem('user_id'),'time':localStorage.getItem('time')};
 
-      console.log(con);
+      console.log(this.image);
       this.$axios({
         url: 'http://127.0.0.1:8000/api/create_club',
         method: 'post',
@@ -95,30 +114,35 @@ export default {
         } else this.$notify.error(ret.data.message + "，申请失败");
       })
     },
-    handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-    },
-    // 图片上传成功的操作
-    handleSuccess(res, file) {
-      // if (res.msgCode === 200) {
-      //   this.imageUrl = URL.createObjectURL(file.raw)
-      // } else {
-      //   this.$message.error(res.msgContent)
-      // }
-      this.createClubForm.imageUrl = URL.createObjectURL(file.raw)
-    },
-    // 图片上传前的判断
-    beforeUpload(file) {
+    beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg';
-      const isLt2M = file.size / 1024 / 1024;
-
+      const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG) {
         this.$message.error('上传头像图片只能是 JPG 格式!');
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 1MB!');
+        this.$message.error('上传头像图片大小不能超过 2MB!');
       }
       return isJPG && isLt2M;
+    },
+    //清除图片缓存
+    handleRemove(file) {
+      console.log(file)
+      this.$refs.upload.clearFiles();
+    },
+    //展示图片预览图
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    handleAvatarSuccess (res, file) {
+      console.log(res)
+      console.log(file.url)
+      if (res.code !== 200) {
+        this.$message.error(res.message)
+        return false
+      }
+      this.$message.success('上传成功')
     },
   }
 }

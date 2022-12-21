@@ -156,33 +156,48 @@ def modifyPassword(request):
 
 @csrf_exempt
 def updateAvatar(request):
-    if request.method == 'POST':
-        userId = request.POST.get('user_id')
-        # file template
-        file = request.FILES.get('file')
-        fileName = request.FILES.get('file_name')
-        imageFormat = fileName.split('.')[-1]
-        if imageFormat not in ['jpeg', 'jpg', 'png', 'bmp', 'tif', 'gif']:
-            return JsonResponse({'code': -2, 'message': '图片格式有误'})
-        imagePath = PIC_ROOTS + 'avatar' + userId + imageFormat
-        with open(imagePath, 'wb') as f:
-            for chunk in file.chunks():
-                f.write(chunk)
-        # end of file template
-        try:
-            mysqlPack.updateUserAvatar(userId, imagePath)
-            return JsonResponse({'code': 0, 'message': ''})
-        except Exception as e:
-            print(e)
-            return JsonResponse({'code': 29, 'message': 'error'})
-    else:
-        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+    file = request.FILES.get('file')
+    try:
+        # 构造图片保存路径
+        file_path = './' + file.name
+        # 保存图片
+        with open(file_path, 'wb+') as f:
+            f.write(file.read())
+            f.close()
+        response = {'file': file.name,'file_path':file_path,'code': 200, 'msg': "添加成功"}
+    except Exception as e:
+        print(e)
+        response = {'file': '', 'code': 201, 'msg': "添加失败"}
+    return JsonResponse(response)
+    # if request.method == 'POST':
+    #     print(request.FILES.get('file'))
+    #     userId = request.POST.get('user_id')
+    #     # file template
+    #     file = request.FILES.get('file')
+    #     fileName = request.FILES.get('file_name')
+    #     imageFormat = fileName.split('.')[-1]
+    #     if imageFormat not in ['jpeg', 'jpg', 'png', 'bmp', 'tif', 'gif']:
+    #         return JsonResponse({'code': -2, 'message': '图片格式有误'})
+    #     imagePath = PIC_ROOTS + 'avatar' + userId + imageFormat
+    #     with open(imagePath, 'wb') as f:
+    #         for chunk in file.chunks():
+    #             f.write(chunk)
+    #     # end of file template
+    #     try:
+    #         mysqlPack.updateUserAvatar(userId, imagePath)
+    #         return JsonResponse({'code': 0, 'message': ''})
+    #     except Exception as e:
+    #         print(e)
+    #         return JsonResponse({'code': 29, 'message': 'error'})
+    # else:
+    #     return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
 
 # club
 @csrf_exempt
 def createClub(request):
     if request.method == 'POST':
+        print(request.POST.get('imageUrl'))
         # vars
         name = request.POST.get('name')
         clubType = request.POST.get('type')
