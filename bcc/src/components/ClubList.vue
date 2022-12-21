@@ -13,7 +13,7 @@
 <!--              inactive-color="#ff4949"-->
 <!--              active-text="通过">-->
 <!--          </el-switch>-->
-          <v-btn v-show="joinClub" style="margin-right: 5px" color="blue lighten-3">
+          <v-btn v-show="joinClub" style="margin-right: 5px" color="blue lighten-3" @click="joinInClub(club.club_id)">
             加入社团
           </v-btn>
           <v-btn v-show="leaveClub" style="margin-right: 5px" color="yellow lighten-3">
