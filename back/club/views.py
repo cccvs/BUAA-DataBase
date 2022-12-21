@@ -14,7 +14,7 @@ userField = ['user_id', 'password', 'avatar', 'time', 'real_name', 'sex', 'insti
              'following', 'followers']
 clubField = ['club_id', 'name', 'type', 'star', 'member_count', 'score', 'time', 'intro', 'master_id', 'cover']
 eventField = ['event_id', 'club_id', 'user_id', 'title', 'cover', 'content', 'time', 'apply_time', 'expired_time',
-              'begin_time', 'end_time', 'member_count', 'member_limit']
+              'begin_time', 'end_time', 'member_count', 'member_limit', 'status']
 noticeField = ['notice_id', 'title', 'content', 'user_id', 'club_id', 'top']
 joiningClubField = ['form_id', 'applicant_id', 'club_id', 'status', 'time']
 
@@ -295,6 +295,7 @@ def getClubEvents(request):
                 resultItem = dict()
                 for num, field in enumerate(eventField):
                     resultItem[field] = data[num]
+                resultItem['show'] = False
                 resultList.append(resultItem)
             return JsonResponse({'code': 0, 'message': '', 'event_list': resultList})
         except Exception as e:

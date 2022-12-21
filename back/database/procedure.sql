@@ -26,10 +26,11 @@ begin
                                                                                        masterId,
                                                                                        from_unixtime(unix_timestamp()),
                                                                                        clubIntro);
-    commit ;    # 需要commit，否则外键约束失效
+    commit;
+    # 需要commit，否则外键约束失效
     # 0:普通社员 1:管理员 2:社长
     insert into user_club(user_id, club_id, identity, label) value (masterId, clubId, 2, '社长');
-    commit ;
+    commit;
     # end
 end;;
 delimiter ;
@@ -135,4 +136,27 @@ begin
     update user set avatar = userAvatar where user_id = userId;
     # end
 end;;
+delimiter ;
+
+# 1221
+delimiter ;;
+# publishNotice
+create procedure publishNotice(in noticeTitle varchar(31), in noticeContent varchar(1022), in userId varchar(31), in clubId int,
+                               in noticeTop smallint)
+begin
+    declare noticeId int;
+    set noticeId = allocId();
+    insert into notice(notice_id, title, content, user_id, club_id, top) values (noticeId, noticeTitle, noticeContent, userId, clubId, noticeTop);
+end ;;
+delimiter ;
+
+delimiter ;;
+# joinClub
+create procedure joinClub(in noticeTitle varchar(31), in noticeContent varchar(1022), in userId varchar(31), in clubId int,
+                               in noticeTop smallint)
+begin
+    declare noticeId int;
+    set noticeId = allocId();
+    insert into notice(notice_id, title, content, user_id, club_id, top) values (noticeId, noticeTitle, noticeContent, userId, clubId, noticeTop);
+end ;;
 delimiter ;
