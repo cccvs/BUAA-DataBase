@@ -23,6 +23,7 @@ urlpatterns = [
     path('update_user_information', views.updateUserInformation),
     path('get_user_information', views.getUserInformation),
     path('modify_password', views.modifyPassword),
+    path('update_avatar', views.updateAvatar),
     # club
     path('create_club', views.createClub),
     path('find_club', views.findClub),
