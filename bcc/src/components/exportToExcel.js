@@ -1,11 +1,7 @@
 function transform(table, name, callback) {  //table为表格数据,name为导出文件名,
     let tableInnerHTML = ''
-    let headerData = ['序号','姓名','年龄','性别','爱好','发量','薪水'] //定义列名
+    let headerData = ['用户ID','姓名','头像','社内职务'] //定义列名
     let bodyData = table
-    tableInnerHTML += '<thead><tr>';
-    tableInnerHTML += `<th colspan=${headerData.length} 
-    				style='background:#CCFFFF;border:solid;'>` + name + "</th></tr>"
-    tableInnerHTML += '<tr>'
     headerData.forEach(item => {
         tableInnerHTML += "<th rowspan='1' style='background:#FFFFCC;border:solid'>"
             + item + "</th>"
@@ -14,13 +10,10 @@ function transform(table, name, callback) {  //table为表格数据,name为导�
     tableInnerHTML += '<tbody>'
     bodyData.forEach(item => {
         tableInnerHTML += "<tr>"
-        tableInnerHTML += "<td align='center' style='border:solid'>" + item.index + "</td>"
-        tableInnerHTML += "<td align='center' style='border:solid'>" + item.name + "</td>"
-        tableInnerHTML += "<td align='center' style='border:solid'>" + item.age + "</td>"
-        tableInnerHTML += "<td align='center' style='border:solid'>" + item.sex + "</td>"
-        tableInnerHTML += "<td align='center' style='border:solid'>" + item.hobby + "</td>"
-        tableInnerHTML += "<td align='center' style='border:solid'>" + item.hair + "</td>"
-        tableInnerHTML += "<td align='center' style='border:solid'>" + item.salaried + "</td>"
+        tableInnerHTML += "<td align='center' style='border:solid'>" + item.user_id + "</td>"
+        tableInnerHTML += "<td align='center' style='border:solid'>" + item.real_name + "</td>"
+        tableInnerHTML += "<td align='center' style='border:solid'>" + item.avatar + "</td>"
+        tableInnerHTML += "<td align='center' style='border:solid'>" + item.label + "</td>"
         tableInnerHTML += "</tr>"
     })
     tableInnerHTML += '</tbody>';    //身体结束
