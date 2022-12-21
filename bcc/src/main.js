@@ -13,6 +13,8 @@ import axios from "axios";
 import vuetify from './plugins/vuetify'
 import 'mavon-editor/dist/css/index.css'
 import mavonEditor from 'mavon-editor'
+import htmlToPdf from "@/components/htmlToPdf";
+Vue.use(htmlToPdf)
 Vue.use(ElementUI)
 Vue.use(Vuetify)
 Vue.use(mavonEditor)

@@ -6,13 +6,19 @@
         <div class="club_level" v-show="rateClub">
           <v-rating color="yellow" background-color="grey lighten-1" v-model="club.level" ></v-rating>
         </div>
-        <div class="club_check" v-show="checkInfo">
+        <div class="club_check">
 <!--          <el-switch-->
 <!--              v-model="club.isPass"-->
 <!--              active-color="#13ce66"-->
 <!--              inactive-color="#ff4949"-->
 <!--              active-text="通过">-->
 <!--          </el-switch>-->
+          <v-btn v-show="joinClub">
+            加入社团
+          </v-btn>
+          <v-btn v-show="leaveClub" style="margin-right: 5px">
+            退出社团
+          </v-btn>
           <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club.id)"
                  style="margin-right: 20px">
             <v-icon>
@@ -36,7 +42,7 @@
 <script>
 export default {
   name: "ClubList",
-  props: ["clubs", "rateClub", "checkInfo"],
+  props: ["clubs", "rateClub", "checkInfo", "joinClub", "leaveClub"],
   methods: {
     gotoClub(club) {
       if (this.$router.history.current.params.id !== club.id) {

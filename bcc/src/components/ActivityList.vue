@@ -7,7 +7,7 @@
     <v-list-item
         v-for="activity in activities"
         :key="activity.event_id"
-        style="margin-top: 20px; max-width: 500px; float: left"
+        style="margin-top: 20px; min-width: 400px; float: left"
     >
       <v-card
           class="mx-auto"
@@ -87,9 +87,7 @@
               <span class="headline">{{ activity.title }}</span>
             </v-card-title>
             <v-card-text style="margin-top: 20px">
-              <pre>
-                  {{ activity.intro }}
-              </pre>
+              <pre>{{ activity.intro }}</pre>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>

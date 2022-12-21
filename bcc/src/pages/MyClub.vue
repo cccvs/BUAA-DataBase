@@ -20,7 +20,24 @@
             <v-tab>公告</v-tab>
             <v-tab>论坛</v-tab>
             <v-tab-item>
-              <ClubList :clubs="curClub"></ClubList>
+              <ClubList :clubs="curClub" :leave-club="true"
+                        :check-info="false"
+                        style="margin-left: 300px;max-height: 250px"
+              ></ClubList>
+              <v-parallax
+                  src="../assets/png/loop-3.jpg"
+                  style="margin-left: 300px;width: 650px"
+              >
+                <v-row
+                    align="center"
+                    justify="center"
+                >
+                  <v-col class="text-center" cols="12">
+                    <h1 class="display-1 font-weight-thin mb-4">{{curClub[0].name}}</h1>
+                    <h4 class="subheading">欢迎每一个热爱户外，热爱自然的你！</h4>
+                  </v-col>
+                </v-row>
+              </v-parallax>
             </v-tab-item>
             <v-tab-item>
               <v-row style="margin-left: 10px;margin-top: 10px">
@@ -28,8 +45,14 @@
                 <h1 style="margin-left: 10px;margin-top: 5px">查看社团内的成员</h1>
               </v-row>
               <MemberList :members="members" follow="true" text="您可以关注同社团的小伙伴"></MemberList>
-              <v-btn @click="showCharts">展示</v-btn>
-              <div v-show="charts" style="width:500px;height:500px" id="mychart"></div>
+              <v-btn @click="showCharts">查看成员男女比</v-btn>
+              <v-btn @click="getPdf('#'+'mychart', '男女比')" v-show="charts">导出男女比PDF</v-btn>
+              <v-btn @click="showChartsBar" style="margin-left: 20px">查看成员分布</v-btn>
+              <v-btn @click="getPdf('#'+'mychart2', '成员分布')" v-show="chartsBar">导出成员分布PDF</v-btn>
+              <v-row style="margin-top: 20px;margin-left: 20px">
+                <div v-show="charts" style="width:500px;height:500px" id="mychart"></div>
+                <div v-show="chartsBar" style="width:500px;height:500px;float:right;" id="mychart2"></div>
+              </v-row>
             </v-tab-item>
             <v-tab-item>
               <ActivityList :activities="activities" text="查看社团的活动"></ActivityList>
@@ -253,7 +276,10 @@ export default {
         content: "省流不看版 ..."
       }],
       charts: false,
-      firstClick: true
+      chartsBar: false,
+      firstClick: true,
+      firstClickBar: true,
+      htmlTitle: '男女比文件名'
     }
   },
   methods: {
@@ -322,12 +348,105 @@ export default {
         console.log(error)
       })
     },
+    showChartsBar() {
+      if (this.firstClickBar) {
+        this.initEchartsBar();
+        this.firstClickBar = false;
+      }
+      this.chartsBar = !this.chartsBar;
+    },
     showCharts() {
       if (this.firstClick) {
         this.initEcharts()
         this.firstClick = false
       }
       this.charts = !this.charts
+    },
+    initEchartsBar() {
+      const chartDom = document.getElementById('mychart2');
+      const myChart = echarts.init(chartDom);
+
+      let dataAxis = ["1系","2系","3系","4系", "5系", "6系", "7系"];
+      let data = [220, 182, 191, 234, 123, 123, 32];
+      let yMax = 500;
+
+      let dataShadow = [];
+      for (let i = 0; i < data.length; i++) {
+        dataShadow.push(yMax);
+      }
+      const option = {
+        title: {
+          text: '成员分布柱状图（人数-院系）',
+        },
+        xAxis: {
+          type: 'category',
+          splitLine: { show: false },
+          data: dataAxis,
+          axisTick: {
+            show: false
+          },
+          axisLine: {
+            show: false
+          },
+          z: 10
+        },
+        yAxis: {
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          axisLabel: {
+            color: '#999'
+          }
+        },
+        dataZoom: [
+          {
+            type: 'inside'
+          }
+        ],
+        series: [
+          {
+            name: "总人数",
+            type: 'bar',
+            showBackground: true,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#83bff6' },
+                { offset: 0.5, color: '#188df0' },
+                { offset: 1, color: '#188df0' }
+              ])
+            },
+            emphasis: {
+              itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: '#2378f7' },
+                  { offset: 0.7, color: '#2378f7' },
+                  { offset: 1, color: '#83bff6' }
+                ])
+              }
+            },
+            data: data,
+            label: {
+              show: true,
+              position: 'inside'
+            }
+          }
+        ]
+      };
+      const zoomSize = 6;
+      myChart.on('click', function (params) {
+        console.log(dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)]);
+        myChart.dispatchAction({
+          type: 'dataZoom',
+          startValue: dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)],
+          endValue:
+              dataAxis[Math.min(params.dataIndex + zoomSize / 2, data.length - 1)]
+        });
+      });
+
+      option && myChart.setOption(option);
     },
     initEcharts() {
       const option = {
@@ -345,8 +464,8 @@ export default {
             radius: ['40%', '70%'],
             avoidLabelOverlap: false,
             label: {
-              show: false,
-              position: 'center'
+              show: true,
+              position: 'inside'
             },
             emphasis: {
               label: {
