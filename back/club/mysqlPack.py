@@ -278,6 +278,8 @@ def quitClub(userId: str, clubId: int):
         clubInfo = cursor.fetchall()
         masterId = clubInfo[0][0]
         clubName = clubInfo[0][1]
+        print(masterId)
+        print(userId)
         cursor.callproc('quitClub', (userId, masterId, clubId, clubName))
         connect.commit()
     except Exception as e:

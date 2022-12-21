@@ -165,7 +165,7 @@ delimiter ;;
 create procedure quitClub(in userId varchar(31), in masterId varchar(31), in clubId int, in clubName varchar(31))
 begin
     declare messageId int;
-    set masterId = allocId();
+    set messageId = allocId();
     delete from user_club where user_id = userId and club_id = clubId;
     insert into message(message_id, receiver_id, time, content) values (messageId, masterId, from_unixtime(unix_timestamp()), concat(userId , ' has quit club ' , clubName , '.'));
 end ;;
