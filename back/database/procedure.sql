@@ -167,7 +167,7 @@ begin
     declare messageId int;
     set masterId = allocId();
     delete from user_club where user_id = userId and club_id = clubId;
-    insert into message(message_id, receiver_id, time, content) values (messageId, masterId, from_unixtime(unix_timestamp()), userId + ' has quit club ' + clubName + '.');
+    insert into message(message_id, receiver_id, time, content) values (messageId, masterId, from_unixtime(unix_timestamp()), concat(userId , ' has quit club ' , clubName , '.'));
 end ;;
 delimiter ;
 
