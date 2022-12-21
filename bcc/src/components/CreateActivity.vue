@@ -102,10 +102,10 @@ export default {
             title:this.activity.title,
             cover:'',
             content:this.activity.content,
-            applyTime:this.activity.apply_time[0],
-            expiredTime:this.activity.apply_time[1],
-            beginTime:this.activity.begin_time[0],
-            endTime:this.activity.begin_time[1],
+            apply_time:this.activity.apply_time[0],
+            expired_time:this.activity.apply_time[1],
+            begin_time:this.activity.begin_time[0],
+            end_time:this.activity.begin_time[1],
             limit:this.activity.limit
           })
       ).then((res)=>{
