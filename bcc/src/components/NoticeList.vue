@@ -13,7 +13,7 @@
       >
         <v-card-title class="title">{{notice.title}}</v-card-title>
         <v-card-text class="white text--primary">
-          <p>{{notice.content}}</p>
+          <pre>{{notice.content}}</pre>
           <v-btn
               :color="curColor(notice.notice_id)"
               class="mx-0"
@@ -49,7 +49,7 @@ export default {
         },
         {
           color: 'indigo',
-          icon: 'mdi-buffer',
+          icon: 'mdi-atom',
         },
       ],
     }
@@ -71,7 +71,10 @@ export default {
 }
 </script>
 
-
 <style scoped>
-
+pre {
+  tab-size: 2;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
 </style>

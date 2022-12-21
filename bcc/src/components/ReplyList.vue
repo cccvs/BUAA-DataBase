@@ -12,7 +12,7 @@
         <v-list-item-content style="margin-right: 10px">2022-10-15 10:04</v-list-item-content>
       </v-list-item>
     </v-list>
-    <v-text style="margin-top: 30px">以陈俊杰的身份参与讨论：</v-text>
+    <v-card-text style="margin-top: 30px">以陈俊杰的身份参与讨论：</v-card-text>
     <mavon-editor
         v-model="newReply.content"
         style="margin-top: 20px;height: 100%;width:100%;align-self: center"
@@ -47,8 +47,11 @@ export default {
     },
     // 提交
     submit(){
-      console.log(this.content);
-      console.log(this.html);
+      console.log(this.newReply.content); //内容
+      console.log(this.newReply.html);
+      /*
+      TODO:将这里的数据传到后端，在后端存储生成id存储
+       */
     }
   },
 }
