@@ -33,7 +33,7 @@
                     justify="center"
                 >
                   <v-col class="text-center" cols="12">
-                    <h1 class="display-1 font-weight-thin mb-4">{{curClub[0].name}}</h1>
+                    <h1 class="display-1 font-weight-thin mb-4">{{ curClub[0].name }}</h1>
                     <h4 class="subheading">欢迎每一个热爱户外，热爱自然的你！</h4>
                   </v-col>
                 </v-row>
@@ -49,6 +49,15 @@
               <v-btn @click="getPdf('#'+'mychart', '男女比')" v-show="charts">导出男女比PDF</v-btn>
               <v-btn @click="showChartsBar" style="margin-left: 20px">查看成员分布</v-btn>
               <v-btn @click="getPdf('#'+'mychart2', '成员分布')" v-show="chartsBar">导出成员分布PDF</v-btn>
+              <v-btn @click="toExcel" style="margin-left: 20px">导出成员数据</v-btn>
+              <v-btn style="margin-left: 20px">
+                Excel上传至数据库
+                <input
+                    type="file"
+                    accept=".xls,.xlsx"
+                    class="upload-file"
+                    @change="Excel($event)"/>
+              </v-btn>
               <v-row style="margin-top: 20px;margin-left: 20px">
                 <div v-show="charts" style="width:500px;height:500px" id="mychart"></div>
                 <div v-show="chartsBar" style="width:500px;height:500px;float:right;" id="mychart2"></div>
@@ -88,6 +97,8 @@ import NoticeList from "@/components/NoticeList";
 import * as echarts from "echarts";
 import PostList from "@/components/PostList";
 import Qs from "qs";
+import transform from "@/components/exportToExcel";
+import * as XLSX from "xlsx";
 
 export default {
   name: "MyClub",
@@ -98,7 +109,7 @@ export default {
      members是当前社团的所有成员，activities是当前社团的所有活动，notices是当前社团的所有公告
      */
     return {
-      myClubList:[],
+      myClubList: [],
       curClub: [{
         id: 1,
         name: "凌峰社",
@@ -130,7 +141,7 @@ export default {
         club_face: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
         title: "黄花梁——龙门涧探险",
         intro:
-`黄花梁位于北京市门头沟区清水镇梨园岭村北，呈南—北走向，全长约5千米，南接梨园岭，北达东灵山前往椴木沟的垭口，由数座缓坡山峰组成，最高海拔1850米左右。山梁之上，亚高山草甸漫山遍野，郁郁葱葱。每到初夏，忘忧草盛开，金黄色的花朵装点着翠绿的青草，铺满5公里的山梁，故得名“黄花梁”。
+            `黄花梁位于北京市门头沟区清水镇梨园岭村北，呈南—北走向，全长约5千米，南接梨园岭，北达东灵山前往椴木沟的垭口，由数座缓坡山峰组成，最高海拔1850米左右。山梁之上，亚高山草甸漫山遍野，郁郁葱葱。每到初夏，忘忧草盛开，金黄色的花朵装点着翠绿的青草，铺满5公里的山梁，故得名“黄花梁”。
 
 龙门涧分为东西两涧，各绵延十余里。由于这里聚集了我国几类著名风景区的景色，诸如“三峡之气势”、“桂林之秀美”、“匡庐之飞瀑”、“黄山之叠泉”，都可以在这里看到缩影，因此，龙门涧得到了许多如“燕京小三峡”、“京西小桂林”、“京西小黄山”等美誉。
 
@@ -283,15 +294,19 @@ export default {
     }
   },
   methods: {
-    getClubList(){
-      return new Promise((resolve)=>{
+    getClubList() {
+      return new Promise((resolve) => {
         this.$axios.post(
             "http://127.0.0.1:8000/api/get_club_list",
             Qs.stringify({
-              jwt: {'code':localStorage.getItem('code'),'user_id':localStorage.getItem('user_id'),'time':localStorage.getItem('time')}
+              jwt: {
+                'code': localStorage.getItem('code'),
+                'user_id': localStorage.getItem('user_id'),
+                'time': localStorage.getItem('time')
+              }
             })
-        ).then((res)=>{
-          if(res.data.code===0){
+        ).then((res) => {
+          if (res.data.code === 0) {
             this.myClubList = res.data.club_list;
             let id = Number(this.$router.history.current.params.id);
             this.curClub = this.myClubList.filter((club) => {
@@ -299,52 +314,52 @@ export default {
             })
             resolve();
           } else this.$notify.error(res.data.message)
-        }).catch((error)=>{
+        }).catch((error) => {
           console.log(error)
         })
       })
     },
-    getMembers(){
+    getMembers() {
       console.log(this.curClub[0].club_id)
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_members",
           Qs.stringify({
             club_id: this.curClub[0].club_id
           })
-      ).then((res)=>{
-        if(res.data.code===0){
+      ).then((res) => {
+        if (res.data.code === 0) {
           this.members = res.data.member_list;
           console.log(this.members)
         } else this.$notify.error(res.data.message)
-      }).catch((error)=>{
+      }).catch((error) => {
         console.log(error)
       })
     },
-    getActivities(){
+    getActivities() {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_events",
           Qs.stringify({
             club_id: this.curClub[0].club_id
           })
-      ).then((res)=>{
-        if(res.data.code===0){
+      ).then((res) => {
+        if (res.data.code === 0) {
           this.activities = res.data.event_list;
         } else this.$notify.error(res.data.message)
-      }).catch((error)=>{
+      }).catch((error) => {
         console.log(error)
       })
     },
-    getNotices(){
+    getNotices() {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_events",
           Qs.stringify({
             club_id: this.curClub[0].club_id
           })
-      ).then((res)=>{
-        if(res.data.code===0){
+      ).then((res) => {
+        if (res.data.code === 0) {
           this.notices = res.data.notice_list;
         } else this.$notify.error(res.data.message)
-      }).catch((error)=>{
+      }).catch((error) => {
         console.log(error)
       })
     },
@@ -366,7 +381,7 @@ export default {
       const chartDom = document.getElementById('mychart2');
       const myChart = echarts.init(chartDom);
 
-      let dataAxis = ["1系","2系","3系","4系", "5系", "6系", "7系"];
+      let dataAxis = ["1系", "2系", "3系", "4系", "5系", "6系", "7系"];
       let data = [220, 182, 191, 234, 123, 123, 32];
       let yMax = 500;
 
@@ -380,7 +395,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          splitLine: { show: false },
+          splitLine: {show: false},
           data: dataAxis,
           axisTick: {
             show: false
@@ -413,17 +428,17 @@ export default {
             showBackground: true,
             itemStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: '#83bff6' },
-                { offset: 0.5, color: '#188df0' },
-                { offset: 1, color: '#188df0' }
+                {offset: 0, color: '#83bff6'},
+                {offset: 0.5, color: '#188df0'},
+                {offset: 1, color: '#188df0'}
               ])
             },
             emphasis: {
               itemStyle: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: '#2378f7' },
-                  { offset: 0.7, color: '#2378f7' },
-                  { offset: 1, color: '#83bff6' }
+                  {offset: 0, color: '#2378f7'},
+                  {offset: 0.7, color: '#2378f7'},
+                  {offset: 1, color: '#83bff6'}
                 ])
               }
             },
@@ -493,12 +508,66 @@ export default {
     },
     init() {
       Promise.all([this.getClubList()])
-      .then(()=>{
-        this.getMembers();
-        this.getActivities();
-        this.getNotices();
-      })
-    }
+          .then(() => {
+            this.getMembers();
+            this.getActivities();
+            this.getNotices();
+          })
+    },
+    toExcel() {
+      transform(this.members, "成员列表", this.callback);
+    },
+    callback(info) {
+      console.log(info)
+    },
+    Excel(e) {
+      let that = this
+      // 错误情况判断
+      const files = e.target.files
+      if (files.length <= 0) {
+        return false;
+      } else if (!/\.(xls|xlsx)$/.test(files[0].name.toLowerCase())) {
+        this.$message({
+          message: "上传格式不正确，请上传xls或者xlsx格式",
+          type: "warning"
+        });
+        return false
+      } else {
+        that.upload_file = files[0].name
+      }
+      // 读取表格
+      const fileReader = new FileReader()
+      fileReader.onload = ev => {
+        try {
+          const data = ev.target.result;
+          const workbook = XLSX.read(data, {
+            type: "binary"
+          })
+          // 读取第一张表
+          const wsname = workbook.SheetNames[0]
+          const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])
+          // 打印 ws 就可以看到读取出的表格数据
+          // 定义一个新数组，存放处理后的表格数据
+          that.lists = []
+          ws.forEach(item => {
+            console.log(item);
+            that.lists.push({
+              // 对ws进行处理后放进lists内
+              item
+            })
+          })
+          // 调用方法将lists数组发送给后端
+          this.submit_form(that.lists)
+        } catch (e) {
+          return false
+        }
+      }
+      fileReader.readAsBinaryString(files[0])
+    },
+    submit_form(data) {
+      // 在这里发送数据
+      console.log(data)
+    },
   },
   mounted() {
     this.init();
@@ -597,5 +666,15 @@ export default {
 
 .side-bar:hover {
   width: 150px;
+}
+
+.upload-file {
+  font-size: 20px;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  filter: alpha(opacity=0);
+  width: 100%;
 }
 </style>
