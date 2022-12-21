@@ -9,6 +9,7 @@
               :before-upload="beforeAvatarUpload"
               :on-success="handleAvatarSuccess"
               :limit=1
+              :data="{user_id:this.user_id}"
               accept=".png,.jpg,.jepg"
               action="http://127.0.0.1:8000/api/update_avatar"
               list-type="picture-card"
@@ -78,6 +79,7 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
+      user_id:localStorage.getItem('user_id'),
       createClubForm: {
         imageUrl: '../assets/logo.png',
         clubName: '',
