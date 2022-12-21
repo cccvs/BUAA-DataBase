@@ -40,5 +40,8 @@ urlpatterns = [
     path('create_event', views.createEvent),
     path('handle_following', views.handleFollowing),
     path('handle_unfollowing', views.handleUnfollowing),
-    path('publish_notice', views.publishNotice)
+    path('publish_notice', views.publishNotice),
+    path('add_comment', views.addComment),
+    path('delete_message', views.deleteMessage),
+    path('delete_all_messages', views.deleteAllMessages)
 ]

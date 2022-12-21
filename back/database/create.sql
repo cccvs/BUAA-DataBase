@@ -122,7 +122,7 @@ create table `comment`
     `event_id`   int                not null,
     `time`       varchar(31)        not null,
     `content`    varchar(1022),
-    `score`      float              not null,
+    `score`      float,
     `like`       int                not null,
     `dislike`    int                not null,
     primary key (`comment_id`),

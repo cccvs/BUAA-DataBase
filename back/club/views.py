@@ -360,6 +360,7 @@ def handleJoiningClub(request):
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
 
+@csrf_exempt
 def joinClub(request):
     if request.method == 'POST':
         userId = request.POST.get('user_id')
@@ -374,6 +375,7 @@ def joinClub(request):
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
 
+@csrf_exempt
 def quitClub(request):
     if request.method == 'POST':
         userId = request.POST.get('user_id')
@@ -457,5 +459,49 @@ def publishNotice(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 25, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def addComment(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        eventId = request.POST.get('event_id')
+        content = request.POST.get('content')
+        try:
+            mysqlPack.addComment(userId, eventId, content)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 26, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def deleteMessage(request):
+    if request.method == 'POST':
+        messageId = request.POST.get('message_id')
+        try:
+            mysqlPack.deleteMessage(messageId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 27, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def deleteAllMessages(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        try:
+            mysqlPack.deleteAllMessages(userId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 28, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
