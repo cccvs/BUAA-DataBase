@@ -295,6 +295,7 @@ def getClubEvents(request):
                 resultItem = dict()
                 for num, field in enumerate(eventField):
                     resultItem[field] = data[num]
+                resultItem['show'] = False
                 resultList.append(resultItem)
             return JsonResponse({'code': 0, 'message': '', 'event_list': resultList})
         except Exception as e:
