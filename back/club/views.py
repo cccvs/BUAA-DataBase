@@ -269,13 +269,20 @@ def getMasterClubList(request):
 def getClubMembers(request):
     if request.method == 'POST':
         clubId = request.POST.get('club_id')
+        userId = request.POST.get('user_id')
         try:
+            # user's friend
+            friendIdRes = mysqlPack.getFriendIds(userId)
+            friendIdSet = {x[0] for x in friendIdRes}
+            # club members
             result = mysqlPack.getClubMembers(clubId)
             resultList = []
             for data in result:
                 resultItem = dict()
                 for num, field in enumerate(userField):
                     resultItem[field] = data[num]
+                # 社长是否关注了该成员
+                resultItem['is_follow'] = 1 if friendIdSet.__contains__(resultItem['user_id']) else 0
                 resultList.append(resultItem)
             return JsonResponse({'code': 0, 'message': '', 'member_list': resultList})
         except Exception as e:

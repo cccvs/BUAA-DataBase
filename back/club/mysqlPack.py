@@ -102,6 +102,20 @@ def updateUserAvatar(userId: str, userAvatar: str):
         closeDatabase(connect, cursor)
 
 
+def getFriendIds(userId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select friend_id from follow where follower_id = %s;'
+        cursor.execute(ins, [userId])
+        result = cursor.fetchall()
+    except Exception as e:
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
 # club
 def createClub(name: str, clubType: str, masterId: str, intro: str):
     typeNum = clubTypeToNum[clubType]
