@@ -112,6 +112,11 @@ export default {
         if(res.data.code===0){
           console.log(this.activity.content)
           this.$bus.$emit('showSnackBar', "活动已发布！")
+          this.activity.title = ''
+          this.activity.content = ''
+          this.activity.apply_time = ''
+          this.activity.begin_time = ''
+          this.activity.limit = 24
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)
