@@ -45,12 +45,12 @@
         <div>
           活动时间：{{ activity.begin_time }}
         </div>
-        <div v-show="!audit">
-          评价该活动：（{{ activity.score }}），平均评分：（{{ activity.avg_score }}）
-          <v-rating v-model="activity.score"
-                    dense color="yellow"
-                    style="margin-left: 10px"></v-rating>
-        </div>
+<!--        <div v-show="!audit">-->
+<!--          评价该活动：（{{ activity.score }}），平均评分：（{{ activity.avg_score }}）-->
+<!--          <v-rating v-model="activity.score"-->
+<!--                    dense color="yellow"-->
+<!--                    style="margin-left: 10px"></v-rating>-->
+<!--        </div>-->
         <v-card-actions>
           <v-btn
               text
