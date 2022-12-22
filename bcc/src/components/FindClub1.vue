@@ -125,6 +125,7 @@ export default {
           "http://127.0.0.1:8000/api/find_club",
           Qs.stringify({
             key_word: this.searchClubName,
+            user_id: localStorage.getItem('user_id'),
           })
       ).then((res)=>{
         if(res.data.code===0){
