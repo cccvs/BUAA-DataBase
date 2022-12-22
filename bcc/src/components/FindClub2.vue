@@ -60,7 +60,7 @@
           <el-input v-model="createClubForm.introduction" class="form__input" type="text" placeholder="社团简介"/>
         </el-form-item>
         <el-form-item>
-          <div class="primary-btn" @click="create">立即注册</div>
+          <div class="primary-btn" @click="create">{{ option }}</div>
         </el-form-item>
       </el-form>
     </div>
@@ -73,12 +73,13 @@ import Qs from "qs";
 
 export default {
   name: "FindClub2",
+  props: ['option'],
   data() {
     return {
       dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
-      user_id:localStorage.getItem('user_id'),
+      user_id: localStorage.getItem('user_id'),
       createClubForm: {
         imageUrl: '',
         clubName: '',
@@ -99,7 +100,11 @@ export default {
       con['name'] = this.createClubForm.clubName;
       con['type'] = this.createClubForm.clubType;
       con['intro'] = this.createClubForm.introduction;
-      con['jwt'] = {'code':localStorage.getItem('code'),'user_id':localStorage.getItem('user_id'),'time':localStorage.getItem('time')};
+      con['jwt'] = {
+        'code': localStorage.getItem('code'),
+        'user_id': localStorage.getItem('user_id'),
+        'time': localStorage.getItem('time')
+      };
       this.$axios({
         url: 'http://127.0.0.1:8000/api/create_club',
         method: 'post',
@@ -136,7 +141,7 @@ export default {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
-    handleAvatarSuccess (res) {
+    handleAvatarSuccess(res) {
       if (res.code !== 0) {
         this.$message.error(res.message)
         return false
@@ -250,8 +255,9 @@ export default {
   height: 150px;
   width: 150px;
 }
+
 .el-upload-dragger {
-   height: 250px;
-   width: 250px;
- }
+  height: 250px;
+  width: 250px;
+}
 </style>
