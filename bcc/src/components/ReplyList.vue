@@ -33,7 +33,7 @@
         @change="change"
         fontSize="16px">
     </mavon-editor>
-    <v-btn @click="submit" style="margin-top: 20px;float: left;width: 20px" color="pink accent-4">
+    <v-btn @click="submit" style="margin-top: 20px;float: left;width: 20px" color="primary">
       提交
     </v-btn>
   </v-app>
