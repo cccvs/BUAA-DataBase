@@ -533,6 +533,9 @@ export default {
           })
     },
     toExcel() {
+      /*
+      TODO: 输出的数据来源
+       */
       transform(this.members, "成员列表", this.callback);
     },
     callback(info) {
@@ -571,6 +574,9 @@ export default {
             console.log(item);
             that.lists.push({
               // 对ws进行处理后放进lists内
+              /*
+              TODO: 这里可以对原表格进行一定的处理
+               */
               item
             })
           })
@@ -584,6 +590,9 @@ export default {
     },
     submit_form(data) {
       // 在这里发送数据
+      /*
+      TODO:这里会获取data，（格式为json），将其写入数据库
+       */
       console.log(data)
     },
   },
