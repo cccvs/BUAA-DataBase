@@ -86,7 +86,7 @@
               <PostList :posts="posts"></PostList>
             </v-tab-item>
             <v-tab-item>
-              <PublishPost></PublishPost>
+              <PublishPost :club-id="this.$router.history.current.params.id"></PublishPost>
             </v-tab-item>
           </v-tabs>
         </v-app>
@@ -381,6 +381,22 @@ export default {
         console.log(error)
       })
     },
+    getPosts() {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_club_posts",
+          Qs.stringify({
+            club_id: this.curClub[0].club_id
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          console.log(this.curClub[0].club_id)
+          console.log(res.data)
+          this.posts = res.data.post_list;
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
     showChartsBar() {
       if (this.firstClickBar) {
         this.initEchartsBar();
@@ -530,6 +546,7 @@ export default {
             this.getMembers();
             this.getActivities();
             this.getNotices();
+            this.getPosts();
           })
     },
     toExcel() {

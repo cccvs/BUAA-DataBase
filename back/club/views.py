@@ -558,7 +558,7 @@ def likeEvent(request):
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
-
+@csrf_exempt
 # post
 def getClubPosts(request):
     if request.method == 'POST':
@@ -578,7 +578,7 @@ def getClubPosts(request):
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
-
+@csrf_exempt
 def publishPost(request):
     if request.method == 'POST':
         userId = request.POST.get('user_id')
@@ -594,7 +594,7 @@ def publishPost(request):
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
-
+@csrf_exempt
 def likePost(request):
     if request.method == 'POST':
         userId = request.POST.get('user_id')

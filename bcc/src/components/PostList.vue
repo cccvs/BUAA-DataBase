@@ -50,9 +50,14 @@ export default {
 </script>
 
 <style scoped>
+<<<<<<< HEAD
 pre {
   tab-size: 2;
   white-space: pre-wrap;
   word-wrap: break-word;
 }
 </style>
+=======
+
+</style>
+>>>>>>> a0074de634155e8748a3ef4efc318b4c50546c29
