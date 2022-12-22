@@ -8,7 +8,9 @@
         <h1 style="margin-left: 10px;margin-top: 10px">新的入社申请！</h1>
       </v-row>
       <MemberList :members="requests" :check-info="true"
-      text="又有新的小伙伴要加入社团了" style="margin-top: 20px"></MemberList>
+      text="又有新的小伙伴要加入社团了" style="margin-top: 20px" v-if="!modified"></MemberList>
+      <MemberList :members="curRequests" :check-info="true"
+                  text="又有新的小伙伴要加入社团了" style="margin-top: 20px" v-if="modified"></MemberList>
       <MySnackBar></MySnackBar>
     </v-card>
 </template>
@@ -27,6 +29,8 @@ export default {
       DO: 前端容器requests，也需要在挂载的时候从后端获取，
        只需要将容器传递给MemberList，模式设定为check-info，requset是否需要自己的id？
        */
+      curRequests:[],
+      modified:false,
       request: [{
         user_id: "20373021",
         real_name: "陈俊杰",
@@ -47,9 +51,11 @@ export default {
     DO: 申请加入社团请求通过的接口
      */
     handlePass(id) {
-      let curRequest = this.requests.filter((request) => {
+      if (!this.modified) this.curRequests = this.requests
+      let curRequest = this.curRequests.filter((request) => {
         return request.user_id === id;
       })
+      console.log("here")
       console.log(curRequest)
       this.$axios.post(
           "http://127.0.0.1:8000/api/handle_joining_club",
@@ -60,6 +66,10 @@ export default {
       ).then((res)=>{
         if(res.data.code===0){
           this.$bus.$emit('showSnackBar', "审核成功，该学生成功加入社团！")
+          this.curRequests = this.curRequests.filter((request) => {
+            return request.user_id !== id;
+          })
+          this.modified = true
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)
@@ -69,7 +79,8 @@ export default {
     DO: 申请加入社团请求拒绝的接口
      */
     handleFailPass(id) {
-      let curRequest = this.requests.filter((request) => {
+      if (!this.modified) this.curRequests = this.requests
+      let curRequest = this.curRequests.filter((request) => {
         return request.user_id === id;
       })
       this.$axios.post(
@@ -81,6 +92,10 @@ export default {
       ).then((res)=>{
         if(res.data.code===0){
           this.$bus.$emit('showSnackBar', "已拒绝该学生成功加入社团")
+          this.curRequests = this.curRequests.filter((request) => {
+            return request.user_id !== id;
+          })
+          this.modified = true
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)
@@ -88,6 +103,7 @@ export default {
     }
   },
   mounted() {
+    this.modified = false
     this.$bus.$on('handlePass', this.handlePass)
     this.$bus.$on('handleFailPass', this.handleFailPass)
   },
