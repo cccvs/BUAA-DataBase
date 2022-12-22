@@ -5,10 +5,12 @@
         :key="post.post_id"
         @dblclick="detailForPost(post.post_id)"
     >
-      <v-icon large color="blue darken-2">mdi-message-text</v-icon>
+      <v-avatar>
+        <img :src="post.avatar" alt="头像">
+      </v-avatar>
       <v-list-item-content style="padding-left: 10px">
         <v-list-item-title v-text="post.title"></v-list-item-title>
-        <v-list-item-subtitle v-text="post.content"></v-list-item-subtitle>
+        <v-list-item-subtitle>{{post.user_name}} - {{post.content}}</v-list-item-subtitle>
       </v-list-item-content>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
@@ -24,7 +26,7 @@
         <v-icon>mdi-thumb-down</v-icon>
       </v-btn>
       <div>{{ post.dislike }}</div>
-      <v-list-item-content style="margin-right: 10px;margin-left: 20px">2022-10-15 10:04</v-list-item-content>
+      <v-list-item-content style="margin-right: 10px;margin-left: 20px">{{post.time}}</v-list-item-content>
     </v-list-item>
   </v-list>
 </template>
