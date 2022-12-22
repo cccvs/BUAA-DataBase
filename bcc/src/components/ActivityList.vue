@@ -35,7 +35,7 @@
         </div>
         <div v-show="!audit">
           报名人数：{{ activity.member_count }} / {{ activity.member_limit }}
-          <v-btn small style="margin-left: 10px" color="purple lighten-5" v-show="!audit">
+          <v-btn small style="margin-left: 10px;float: right" color="purple lighten-5" v-show="!audit">
             报名
           </v-btn>
         </div>
