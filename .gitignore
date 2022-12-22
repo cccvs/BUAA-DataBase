@@ -4,6 +4,7 @@
 back/database/.idea
 back/club/__pycache__
 back/back/__pycache__
+back/static
 
 # bcc ignore
 bcc/.DS_Store
