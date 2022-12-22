@@ -97,7 +97,7 @@ begin
                                                                    eventContent, from_unixtime(unix_timestamp()),
                                                                    applyTime, expiredTime, beginTime, endTime, 0,
                                                                    memberLimit, 0, 0);
-    insert into user_event(user_id, event_id, identity) values (userId, eventId, 2);
+    insert into user_event_participate(user_id, event_id, identity) values (userId, eventId, 2);
     # end
 end;;
 delimiter ;
