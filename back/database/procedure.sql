@@ -22,14 +22,10 @@ create procedure createClub(in clubName varchar(31), in clubType smallint, in ma
 begin
     declare clubId int;
     set clubId = allocId();
-    insert into club(club_id, name, member_count, type, master_id, time, intro, cover) value (clubId, clubName, 0, clubType,
-                                                                                       masterId,
-                                                                                       from_unixtime(unix_timestamp()),
-                                                                                       clubIntro, clubCover);
-    commit;
-    # 需要commit，否则外键约束失效
-    # 0:普通社员 1:管理员 2:社长
-    insert into user_club(user_id, club_id, identity, label) value (masterId, clubId, 2, '社长');
+    # 审核状态，0-2分别对应：审核中，未通过，已通过
+    insert into club(club_id, name, type, star, member_count, score, time, intro, master_id, cover,
+                     status) value (clubId, clubName, clubType, 0, 0, null, from_unixtime(unix_timestamp()), clubIntro,
+                                    masterId, clubCover, 0);
     commit;
     # end
 end;;
@@ -92,12 +88,13 @@ create procedure createEvent(in clubId int, in userId varchar(31), in eventTitle
 begin
     declare eventId int;
     set eventId = allocId();
-    insert into event(event_id, club_id, user_id, title, cover, content, time, apply_time, expired_time, begin_time,
-                      end_time, member_count, member_limit, `like`, dislike) VALUE (eventId, clubId, userId, eventTitle, eventCover,
-                                                                   eventContent, from_unixtime(unix_timestamp()),
-                                                                   applyTime, expiredTime, beginTime, endTime, 0,
-                                                                   memberLimit, 0, 0);
-    insert into user_event_participate(user_id, event_id, identity) values (userId, eventId, 2);
+    insert into event(event_id, club_id, user_id, title, cover, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit, status, `like`, dislike) VALUE (eventId, clubId, userId, eventTitle,
+                                                                                    eventCover,
+                                                                                    eventContent,
+                                                                                    from_unixtime(unix_timestamp()),
+                                                                                    applyTime, expiredTime, beginTime,
+                                                                                    endTime, 0,
+                                                                                    memberLimit,0, 0, 0);
     # end
 end;;
 delimiter ;
@@ -141,12 +138,14 @@ delimiter ;
 # 1221
 delimiter ;;
 # publishNotice
-create procedure publishNotice(in noticeTitle varchar(31), in noticeContent varchar(1022), in userId varchar(31), in clubId int,
+create procedure publishNotice(in noticeTitle varchar(31), in noticeContent varchar(1022), in userId varchar(31),
+                               in clubId int,
                                in noticeTop smallint)
 begin
     declare noticeId int;
     set noticeId = allocId();
-    insert into notice(notice_id, title, content, user_id, club_id, top) values (noticeId, noticeTitle, noticeContent, userId, clubId, noticeTop);
+    insert into notice(notice_id, title, content, user_id, club_id, top)
+    values (noticeId, noticeTitle, noticeContent, userId, clubId, noticeTop);
 end ;;
 delimiter ;
 
@@ -157,7 +156,8 @@ begin
     declare formId int;
     set formId = allocId();
     delete from joining_club where applicant_id = userId and club_id = clubId;
-    insert into joining_club(form_id, applicant_id, club_id, status, time) values (formId, userId, clubId, 0, from_unixtime(unix_timestamp()));
+    insert into joining_club(form_id, applicant_id, club_id, status, time)
+    values (formId, userId, clubId, 0, from_unixtime(unix_timestamp()));
 end ;;
 delimiter ;
 
@@ -168,7 +168,8 @@ begin
     declare messageId int;
     set messageId = allocId();
     delete from user_club where user_id = userId and club_id = clubId;
-    insert into message(message_id, receiver_id, time, content) values (messageId, masterId, from_unixtime(unix_timestamp()), concat(userId , ' has quit club ' , clubName , '.'));
+    insert into message(message_id, receiver_id, time, content)
+    values (messageId, masterId, from_unixtime(unix_timestamp()), concat(userId, ' has quit club ', clubName, '.'));
 end ;;
 delimiter ;
 
@@ -177,20 +178,100 @@ create procedure addComment(in userId varchar(31), in eventId int, in commentCon
 begin
     declare commentId int;
     set commentId = allocId();
-    insert into comment(comment_id, user_id, event_id, time, content, score, `like`, dislike) values (commentId, userId, eventId, from_unixtime(unix_timestamp()), commentContent, null, 0, 0);
+    insert into comment(comment_id, user_id, event_id, time, content, score, `like`, dislike)
+    values (commentId, userId, eventId, from_unixtime(unix_timestamp()), commentContent, null, 0, 0);
 end ;;
 delimiter ;
 
 delimiter ;;
 create procedure deleteMessage(in messageId int)
 begin
-   delete from message where message_id = messageId;
+    delete from message where message_id = messageId;
 end ;;
 delimiter ;
 
 delimiter ;;
-create procedure deleteAllMessages(in userId int)
+create procedure deleteAllMessages(in userId varchar(31))
 begin
-   delete from message where receiver_id = userId;
+    delete from message where receiver_id = userId;
 end ;;
 delimiter ;
+
+# 1222
+delimiter ;;
+create procedure participateEvent(in userId varchar(31), in eventId int)
+begin
+    delete from user_event_participate where user_id = userId and event_id = eventId;
+    insert into user_event_participate (user_id, event_id, identity) values (userId, eventId, 0);
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure likeEvent(in userId varchar(31), in eventId int, in op int)
+begin
+    delete from user_event_like where user_id = userId and event_id = eventId;
+    # 相应赞/踩
+    if op <> 2 then
+        insert into user_event_like(user_id, event_id, action) values (userId, eventId, op);
+    end if;
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure likePost(in userId varchar(31), in postId int, in op int)
+begin
+    delete from user_post where user_id = userId and post_id = postId;
+    # 相应赞/踩
+    if op <> 2 then
+        insert into user_event_like(user_id, event_id, action) values (userId, postId, op);
+    end if;
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure publishPost(in userId varchar(31), in clubId int, in postTitle varchar(31),
+                             in postContent varchar(1022))
+begin
+    declare postId int;
+    set postId = allocId();
+    insert into post(post_id, club_id, user_id, time, title, content, `like`, dislike)
+    values (postId, clubId, userId, from_unixtime(unix_timestamp()), postTitle, postContent, 0, 0);
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure handleCreateClub(in clubId int, in op int)
+begin
+    declare masterId varchar(31);
+    # op 0不通过, 1通过
+    if op = 1 then
+        # 0普通社员, 2社长
+        set masterId = (select master_id from club where club_id = clubId);
+        update club set status = 2 where club_id = clubId;
+        insert into user_club(user_id, club_id, identity, label) values (masterId, clubId, 2, '社长');
+        commit;
+    else
+        delete from club where club_id = clubId;
+    end if;
+    # 删除表单
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure handleCreateEvent(in eventId int, in op int)
+begin
+    declare userId varchar(31);
+    # op 0不通过, 1通过
+    if op = 1 then
+        # 0参与者, 2发起者
+        set userId = (select user_id from event where event_id = eventId);
+        update event set status = 2 where event_id = eventId;
+        insert into user_event_participate(user_id, event_id, identity) values (userId, eventId, 2);
+        commit;
+    else
+        delete from event where event_id = eventId;
+    end if;
+    # 删除表单
+end ;;
+delimiter ;
+

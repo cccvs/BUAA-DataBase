@@ -36,12 +36,14 @@ create table `club`
     `intro`        varchar(1022),
     `master_id`    varchar(31),
     `cover`        varchar(255),
+    `status`       smallint           not null,
     primary key (`club_id`),
     foreign key (`master_id`) references `user` (`user_id`),
     check ( 0 <= `type` and `type` <= 5 ),
-    check ( `star` is null or (1 <= `star` and `star` <= 5) ),
+    check ( `star` is null or (0 <= `star` and `star` <= 5) ),
     check ( `member_count` >= 0 ),
-    check ( 1.0 <= `score` and `score` <= 5.0 )
+    check ( 1.0 <= `score` and `score` <= 5.0 ),
+    check ( `status` in (0, 1, 2) )
 );
 
 drop table if exists `notice`;
@@ -93,6 +95,7 @@ create table `post`
 (
     `post_id` int auto_increment not null,
     `club_id` int,
+    `user_id` varchar(31)        not null,
     `time`    varchar(31)        not null,
     `title`   varchar(31)        not null,
     `content` varchar(1022)      not null,
@@ -100,6 +103,7 @@ create table `post`
     `dislike` int                not null,
     primary key (`post_id`),
     foreign key (`club_id`) references `club` (`club_id`),
+    foreign key (`user_id`) references `user` (`user_id`),
     check ( `like` >= 0 ),
     check ( `dislike` >= 0)
 );
@@ -135,25 +139,6 @@ create table `comment`
     check ( `score` in (1.0, 2.0, 3.0, 4.0, 5.0) ),
     check ( `like` >= 0 ),
     check ( `dislike` >= 0)
-);
-
-drop table if exists `establishing_club`;
-create table `establishing_club`
-(
-    `form_id`      int auto_increment not null,
-    `applicant_id` varchar(31)        not null,
-    `verifier_id`  varchar(31),
-    `status`       smallint           not null,
-    `club_name`    varchar(31)        not null,
-    `type`         smallint           not null,
-    `apply_time`   varchar(31)        not null,
-    `verify_time`  varchar(31),
-    `content`      varchar(1022),
-    primary key (`form_id`),
-    foreign key (`applicant_id`) references `user` (`user_id`),
-    foreign key (`verifier_id`) references `user` (`user_id`),
-    check ( 0 <= `status` and `status` <= 2),
-    check ( 0 <= `type` and `type` <= 5)
 );
 
 drop table if exists `joining_club`;

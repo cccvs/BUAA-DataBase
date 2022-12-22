@@ -26,6 +26,7 @@ urlpatterns = [
     path('update_avatar', views.updateAvatar),
     # club
     path('create_club', views.createClub),
+    path('handle_create_club', views.handleCreateClub),
     path('find_club', views.findClub),
     path('change_position', views.changePosition),
     path('get_club_list', views.getClubList),
@@ -37,13 +38,22 @@ urlpatterns = [
     path('handle_joining_club', views.handleJoiningClub),
     path('join_club', views.joinClub),
     path('quit_club', views.quitClub),
-    # others
+    # event
     path('create_event', views.createEvent),
+    path('handle_create_event', views.handleCreateEvent),
+    path('participate_event', views.participateEvent),
+    path('like_event', views.likeEvent),
+    # message
+    path('delete_message', views.deleteMessage),
+    path('delete_all_messages', views.deleteAllMessages),
+    path('get_messages', views.getMessages),
+    # post
+    path('get_club_posts', views.getClubPosts),
+    path('publish_post', views.publishPost),
+    path('like_post', views.likePost),
+    # others
     path('handle_following', views.handleFollowing),
     path('handle_unfollowing', views.handleUnfollowing),
     path('publish_notice', views.publishNotice),
     path('add_comment', views.addComment),
-    path('delete_message', views.deleteMessage),
-    path('delete_all_messages', views.deleteAllMessages),
-    path('get_messages', views.getMessages)
 ]

@@ -8,8 +8,8 @@ values ('u_c', 'c', from_unixtime(unix_timestamp()), 'sb', 0, 0),
        ('20373742', '12345678a', from_unixtime(unix_timestamp()), 'sb', 0, 0);
 # select * from user;
 
-insert into club(club_id, name, member_count, type, master_id, time, intro) value (1001, '机器人社', 0, 2, 'u_b', from_unixtime(unix_timestamp()), '%s');
-insert into club(club_id, name, member_count, type, master_id, time, intro) value (1002, '凌峰社', 0, 2, 'u_c', from_unixtime(unix_timestamp()), '%s');
+insert into club(club_id, name, member_count, type, master_id, time, intro, status) value (1001, '机器人社', 0, 2, 'u_b', from_unixtime(unix_timestamp()), '%s', 0);
+insert into club(club_id, name, member_count, type, master_id, time, intro, status) value (1002, '凌峰社', 0, 2, 'u_c', from_unixtime(unix_timestamp()), '%s', 0);
 # select * from club;
 
 insert into event(event_id, club_id, user_id, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2001, 1001, '20373742', 'event1', from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), from_unixtime(unix_timestamp()), 1, 200);

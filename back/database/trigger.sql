@@ -2,6 +2,22 @@ use club_system;
 
 delimiter ;;
 
+drop trigger if exists updateUserClub1;
+create trigger updateUserClub1
+    after insert on user_club
+    for each row
+begin
+    update club set member_count = member_count + 1 where club_id = NEW.club_id;
+end ;;
+
+drop trigger if exists updateUserClub1;
+create trigger updateUserClub1
+    after delete on user_club
+    for each row
+begin
+    update club set member_count = member_count - 1 where club_id = OLD.club_id;
+end ;;
+
 drop trigger if exists updateFollow;
 create trigger updateFollow
     after insert on follow
