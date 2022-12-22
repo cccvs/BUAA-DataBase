@@ -95,7 +95,7 @@ export default {
   methods: {
     create: function () {
       let con = {};
-      con['imageUrl'] = this.createClubForm.imageUrl;
+      con['image_url'] = this.createClubForm.imageUrl;
       con['name'] = this.createClubForm.clubName;
       con['type'] = this.createClubForm.clubType;
       con['intro'] = this.createClubForm.introduction;
