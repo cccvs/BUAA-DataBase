@@ -124,6 +124,9 @@ export default {
         });
       }
     }
+  },
+  created() {
+    console.log(this.members)
   }
 }
 </script>

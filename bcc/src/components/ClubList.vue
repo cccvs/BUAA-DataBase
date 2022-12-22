@@ -1,7 +1,7 @@
 <template>
   <div class="clubs-container" style="margin-top: 10px">
     <div class="clubBar" v-for="club in clubs" :key="club.data" @dblclick="gotoClub(club)">
-      <div class="club_picture"><img src="../assets/logo.png" alt="社团封面"></div>
+      <div><img :src="club.cover" alt="社团封面" class="club_picture"></div>
       <div class="club_name">{{club.name}}
         <div class="club_level" v-show="rateClub">
           <v-rating color="yellow" background-color="grey lighten-1" v-model="club.level" ></v-rating>

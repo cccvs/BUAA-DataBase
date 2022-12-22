@@ -140,7 +140,7 @@ USE_TZ = False  # changed from default
 
 STATIC_URL = '/static/'
 
-# 设置文件保存路径
+# 在这里设置媒体文件保存路径，否则浏览器无法解析
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 
 # 配置查找静态文件路径
