@@ -10,7 +10,8 @@
       </v-avatar>
       <v-list-item-content style="padding-left: 10px">
         <v-list-item-title v-text="post.title"></v-list-item-title>
-        <v-list-item-subtitle v-html="post.user_name - post.content"></v-list-item-subtitle>
+        <v-list-item-subtitle>{{post.user_name}}:</v-list-item-subtitle>
+        <pre v-html="post.content"></pre>
       </v-list-item-content>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
@@ -49,5 +50,9 @@ export default {
 </script>
 
 <style scoped>
-
+pre {
+  tab-size: 2;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
 </style>

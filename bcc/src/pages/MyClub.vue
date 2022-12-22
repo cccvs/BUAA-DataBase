@@ -293,7 +293,7 @@ export default {
         like: 22,
         dislike: 0,
         time: "2022-12-20 12:40:20",
-        content: `省流不看版 ...`
+        content: "省流不看版 ..."
       }, {
         post_id: 2,
         avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
