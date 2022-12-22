@@ -406,8 +406,6 @@ def quitClub(request):
     if request.method == 'POST':
         userId = request.POST.get('user_id')
         clubId = request.POST.get('club_id')
-        print(userId)
-        print(clubId)
         try:
             mysqlPack.quitClub(userId, clubId)
             return JsonResponse({'code': 0, 'message': ''})

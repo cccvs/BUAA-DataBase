@@ -22,6 +22,47 @@
           上传头像
         </v-btn>
         <div>
+          <el-dialog :visible.sync="dialogVisible">
+            <el-upload
+                :auto-upload="true"
+                :before-upload="beforeAvatarUpload"
+                :on-success="handleAvatarSuccess"
+                :limit=1
+                accept=".png,.jpg,.jepg"
+                action="http://127.0.0.1:8000/upload/img"
+                list-type="picture-card"
+                ref="upload"
+                style="margin-bottom: 20px">
+              <i slot="default" class="el-icon-plus"></i>
+              <div slot="file" slot-scope="{file}">
+                <img
+                    class="el-upload-list__item-thumbnail"
+                    :src="file.url" alt=""
+                >
+                <span class="el-upload-list__item-actions">
+                    <span
+                        class="el-upload-list__item-preview"
+                        @click="handlePictureCardPreview(file)"
+                    >
+                      <i class="el-icon-zoom-in"></i>
+                    </span>
+                    <span
+                        v-if="!disabled"
+                        class="el-upload-list__item-delete"
+                        @click="handleRemove(file)"
+                    >
+                      <i class="el-icon-delete"></i>
+                      </span>
+                  </span>
+              </div>
+            </el-upload>
+            <el-button type="primary" @click="updateAvatar">提交</el-button>
+            <el-dialog :visible.sync="dialogPictVisible" append-to-body>
+              <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+          </el-dialog>
+        </div>
+        <div>
           <el-dialog :visible.sync="dialogFormVisible">
             <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px"
                      class="demo-ruleForm">
@@ -101,7 +142,12 @@ export default {
     };
     return {
       avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+      dialogImageUrl: '',
+      imageUrl:'',
+      disabled:false,
       dialogFormVisible: false,
+      dialogVisible:false,
+      dialogPictVisible:false,
       ruleForm: {
         oldPass: '',
         pass: '',
@@ -156,11 +202,55 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isJPG && isLt2M;
+    },
+    handleRemove(file) {
+      console.log(file)
+      this.$refs.upload.clearFiles();
+    },
+    //展示图片预览图
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      console.log(file.url)
+      this.dialogPictVisible = true;
+    },
+    handleAvatarSuccess (res) {
+      if (res.code !== 0) {
+        this.$message.error(res.message)
+        return false
+      }
+      this.imageUrl = res.image_path
+      console.log(this.imageUrl)
+    },
     /*
     TODO: 上传头像接口，可以复用社团上传图片的接口
      */
     pickPhoto() {
-
+      this.dialogVisible = true;
+    },
+    updateAvatar() {
+      this.$axios({
+        url: 'http://127.0.0.1:8000/api/update_avatar',
+        method: 'post',
+        data: Qs.stringify({
+          user_id:localStorage.getItem('user_id'),
+          avatar:this.imageUrl
+        }),
+      }).then((ret) => {
+        if (ret.data.code === 0) {
+          this.dialogVisible = false;
+          this.$message.success('上传成功')
+        } else this.$notify.error(ret.data.message + "，申请失败");
+      })
     }
   }
 }
