@@ -87,7 +87,8 @@
         <v-card width="75%" shaped>
           <v-row style="margin-left: 0;margin-top: 0;margin-right: 0;">
             <v-avatar tile width="100%" height="300px">
-              <img :src="avatar" alt="头像">
+              <img :src="avatar" alt="头像" v-if="!modified">
+              <img :src="imageUrl" alt="头像" v-if="modified">
             </v-avatar>
             <v-col cols="8" style="float: left">
               <v-card-title>用户名：{{ real_name }}</v-card-title>
@@ -112,7 +113,7 @@ export default {
   /*
   FIXME: 本来avatar属性应该也是由父组件传递进来的，但是发现url不能跨域传递？
    */
-  props: ["real_name", "following", "followers"],
+  props: ["real_name", "following", "followers","avatar"],
   data() {
     let validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -141,9 +142,10 @@ export default {
       }
     };
     return {
-      avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-      dialogImageUrl: '',
       imageUrl:'',
+      tmpUrl:'',
+      modified:false,
+      dialogImageUrl: '',
       disabled:false,
       dialogFormVisible: false,
       dialogVisible:false,
@@ -220,7 +222,7 @@ export default {
     //展示图片预览图
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
-      console.log(file.url)
+      // console.log(file.url)
       this.dialogPictVisible = true;
     },
     handleAvatarSuccess (res) {
@@ -228,11 +230,11 @@ export default {
         this.$message.error(res.message)
         return false
       }
-      this.imageUrl = res.image_path
-      console.log(this.imageUrl)
+      this.tmpUrl = res.image_path
+      // console.log(this.imageUrl)
     },
     /*
-    TODO: 上传头像接口，可以复用社团上传图片的接口
+    DO: 上传头像接口，可以复用社团上传图片的接口
      */
     pickPhoto() {
       this.dialogVisible = true;
@@ -243,15 +245,21 @@ export default {
         method: 'post',
         data: Qs.stringify({
           user_id:localStorage.getItem('user_id'),
-          avatar:this.imageUrl
+          avatar:this.tmpUrl
         }),
       }).then((ret) => {
         if (ret.data.code === 0) {
           this.dialogVisible = false;
           this.$message.success('上传成功')
+          this.imageUrl = this.tmpUrl
+          this.modified = true
+          this.$refs.upload.clearFiles();
         } else this.$notify.error(ret.data.message + "，申请失败");
       })
     }
+  },
+  created() {
+    this.modified = false
   }
 }
 </script>

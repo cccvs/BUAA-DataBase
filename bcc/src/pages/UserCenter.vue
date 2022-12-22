@@ -15,7 +15,8 @@
             <MyUserCenterHeader
                 :real_name="user.real_name"
                 :followers="user.followers"
-                :following="user.following"></MyUserCenterHeader>
+                :following="user.following"
+                :avatar="user.avatar"></MyUserCenterHeader>
           </el-main>
           <el-main class="el-main-table">
             <el-descriptions class="margin-top" :column="1" border>
