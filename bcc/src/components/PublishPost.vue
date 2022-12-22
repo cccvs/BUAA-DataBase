@@ -55,11 +55,12 @@ export default {
     // 所有操作都会被解析重新渲染
     change(value, render) {
       // render 为 markdown 解析后的结果[html]
-      this.html = render;
+      this.newPost.html = render;
     },
     // 提交
     submit() {
       console.log(this.newPost.content); //内容
+      console.log(this.newPost.html); //dom 结构
       /*
       TODO:将这里的数据传到后端，在后端存储生成id存储
        */
