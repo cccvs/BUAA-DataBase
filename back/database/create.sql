@@ -76,11 +76,15 @@ create table `event`
     `member_count` int,
     `member_limit` int,
     `status`       smallint,
+    `like`         int,
+    `dislike`      int,
     primary key (`event_id`),
     foreign key (`club_id`) references `club` (`club_id`),
     foreign key (`user_id`) references `user` (`user_id`),
     check ( `member_count` >= 0),
     check ( `member_limit` >= 0 ),
+    check ( `like` >= 0 ),
+    check ( `dislike` >= 0 ),
     check ( `status` in (0, 1, 2) )
 );
 
@@ -191,8 +195,8 @@ create table `user_club`
     check (`identity` in (0, 1, 2))
 );
 
-drop table if exists `user_event`;
-create table `user_event`
+drop table if exists user_event_participate;
+create table user_event_participate
 (
     `user_id`  varchar(31) not null,
     `event_id` int         not null,
@@ -248,6 +252,19 @@ create table `follow`
     foreign key (`follower_id`) references `user` (`user_id`),
     foreign key (`friend_id`) references `user` (`user_id`)
 );
+
+drop table if exists `user_event_like`;
+create table `user_event_like`
+(
+    `user_id`  varchar(31) not null,
+    `event_id` int         not null,
+    `action`   smallint    not null,
+    primary key (`user_id`, `event_id`),
+    foreign key (`user_id`) references `user` (`user_id`),
+    foreign key (`event_id`) references `event` (`event_id`),
+    check ( `action` in (0, 1))
+);
+
 
 # alloc id
 drop table if exists `id_allocator`;
