@@ -132,6 +132,21 @@ def createClub(name: str, clubType: str, masterId: str, intro: str, cover: str):
     return
 
 
+def getUserClub(userId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select club_id from user_club where user_id = %s'
+        cursor.execute(ins, [userId])  # 子串匹配
+        result = cursor.fetchall()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
 def findClub(keyWord: str):
     connect, cursor = connectDatabase()
     try:

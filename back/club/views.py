@@ -197,8 +197,11 @@ def createClub(request):
 def findClub(request):
     retDict = dict()
     if request.method == 'POST':
-        # vars
         keyWord = request.POST.get('key_word')
+        # 获取已加入社团的id列表
+        userId = request.POST.get('user_id')
+        clubIdRes = mysqlPack.getUserClub(userId)
+        clubIdSet = {x[0] for x in clubIdRes}
         try:
             result = mysqlPack.findClub(keyWord)
             resultList = []
@@ -206,7 +209,9 @@ def findClub(request):
                 resultItem = dict()
                 for num, field in enumerate(clubField):
                     resultItem[field] = data[num]
-                resultList.append(resultItem)
+                # 如果已加入社团，则不显示
+                if resultItem['club_id'] not in clubIdSet:
+                    resultList.append(resultItem)
             retDict['club_list'] = resultList
             retDict['code'] = 0
             retDict['message'] = ''
