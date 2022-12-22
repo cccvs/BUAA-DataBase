@@ -93,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'club_system',
         'USER': 'root',
-        'PASSWORD': '123456',
+        'PASSWORD': '888718',
         'HOST': 'localhost',
         'PORT': '3306'
     }
