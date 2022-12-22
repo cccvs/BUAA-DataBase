@@ -5,12 +5,10 @@
       <h1 style="margin-left: 10px;margin-top: 10px">参与到讨论中来！</h1>
     </v-row>
     <v-row>
-      <v-col cols="5">
         <v-text-field label="标题" hide-details="auto"
                       style="padding-bottom: 20px"
                       v-model="post.title">
         </v-text-field>
-      </v-col>
     </v-row>
     <mavon-editor
         v-model="newPost.content"
