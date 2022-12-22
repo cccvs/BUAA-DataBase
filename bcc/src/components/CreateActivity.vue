@@ -84,7 +84,7 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row style="margin-top: 40px;margin-left: 5px">
+    <v-row style="margin-top: 30px;margin-left: 5px">
       <label>预计活动人数: {{activity.limit}}人</label>
       <v-slider v-model="activity.limit"
                 :thumb-size="24"
