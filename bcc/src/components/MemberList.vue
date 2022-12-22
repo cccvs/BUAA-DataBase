@@ -40,7 +40,7 @@
              color="blue lighten-3"
              @click="handelChangePosition(member.user_id)">确认修改
       </v-btn>
-      <v-btn v-show="follow&&!member.following"
+      <v-btn v-show="follow&&!member.following&&(member.user_id !== curId)"
              color="blue lighten-3"
              @click="handelFollow(member.user_id)"
              style="min-width: 120px">
@@ -49,7 +49,7 @@
         </v-icon>
         关注
       </v-btn>
-      <v-btn v-show="follow&&member.following"
+      <v-btn v-show="follow&&member.following&&(member.user_id !== curId)"
              color="orange lighten-3"
              @click="handleUnFollow(member.user_id)"
       >
@@ -71,6 +71,10 @@ export default {
   data() {
     return {
       // '社长', '副社长', '办公室部长'
+      /*
+      TODO: 获取当前ID
+       */
+      curId:"",
       items: [{
         id: 1,
         label: "社长"
