@@ -23,17 +23,17 @@
                 <CheckInfo :requests="clubRequests"></CheckInfo>
               </v-tab-item>
               <v-tab-item>
-                <PublishNotice></PublishNotice>
+                <PublishNotice :clubId="clubId"></PublishNotice>
               </v-tab-item>
               <v-tab-item>
-                <CreateActivity :club_id="this.clubId"></CreateActivity>
+                <CreateActivity :club_id="clubId"></CreateActivity>
               </v-tab-item>
               <v-tab-item>
                 <v-row style="margin-left: 10px;margin-top: 5px">
                   <v-icon color="blue">mdi-clipboard-text-search</v-icon>
                   <h1 style="margin-left: 10px;margin-top: 10px">修改社团的基本信息！</h1>
                 </v-row>
-                <FindClub2 style="margin-top: 10px"></FindClub2>
+                <FindClub2 style="margin-top: 10px" option="确认修改"></FindClub2>
               </v-tab-item>
               <v-tab-item>
                 <ChangePosition :members="clubMembers" :club-id="clubId"></ChangePosition>

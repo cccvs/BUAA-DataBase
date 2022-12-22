@@ -13,7 +13,7 @@
             <find-club1></find-club1>
           </el-tab-pane>
           <el-tab-pane label="创建社团" name="second">
-            <find-club2></find-club2>
+            <find-club2 option="立即注册"></find-club2>
           </el-tab-pane>
         </el-tabs>
       </el-main>

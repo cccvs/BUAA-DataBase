@@ -63,7 +63,7 @@ export default {
           })
       ).then((res)=>{
         if(res.data.code===0){
-          console.log("成功加入社团")
+          this.$message.success("申请成功，请等待审批");
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)
@@ -78,7 +78,7 @@ export default {
           })
       ).then((res)=>{
         if(res.data.code===0){
-          console.log("成功退出社团")
+          this.$message.success("成功退出社团");
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)

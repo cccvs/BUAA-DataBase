@@ -287,16 +287,22 @@ export default {
       ],
       posts: [{
         post_id: 1,
+        avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+        user_name: "陈俊杰",
         title: "自动化测试",
         like: 22,
         dislike: 0,
+        time: "2022-12-20 12:40:20",
         content: "省流不看版 ..."
       }, {
         post_id: 2,
+        avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+        user_name: "陈俊杰",
         title: "自动化测试",
         like: 22,
         dislike: 0,
-        content: "省流不看版 ..."
+        time: "2022-10-15 10:04:20",
+        content: "66666666666666666666666666666666666666666666666666666666666666666666666"
       }],
       charts: false,
       chartsBar: false,
@@ -363,7 +369,7 @@ export default {
     },
     getNotices() {
       this.$axios.post(
-          "http://127.0.0.1:8000/api/get_club_events",
+          "http://127.0.0.1:8000/api/get_club_notices",
           Qs.stringify({
             club_id: this.curClub[0].club_id
           })
@@ -527,6 +533,9 @@ export default {
           })
     },
     toExcel() {
+      /*
+      TODO: 输出的数据来源
+       */
       transform(this.members, "成员列表", this.callback);
     },
     callback(info) {
@@ -565,6 +574,9 @@ export default {
             console.log(item);
             that.lists.push({
               // 对ws进行处理后放进lists内
+              /*
+              TODO: 这里可以对原表格进行一定的处理
+               */
               item
             })
           })
@@ -578,6 +590,9 @@ export default {
     },
     submit_form(data) {
       // 在这里发送数据
+      /*
+      TODO:这里会获取data，（格式为json），将其写入数据库
+       */
       console.log(data)
     },
   },

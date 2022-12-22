@@ -1,5 +1,8 @@
 function transform(table, name, callback) {  //table为表格数据,name为导出文件名,
     let tableInnerHTML = ''
+    /*
+    TODO:确定列名
+     */
     let headerData = ['用户ID','姓名','头像','社内职务'] //定义列名
     let bodyData = table
     headerData.forEach(item => {
@@ -10,6 +13,9 @@ function transform(table, name, callback) {  //table为表格数据,name为导�
     tableInnerHTML += '<tbody>'
     bodyData.forEach(item => {
         tableInnerHTML += "<tr>"
+        /*
+        TODO: 每列对应的数据的具体键值
+         */
         tableInnerHTML += "<td align='center' style='border:solid'>" + item.user_id + "</td>"
         tableInnerHTML += "<td align='center' style='border:solid'>" + item.real_name + "</td>"
         tableInnerHTML += "<td align='center' style='border:solid'>" + item.avatar + "</td>"
