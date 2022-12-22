@@ -3,6 +3,7 @@
     <div class="flexs">
       <h1>上午好，陈俊杰</h1>
       <el-badge :value="messageCount" :hidden="hidden">
+        <el-button circle @click="quit" icon="el-icon-switch-button"></el-button>
         <el-button @click="drawer=true" circle icon="el-icon-message-solid"></el-button>
       </el-badge>
     </div>
@@ -51,48 +52,54 @@ export default {
     }
   },
   methods: {
-    getMessages(){
+    quit() {
+      let path = "/";
+      this.$router.push({
+        path
+      });
+    },
+    getMessages() {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_messages",
           Qs.stringify({
-            user_id:localStorage.getItem('user_id')
+            user_id: localStorage.getItem('user_id')
           })
-      ).then((res)=>{
-        if(res.data.code===0){
+      ).then((res) => {
+        if (res.data.code === 0) {
           // console.log(res.data)
           this.messages = res.data.messages
         } else this.$notify.error(res.data.message)
-      }).catch((error)=>{
+      }).catch((error) => {
         console.log(error)
       })
     },
-    deleteMessage(id){
+    deleteMessage(id) {
       this.$axios.post(
           "http://127.0.0.1:8000/api/delete_message",
           Qs.stringify({
-            message_id:id
+            message_id: id
           })
-      ).then((res)=>{
-        if(res.data.code===0){
+      ).then((res) => {
+        if (res.data.code === 0) {
           this.messages = this.messages.filter((message) => {
             return message.message_id !== id
           })
         } else this.$notify.error(res.data.message)
-      }).catch((error)=>{
+      }).catch((error) => {
         console.log(error)
       })
     },
-    deleteAllMessages(){
+    deleteAllMessages() {
       this.$axios.post(
           "http://127.0.0.1:8000/api/delete_all_messages",
           Qs.stringify({
-            user_id:localStorage.getItem('user_id')
+            user_id: localStorage.getItem('user_id')
           })
-      ).then((res)=>{
-        if(res.data.code===0){
+      ).then((res) => {
+        if (res.data.code === 0) {
           this.messages = []
         } else this.$notify.error(res.data.message)
-      }).catch((error)=>{
+      }).catch((error) => {
         console.log(error)
       })
     }

@@ -32,7 +32,7 @@
           </v-row>
         </v-list-item-content>
       </v-card-title>
-      <pre>{{post.content}}</pre>
+      <pre v-html="post.content"></pre>
     </v-card>
 
     <v-list>
@@ -72,7 +72,7 @@
               </v-row>
             </v-list-item-content>
           </v-card-title>
-          <pre>{{reply.content}}</pre>
+          <pre v-html="reply.content"></pre>
         </v-card>
       </v-list-item>
     </v-list>
