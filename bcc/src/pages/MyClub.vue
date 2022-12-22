@@ -19,6 +19,7 @@
             <v-tab>活动</v-tab>
             <v-tab>公告</v-tab>
             <v-tab>论坛</v-tab>
+            <v-tab>创建新讨论</v-tab>
             <v-tab-item>
               <ClubList :clubs="curClub" :leave-club="true"
                         :check-info="false"
@@ -84,6 +85,9 @@
               </v-row>
               <PostList :posts="posts"></PostList>
             </v-tab-item>
+            <v-tab-item>
+              <PublishPost></PublishPost>
+            </v-tab-item>
           </v-tabs>
         </v-app>
       </el-main>
@@ -100,13 +104,14 @@ import ActivityList from "@/components/ActivityList";
 import NoticeList from "@/components/NoticeList";
 import * as echarts from "echarts";
 import PostList from "@/components/PostList";
+import PublishPost from "@/components/PublishPost";
 import Qs from "qs";
 import transform from "@/components/exportToExcel";
 import * as XLSX from "xlsx";
 
 export default {
   name: "MyClub",
-  components: {PostList, NoticeList, ActivityList, MemberList, ClubList, MyHeader, SideBar},
+  components: {PostList, PublishPost, NoticeList, ActivityList, MemberList, ClubList, MyHeader, SideBar},
   data() {
     /*
     DO: 前端容器，curClub是当前的社团【挂载和路由更新时获取】，注意是数组格式，但只含一个元素

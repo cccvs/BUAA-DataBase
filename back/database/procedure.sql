@@ -93,10 +93,10 @@ begin
     declare eventId int;
     set eventId = allocId();
     insert into event(event_id, club_id, user_id, title, cover, content, time, apply_time, expired_time, begin_time,
-                      end_time, member_count, member_limit) VALUE (eventId, clubId, userId, eventTitle, eventCover,
+                      end_time, member_count, member_limit, `like`, dislike) VALUE (eventId, clubId, userId, eventTitle, eventCover,
                                                                    eventContent, from_unixtime(unix_timestamp()),
                                                                    applyTime, expiredTime, beginTime, endTime, 0,
-                                                                   memberLimit);
+                                                                   memberLimit, 0, 0);
     insert into user_event(user_id, event_id, identity) values (userId, eventId, 2);
     # end
 end;;
