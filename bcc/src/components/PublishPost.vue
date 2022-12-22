@@ -6,7 +6,7 @@
     </v-row>
     <v-row>
         <v-text-field label="标题" hide-details="auto"
-                      style="padding-bottom: 20px"
+                      style="padding-bottom: 20px;margin-left: 10px"
                       v-model="post.title">
         </v-text-field>
     </v-row>
