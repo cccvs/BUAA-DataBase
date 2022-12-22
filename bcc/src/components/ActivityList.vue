@@ -34,13 +34,13 @@
           报名时间：{{ activity.apply_time }}
         </div>
         <div v-show="!audit">
-          报名人数：{{ activity.member_count }} / {{ activity.limit }}
+          报名人数：{{ activity.member_count }} / {{ activity.member_limit }}
           <v-btn small style="margin-left: 10px" color="purple lighten-5" v-show="!audit">
             报名
           </v-btn>
         </div>
         <div v-show="audit">
-          活动人数上限：{{ activity.limit }}
+          活动人数上限：{{ activity.member_limit }}
         </div>
         <div>
           活动时间：{{ activity.begin_time }}
@@ -87,7 +87,7 @@
               <span class="headline">{{ activity.title }}</span>
             </v-card-title>
             <v-card-text style="margin-top: 20px">
-              <pre>{{ activity.intro }}</pre>
+              <pre>{{ activity.content }}</pre>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
