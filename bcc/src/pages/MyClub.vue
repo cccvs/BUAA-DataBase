@@ -369,7 +369,7 @@ export default {
     },
     getNotices() {
       this.$axios.post(
-          "http://127.0.0.1:8000/api/get_club_events",
+          "http://127.0.0.1:8000/api/get_club_notices",
           Qs.stringify({
             club_id: this.curClub[0].club_id
           })
