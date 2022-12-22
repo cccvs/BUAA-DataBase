@@ -156,6 +156,7 @@ create procedure joinClub(in userId varchar(31), in clubId int)
 begin
     declare formId int;
     set formId = allocId();
+    delete from joining_club where applicant_id = userId and club_id = clubId;
     insert into joining_club(form_id, applicant_id, club_id, status, time) values (formId, userId, clubId, 0, from_unixtime(unix_timestamp()));
 end ;;
 delimiter ;
