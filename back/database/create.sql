@@ -57,7 +57,7 @@ create table `notice`
     `top`       smallint,
     primary key (`notice_id`),
     foreign key (`user_id`) references `user` (`user_id`),
-    foreign key (`club_id`) references `club` (`club_id`),
+    foreign key (`club_id`) references `club` (`club_id`) on delete cascade ,
     check ( `top` = 0 or `top` = 1 )
 );
 
@@ -81,7 +81,7 @@ create table `event`
     `like`         int,
     `dislike`      int,
     primary key (`event_id`),
-    foreign key (`club_id`) references `club` (`club_id`),
+    foreign key (`club_id`) references `club` (`club_id`) on delete cascade ,
     foreign key (`user_id`) references `user` (`user_id`),
     check ( `member_count` >= 0),
     check ( `member_limit` >= 0 ),
@@ -102,7 +102,7 @@ create table `post`
     `like`    int                not null,
     `dislike` int                not null,
     primary key (`post_id`),
-    foreign key (`club_id`) references `club` (`club_id`),
+    foreign key (`club_id`) references `club` (`club_id`) on delete cascade ,
     foreign key (`user_id`) references `user` (`user_id`),
     check ( `like` >= 0 ),
     check ( `dislike` >= 0)
@@ -136,7 +136,7 @@ create table `joining_club`
     `time`         varchar(31)        not null,
     primary key (`form_id`),
     foreign key (`applicant_id`) references `user` (`user_id`),
-    foreign key (`club_id`) references `club` (`club_id`),
+    foreign key (`club_id`) references `club` (`club_id`) on delete cascade ,
     check ( 0 <= `status` and `status` <= 2)
 );
 
@@ -161,7 +161,7 @@ create table `user_club`
     `label`    varchar(31),
     primary key (`user_id`, `club_id`),
     foreign key (`user_id`) references `user` (`user_id`),
-    foreign key (`club_id`) references `club` (`club_id`),
+    foreign key (`club_id`) references `club` (`club_id`) on delete cascade ,
     check (`identity` in (0, 1, 2))
 );
 
