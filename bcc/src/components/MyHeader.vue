@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flexs">
-      <h1>上午好，陈俊杰</h1>
+      <h1>上午好，{{userName}}</h1>
       <el-badge :value="messageCount" :hidden="hidden">
         <el-button circle @click="quit" icon="el-icon-switch-button"></el-button>
         <el-button @click="drawer=true" circle icon="el-icon-message-solid"></el-button>
@@ -36,6 +36,7 @@ export default {
   name: "MyHeader",
   data() {
     return {
+      userName:'',
       hidden: false,
       messageCount: 12,
       drawer: false,
@@ -57,6 +58,7 @@ export default {
       this.$router.push({
         path
       });
+      localStorage.clear()
     },
     getMessages() {
       this.$axios.post(
@@ -68,6 +70,25 @@ export default {
         if (res.data.code === 0) {
           // console.log(res.data)
           this.messages = res.data.messages
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    getUserInformation() {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_user_information",
+          Qs.stringify({
+            jwt: {
+              'code': localStorage.getItem('code'),
+              'user_id': localStorage.getItem('user_id'),
+              'time': localStorage.getItem('time')
+            }
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          // console.log(res.data)
+          this.userName = res.data.user.real_name
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
@@ -106,6 +127,7 @@ export default {
   },
   mounted() {
     this.getMessages()
+    this.getUserInformation()
   }
 }
 </script>
