@@ -56,6 +56,7 @@ urlpatterns = [
     path('get_club_posts', views.getClubPosts),
     path('publish_post', views.publishPost),
     path('like_post', views.likePost),
+    path('like_reply', views.likeReply),
     path('delete_post', views.deletePost),
     path('delete_reply', views.deleteReply),
     path('reply_post', views.replyPost),

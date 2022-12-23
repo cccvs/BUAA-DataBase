@@ -505,7 +505,7 @@ def getMessages(userId: str):
     return result
 
 
-# post
+# post reply
 def getClubPosts(clubId: int):
     connect, cursor = connectDatabase()
     try:
@@ -541,6 +541,21 @@ def likePost(userId: str, postId: int, op: int):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('likePost', [userId, postId, op])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+def likeReply(userId: str, replyId: int, op: int):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('likeReply', [userId, replyId, op])
         result = cursor.fetchall()
         connect.commit()
     except Exception as e:
@@ -594,7 +609,7 @@ def replyPost(userId: str, postId: int, content: str):
 def getPostReplies(postId: str):
     connect, cursor = connectDatabase()
     try:
-        ins = 'select post.*, avatar, real_name from post, user where post_id = %s and post.user_id = user.user_id'
+        ins = 'select reply.*, avatar, real_name from reply, user where post_id = %s and reply.user_id = user.user_id'
         cursor.execute(ins, [postId])
         result = cursor.fetchall()
         connect.commit()
@@ -612,6 +627,22 @@ def getOnePost(postId: str):
     try:
         ins = 'select * from post where post_id = %s'
         cursor.execute(ins, [postId])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+def getUserPostAction(userId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select post_id, action from user_post where user_id = %s'
+        cursor.execute(ins, [userId])
         result = cursor.fetchall()
         connect.commit()
     except Exception as e:

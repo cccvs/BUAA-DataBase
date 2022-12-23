@@ -373,3 +373,14 @@ begin
     values (replyId, postId, userId, from_unixtime(unix_timestamp()), postContent, 0, 0);
 end ;;
 delimiter ;
+
+delimiter ;;
+create procedure likeReply(in userId varchar(31), in replyId int, in op int)
+begin
+    delete from user_reply where user_id = userId and reply_id = replyId;
+    # 相应赞/踩
+    if op <> 2 then
+        insert into user_reply(user_id, reply_id, action) values (userId, replyId, op);
+    end if;
+end ;;
+delimiter ;

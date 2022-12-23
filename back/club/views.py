@@ -720,6 +720,22 @@ def likePost(request):
 
 
 @csrf_exempt
+def likeReply(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        replyId = request.POST.get('reply_id')
+        op = request.POST.get('op')
+        try:
+            mysqlPack.likeReply(userId, replyId, op)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 49, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
 def deletePost(request):
     if request.method == 'POST':
         postId = request.POST.get('post_id')
