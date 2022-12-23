@@ -79,7 +79,8 @@ export default {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_post_replied",
           Qs.stringify({
-            post_id:this.$router.history.current.params.id
+            post_id:this.$router.history.current.params.id,
+            user_id:localStorage.getItem('user_id'),
           })
       ).then((res) => {
         if (res.data.code === 0) {
