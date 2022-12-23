@@ -927,22 +927,6 @@ def deleteNotice(request):
 
 
 @csrf_exempt
-def addComment(request):
-    if request.method == 'POST':
-        userId = request.POST.get('user_id')
-        eventId = request.POST.get('event_id')
-        content = request.POST.get('content')
-        try:
-            mysqlPack.addComment(userId, eventId, content)
-            return JsonResponse({'code': 0, 'message': ''})
-        except Exception as e:
-            print(e)
-            return JsonResponse({'code': 26, 'message': 'error'})
-    else:
-        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
-
-
-@csrf_exempt
 def joinClubBulk(request):
     length = request.POST.get('length')
     clubId = request.POST.get('club_id')

@@ -202,16 +202,6 @@ end ;;
 delimiter ;
 
 delimiter ;;
-create procedure addComment(in userId varchar(31), in eventId int, in commentContent varchar(1022))
-begin
-    declare commentId int;
-    set commentId = allocId();
-    insert into comment(comment_id, user_id, event_id, time, content, score, `like`, dislike)
-    values (commentId, userId, eventId, from_unixtime(unix_timestamp()), commentContent, null, 0, 0);
-end ;;
-delimiter ;
-
-delimiter ;;
 create procedure deleteMessage(in messageId int)
 begin
     delete from message where message_id = messageId;
