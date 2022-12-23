@@ -654,6 +654,22 @@ def getUserPostAction(userId: str):
     return result
 
 
+def getUserReplyAction(userId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select reply_id, action from user_reply where user_id = %s'
+        cursor.execute(ins, [userId])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
 # others
 def handleFollowing(followerId: str, friendId: str):
     connect, cursor = connectDatabase()

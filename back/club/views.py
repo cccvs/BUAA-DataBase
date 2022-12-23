@@ -670,6 +670,10 @@ def likeEvent(request):
 def getClubPosts(request):
     if request.method == 'POST':
         clubId = request.POST.get('club_id')
+        userId = request.POST.get('user_id')
+        postActionList = mysqlPack.getUserPostAction(userId)
+        likeSet = {x[0] for x in postActionList if x[1] == 0}
+        dislikeSet = {x[0] for x in postActionList if x[1] == 1}
         try:
             result = mysqlPack.getClubPosts(clubId)
             resultList = []
@@ -677,6 +681,12 @@ def getClubPosts(request):
                 resultItem = dict()
                 for num, field in enumerate(postField + ['user_avatar', 'user_name']):
                     resultItem[field] = data[num]
+                if resultItem['post_id'] in likeSet:
+                    resultItem['op'] = 0
+                elif resultItem['post_id'] in dislikeSet:
+                    resultItem['op'] = 1
+                else:
+                    resultItem['op'] = 2
                 resultList.append(resultItem)
             return JsonResponse({'code': 0, 'message': '', 'post_list': resultList})
         except Exception as e:
@@ -783,6 +793,10 @@ def replyPost(request):
 def getPostReplies(request):
     if request.method == 'POST':
         postId = request.POST.get('post_id')
+        userId = request.POST.get('user_id')
+        replyActionList = mysqlPack.getUserReplyAction(userId)
+        likeSet = {x[0] for x in replyActionList if x[1] == 0}
+        dislikeSet = {x[0] for x in replyActionList if x[1] == 1}
         try:
             result = mysqlPack.getPostReplies(postId)
             resultList = []
@@ -791,6 +805,12 @@ def getPostReplies(request):
                 for num, field in enumerate(replyField + ['user_avatar', 'user_name']):
                     resultItem[field] = data[num]
                 resultList.append(resultItem)
+                if resultItem['reply_id'] in likeSet:
+                    resultItem['op'] = 0
+                elif resultItem['reply_id'] in dislikeSet:
+                    resultItem['op'] = 1
+                else:
+                    resultItem['op'] = 2
             return JsonResponse({'code': 0, 'message': '', 'reply_list': resultList})
         except Exception as e:
             print(e)
@@ -803,11 +823,21 @@ def getPostReplies(request):
 def getOnePost(request):
     if request.method == 'POST':
         postId = request.POST.get('post_id')
+        userId = request.POST.get('user_id')
+        postActionList = mysqlPack.getUserPostAction(userId)
+        likeSet = {x[0] for x in postActionList if x[1] == 0}
+        dislikeSet = {x[0] for x in postActionList if x[1] == 1}
         try:
             result = mysqlPack.getOnePost(postId)[0]
             resultItem = dict()
             for num, field in enumerate(postField):
                 resultItem[field] = result[num]
+            if resultItem['post_id'] in likeSet:
+                resultItem['op'] = 0
+            elif resultItem['post_id'] in dislikeSet:
+                resultItem['op'] = 1
+            else:
+                resultItem['op'] = 2
             return JsonResponse({'code': 0, 'message': '', 'post': resultItem})
         except Exception as e:
             print(e)
