@@ -37,7 +37,7 @@
         </div>
         <div v-show="!audit">
           报名人数：{{ activity.member_count }} / {{ activity.member_limit }}
-          <v-btn small style="margin-left: 230px;" color="purple lighten-5" v-show="!audit">
+          <v-btn small style="margin-left: 230px;" color="purple lighten-5" v-show="!audit" @click="participate(activity.event_id)">
             报名
           </v-btn>
         </div>
@@ -62,11 +62,11 @@
             查看详情
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn icon color="deep-orange" v-show="!audit">
+          <v-btn icon color="deep-orange" v-show="!audit" @click="likeEvent(activity.event_id)">
             <v-icon>mdi-thumb-up</v-icon>
           </v-btn>
           <div v-show="!audit">{{ activity.like }}</div>
-          <v-btn icon color="blue-grey darken-2" v-show="!audit">
+          <v-btn icon color="blue-grey darken-2" v-show="!audit" @click="dislikeEvent(activity.event_id)">
             <v-icon>mdi-thumb-down</v-icon>
           </v-btn>
           <div v-show="!audit">{{ activity.dislike }}</div>
@@ -103,10 +103,59 @@
 </template>
 
 <script>
+import Qs from "qs";
+
 export default {
   name: "ActivityList",
   props: ['activities', 'text', 'audit'],
   methods:{
+    participate(id) {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/participate_event",
+          Qs.stringify({
+            user_id: localStorage.getItem('user_id'),
+            event_id: id
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.$message.success("报名成功");
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    likeEvent(id) {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/like_event",
+          Qs.stringify({
+            user_id: localStorage.getItem('user_id'),
+            event_id: id,
+            op: 0
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.$message.success("点赞成功");
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    dislikeEvent(id) {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/like_event",
+          Qs.stringify({
+            user_id: localStorage.getItem('user_id'),
+            event_id: id,
+            op: 1
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.$message.success("点踩成功");
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
     handlePass(id) {
       /*
       TODO:团委老师通过活动审批
