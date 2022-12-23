@@ -10,7 +10,8 @@
         <img :src="post.user_avatar" alt="头像">
       </v-avatar>
       <v-list-item-content style="padding-left: 10px">
-        <v-list-item-title>{{post.title}} - {{post.user_name}}</v-list-item-title>
+        <v-list-item-title>{{ post.title }} - {{ post.user_name }}</v-list-item-title>
+        <v-list-item-subtitle v-html="post.content"></v-list-item-subtitle>
       </v-list-item-content>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
@@ -88,13 +89,13 @@ export default {
       this.$axios.post(
           "http://127.0.0.1:8000/api/delete_post",
           Qs.stringify({
-            post_id:post_id
+            post_id: post_id
           })
-      ).then((res)=>{
-        if(res.data.code===0){
+      ).then((res) => {
+        if (res.data.code === 0) {
           this.$message.success("删除主题帖成功");
         } else this.$notify.error(res.data.message)
-      }).catch((error)=>{
+      }).catch((error) => {
         console.log(error)
       })
     }
