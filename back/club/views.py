@@ -830,7 +830,7 @@ def getOnePost(request):
         try:
             result = mysqlPack.getOnePost(postId)[0]
             resultItem = dict()
-            for num, field in enumerate(postField):
+            for num, field in enumerate(postField + ['user_avatar', 'user_name']):
                 resultItem[field] = result[num]
             if resultItem['post_id'] in likeSet:
                 resultItem['op'] = 0
