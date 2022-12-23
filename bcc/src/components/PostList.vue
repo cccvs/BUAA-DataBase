@@ -1,9 +1,10 @@
 <template>
-  <v-list>
+  <v-list style="margin-top: 10px">
     <v-list-item
         v-for="post in posts"
         :key="post.post_id"
         @dblclick="detailForPost(post.post_id)"
+        style="margin-top: 10px"
     >
       <v-avatar>
         <img :src="post.user_avatar" alt="头像">
