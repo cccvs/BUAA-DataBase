@@ -120,6 +120,7 @@ export default {
      */
     return {
       myClubList: [],
+      clubList:[],
       curClub: [{
         id: 1,
         name: "凌峰社",
@@ -313,6 +314,17 @@ export default {
     }
   },
   methods: {
+    getAllClubs() {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_all_clubs",
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.clubList = res.data.club_list;
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
     getClubList() {
       return new Promise((resolve) => {
         this.$axios.post(
@@ -598,7 +610,7 @@ export default {
             that.lists.push({
               // 对ws进行处理后放进lists内
               /*
-              TODO: 这里可以对原表格进行一定的处理
+              DO: 这里可以对原表格进行一定的处理
                */
               item
             })
@@ -614,13 +626,28 @@ export default {
     submit_form(data) {
       // 在这里发送数据
       /*
-      TODO:这里会获取data，（格式为json），将其写入数据库
+      DO:这里会获取data，（格式为json），将其写入数据库
        */
-      console.log(data)
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/join_club_bulk",
+          Qs.stringify({
+            data:data,
+            length:data.length,
+            club_id:this.$router.history.current.params.id,
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.$message.success("批量添加社员成功");
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+      console.log(data[0].item.user_id)
     },
   },
   mounted() {
     this.init();
+    this.getAllClubs()
     // let myClubList = [
     //   {
     //     id: 1,
@@ -697,9 +724,9 @@ export default {
       //   }
       // ];
       /*
-      TODO: curClub应该是一个数组
+      DO: curClub应该是一个数组
        */
-      this.curClub = this.myClubList.filter((club) => {
+      this.curClub = this.clubList.filter((club) => {
         return club.id === id
       })
       next();
