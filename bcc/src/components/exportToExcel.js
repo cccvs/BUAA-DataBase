@@ -1,9 +1,9 @@
 function transform(table, name, callback) {  //table为表格数据,name为导出文件名,
     let tableInnerHTML = ''
     /*
-    TODO:确定列名
+    DO:确定列名
      */
-    let headerData = ['用户ID','姓名','头像','社内职务'] //定义列名
+    let headerData = ['用户ID','姓名','性别','学院','电话','邮箱','社内职务'] //定义列名
     let bodyData = table
     headerData.forEach(item => {
         tableInnerHTML += "<th rowspan='1' style='background:#FFFFCC;border:solid'>"
@@ -14,11 +14,14 @@ function transform(table, name, callback) {  //table为表格数据,name为导�
     bodyData.forEach(item => {
         tableInnerHTML += "<tr>"
         /*
-        TODO: 每列对应的数据的具体键值
+        DO: 每列对应的数据的具体键值
          */
         tableInnerHTML += "<td align='center' style='border:solid'>" + item.user_id + "</td>"
         tableInnerHTML += "<td align='center' style='border:solid'>" + item.real_name + "</td>"
-        tableInnerHTML += "<td align='center' style='border:solid'>" + item.avatar + "</td>"
+        tableInnerHTML += "<td align='center' style='border:solid'>" + item.sex + "</td>"
+        tableInnerHTML += "<td align='center' style='border:solid'>" + item.institute + "</td>"
+        tableInnerHTML += "<td align='center' style='border:solid'>" + item.phone + "</td>"
+        tableInnerHTML += "<td align='center' style='border:solid'>" + item.email + "</td>"
         tableInnerHTML += "<td align='center' style='border:solid'>" + item.label + "</td>"
         tableInnerHTML += "</tr>"
     })
