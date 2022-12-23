@@ -248,7 +248,7 @@ begin
     delete from user_post where user_id = userId and post_id = postId;
     # 相应赞/踩
     if op <> 2 then
-        insert into user_event_like(user_id, event_id, action) values (userId, postId, op);
+        insert into user_post(user_id, post_id, action) values (userId, postId, op);
     end if;
 end ;;
 delimiter ;
