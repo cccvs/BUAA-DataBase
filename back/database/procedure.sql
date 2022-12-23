@@ -90,15 +90,16 @@ begin
     declare eventId int;
     set eventId = allocId();
     insert into event(event_id, club_id, user_id, title, cover, content, time, apply_time, expired_time, begin_time,
-                      end_time, member_count, member_limit, status, `like`, dislike) values (eventId, clubId, userId,
-                                                                                            eventTitle,
-                                                                                            eventCover,
-                                                                                            eventContent,
-                                                                                            from_unixtime(unix_timestamp()),
-                                                                                            applyTime, expiredTime,
-                                                                                            beginTime,
-                                                                                            endTime, 0,
-                                                                                            memberLimit, 0, 0, 0);
+                      end_time, member_count, member_limit, status, `like`, dislike)
+    values (eventId, clubId, userId,
+            eventTitle,
+            eventCover,
+            eventContent,
+            from_unixtime(unix_timestamp()),
+            applyTime, expiredTime,
+            beginTime,
+            endTime, 0,
+            memberLimit, 0, 0, 0);
     # end
 end;;
 delimiter ;
@@ -316,7 +317,8 @@ end ;;
 delimiter ;
 
 delimiter ;;
-create procedure modifyClubInfo(in clubId int, in clubName varchar(31), in clubType smallint, in clubIntro varchar(1022), in clubCover varchar(255))
+create procedure modifyClubInfo(in clubId int, in clubName varchar(31), in clubType smallint,
+                                in clubIntro varchar(1022), in clubCover varchar(255))
 begin
     update club set name = clubName, type = clubType, intro = clubIntro, cover = clubCover where club_id = clubId;
 end ;;
@@ -327,6 +329,7 @@ create procedure replyPost(in userId varchar(31), in postId int, in postContent 
 begin
     declare replyId int;
     set replyId = allocId();
-    insert into reply (reply_id, post_id, time, content, `like`, dislike) values (replyId, postId, from_unixtime(unix_timestamp()), postContent, 0, 0);
+    insert into reply (reply_id, post_id, user_id, time, content, `like`, dislike)
+    values (replyId, postId, userId, from_unixtime(unix_timestamp()), postContent, 0, 0);
 end ;;
 delimiter ;

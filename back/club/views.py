@@ -20,6 +20,7 @@ noticeField = ['notice_id', 'title', 'content', 'user_id', 'club_id', 'top']
 joiningClubField = ['form_id', 'applicant_id', 'club_id', 'status', 'time']
 messageField = ['message_id', 'receiver_id', 'time', 'content']
 postField = ['post_id', 'club_id', 'user_id', 'time', 'title', 'content', 'like', 'dislike']
+replyField = ['reply_id', 'post_id', 'user_id', 'time', 'content', 'like', 'dislike']
 
 
 def hashCode(s, salt='club_system'):
@@ -247,6 +248,7 @@ def getAllClubs(request):
             return JsonResponse({'code': 45, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
 
 @csrf_exempt
 def findClub(request):
@@ -520,7 +522,6 @@ def modifyClubInfo(request):
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
 
-
 # message
 @csrf_exempt
 def deleteMessage(request):
@@ -661,7 +662,7 @@ def likeEvent(request):
 
 
 @csrf_exempt
-# post
+# post/reply
 def getClubPosts(request):
     if request.method == 'POST':
         clubId = request.POST.get('club_id')
@@ -728,6 +729,73 @@ def deletePost(request):
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
 
+@csrf_exempt
+def deleteReply(request):
+    if request.method == 'POST':
+        replyId = request.POST.get('reply_id')
+        try:
+            mysqlPack.deleteReply(replyId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 40, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def replyPost(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        postId = request.POST.get('post_id')
+        content = request.POST.get('content')
+        try:
+            mysqlPack.replyPost(userId, postId, content)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 46, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getPostReplies(request):
+    if request.method == 'POST':
+        postId = request.POST.get('post_id')
+        try:
+            result = mysqlPack.getPostReplies(postId)
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(replyField + ['user_avatar', 'user_name']):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'reply_list': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 47, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getOnePost(request):
+    if request.method == 'POST':
+        postId = request.POST.get('post_id')
+        try:
+            result = mysqlPack.getOnePost(postId)[0]
+            resultItem = dict()
+            for num, field in enumerate(postField):
+                resultItem[field] = result[num]
+            return JsonResponse({'code': 0, 'message': '', 'post': resultItem})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 48, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
 # others
 @csrf_exempt
 def handleFollowing(request):
@@ -787,20 +855,6 @@ def deleteNotice(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 39, 'message': 'error'})
-    else:
-        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
-
-
-@csrf_exempt
-def deleteReply(request):
-    if request.method == 'POST':
-        replyId = request.POST.get('reply_id')
-        try:
-            mysqlPack.deleteReply(replyId)
-            return JsonResponse({'code': 0, 'message': ''})
-        except Exception as e:
-            print(e)
-            return JsonResponse({'code': 40, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
