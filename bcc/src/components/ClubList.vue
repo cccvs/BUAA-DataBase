@@ -3,8 +3,8 @@
     <div class="clubBar" v-for="club in clubs" :key="club.data" @dblclick="gotoClub(club)">
       <div><img :src="club.cover" alt="社团封面" class="club_picture"></div>
       <div class="club_name">{{ club.name }}
-        <div class="club_level" v-show="rateClub">
-          <v-rating color="yellow" background-color="grey lighten-1" v-model="club.level" @click="starRating(club.club_id,club.level)"></v-rating>
+        <div class="club_level" v-show="rateClub" @click="starRating(club.club_id,club.level)">
+          <v-rating color="yellow" background-color="grey lighten-1" v-model="club.level"></v-rating>
         </div>
         <div class="club_check">
           <!--          <el-switch-->
@@ -19,13 +19,13 @@
           <v-btn v-show="leaveClub" style="margin-right: 5px" color="yellow lighten-3" @click="quitClub(club.club_id)">
             退出社团
           </v-btn>
-          <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club.id)"
+          <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club.club_id)"
                  style="margin-right: 20px">
             <v-icon>
               mdi-check
             </v-icon>
           </v-btn>
-          <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(club.id)"
+          <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(club.club_id)"
                  style="margin-right: 5px">
             <v-icon>
               mdi-close
@@ -54,7 +54,7 @@ export default {
     },
     starRating(id,level) {
       this.$axios.post(
-          "http://127.0.0.1:8000/api/star_rating",
+          "http://127.0.0.1:8000/api/rate_club_star",
           Qs.stringify({
             club_id: id,
             level: level
@@ -105,7 +105,7 @@ export default {
           "http://127.0.0.1:8000/api/handle_create_club",
           Qs.stringify({
             club_id: id,
-            op: 0
+            op: 1
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -123,7 +123,7 @@ export default {
           "http://127.0.0.1:8000/api/handle_create_club",
           Qs.stringify({
             club_id: id,
-            op: 1
+            op: 0
           })
       ).then((res) => {
         if (res.data.code === 0) {
