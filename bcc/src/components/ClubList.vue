@@ -85,15 +85,39 @@ export default {
     methods: {
       handlePass(id) {
         /*
-        TODO:团委老师通过社团审批
+        DO:团委老师通过社团审批
          */
-        console.log(id);
+        this.$axios.post(
+            "http://127.0.0.1:8000/api/handle_create_club",
+            Qs.stringify({
+              club_id: id,
+              op: 0
+            })
+        ).then((res) => {
+          if (res.data.code === 0) {
+            this.$message.success("社团审批通过");
+          } else this.$notify.error(res.data.message)
+        }).catch((error) => {
+          console.log(error)
+        })
       },
       handleFailPass(id) {
         /*
-        TODO:团委老师拒绝了社团申请
+        DO:团委老师拒绝了社团申请
          */
-        console.log(id);
+        this.$axios.post(
+            "http://127.0.0.1:8000/api/handle_create_club",
+            Qs.stringify({
+              club_id: id,
+              op: 1
+            })
+        ).then((res) => {
+          if (res.data.code === 0) {
+            this.$message.success("社团审批拒绝");
+          } else this.$notify.error(res.data.message)
+        }).catch((error) => {
+          console.log(error)
+        })
       }
     }
   }
