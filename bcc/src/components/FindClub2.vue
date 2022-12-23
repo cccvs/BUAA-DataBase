@@ -3,26 +3,25 @@
     <div class="container">
       <el-form :rules="createClubRules" :model="createClubForm">
         <h2 class="title">社团基本信息</h2>
-        <el-form-item style="width: 1000px">
-          <el-row>
-            <el-col span="10" style="margin-left: 150px">
-              <el-upload
-                  :auto-upload="true"
-                  :before-upload="beforeAvatarUpload"
-                  :on-success="handleAvatarSuccess"
-                  :limit=1
-                  accept=".png,.jpg,.jepg"
-                  action="http://127.0.0.1:8000/upload/img"
-                  list-type="picture-card"
-                  ref="upload"
-                  style="margin-bottom: 20px">
-                <i slot="default" class="el-icon-plus"></i>
-                <div slot="file" slot-scope="{file}">
-                  <img
-                      class="el-upload-list__item-thumbnail"
-                      :src="file.url" alt=""
-                  >
-                  <span class="el-upload-list__item-actions">
+        <h3 style="margin-bottom: 20px;color: #4b70e2;float: left">请依次上传社团logo及风采照片：</h3>
+        <el-form-item>
+          <el-upload
+              :auto-upload="true"
+              :before-upload="beforeAvatarUpload"
+              :on-success="handleAvatarSuccess"
+              :limit=2
+              accept=".png,.jpg,.jepg"
+              action="http://127.0.0.1:8000/upload/img"
+              list-type="picture-card"
+              ref="upload"
+              style="margin-bottom: 20px">
+            <i slot="default" class="el-icon-plus"></i>
+            <div slot="file" slot-scope="{file}">
+              <img
+                  class="el-upload-list__item-thumbnail"
+                  :src="file.url" alt=""
+              >
+              <span class="el-upload-list__item-actions">
                     <span
                         class="el-upload-list__item-preview"
                         @click="handlePictureCardPreview(file)"
@@ -37,52 +36,11 @@
                       <i class="el-icon-delete"></i>
                       </span>
                   </span>
-                </div>
-              </el-upload>
-              <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="dialogImageUrl" alt="">
-            </el-dialog>
-            </el-col>
-            <el-col span="8">
-              <el-upload
-                  :auto-upload="true"
-                  :before-upload="beforeAvatarUpload2"
-                  :on-success="handleAvatarSuccess2"
-                  :limit=1
-                  accept=".png,.jpg,.jepg"
-                  action="http://127.0.0.1:8000/upload/img"
-                  list-type="picture-card"
-                  ref="upload"
-                  style="margin-bottom: 20px"
-              >
-                <div slot="file" slot-scope="{file}">
-                <img
-                    class="el-upload-list__item-thumbnail"
-                    :src="file.url" alt=""
-                >
-                <span class="el-upload-list__item-actions">
-                    <span
-                        class="el-upload-list__item-preview"
-                        @click="handlePictureCardPreview2(file)"
-                    >
-                      <i class="el-icon-zoom-in"></i>
-                    </span>
-                    <span
-                        v-if="!disabled"
-                        class="el-upload-list__item-delete"
-                        @click="handleRemove2(file)"
-                    >
-                      <i class="el-icon-delete"></i>
-                      </span>
-                  </span>
-              </div>
-                <i slot="default" class="el-icon-plus"></i>
-              </el-upload>
-              <el-dialog :visible.sync="dialogVisible2">
-              <img width="100%" :src="dialogImageUrl2" alt="">
-            </el-dialog>
-            </el-col>
-          </el-row>
+            </div>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="">
+          </el-dialog>
         </el-form-item>
         <el-form-item prop="clubName">
           <el-input v-model="createClubForm.clubName" class="form__input" type="text" placeholder="社团名称"/>
