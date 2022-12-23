@@ -6,7 +6,7 @@
         @dblclick="detailForPost(post.post_id)"
     >
       <v-avatar>
-        <img :src="post.avatar" alt="头像">
+        <img :src="post.user_avatar" alt="头像">
       </v-avatar>
       <v-list-item-content style="padding-left: 10px">
         <v-list-item-title>{{post.title}} - {{post.user_name}}</v-list-item-title>
@@ -82,9 +82,20 @@ export default {
     },
     deletePost(post_id) {
       /*
-      TODO:删除主题帖
+      DO:删除主题帖
        */
-      console.log(post_id);
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/delete_post",
+          Qs.stringify({
+            post_id:post_id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          this.$message.success("删除主题帖成功");
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
     }
   }
 }

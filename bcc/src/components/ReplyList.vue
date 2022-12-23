@@ -10,7 +10,7 @@
         <v-list-item-avatar color="grey darken-3">
           <v-img
               class="elevation-6"
-              :src="post.avatar"
+              :src="post.user_avatar"
           ></v-img>
         </v-list-item-avatar>
 
@@ -140,11 +140,25 @@ export default {
     },
     deleteReply(reply_id) {
       /*
-      TODO:删除回复帖
+      DO:删除回复帖
        */
-      console.log(reply_id);
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/delete_reply",
+          Qs.stringify({
+            reply_id:reply_id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          this.$message.success("删除回复成功");
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
     }
   },
+  created() {
+    console.log(this.post)
+  }
 }
 </script>
 
