@@ -217,6 +217,21 @@ def getClubList(userId: str):
     return result
 
 
+def getOneClub(clubId: int):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select * from club where club_id = %s'
+        cursor.execute(ins, [clubId])
+        result = cursor.fetchall()
+    except Exception as e:
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+
 def getMasterClubList(userId: str):
     connect, cursor = connectDatabase()
     try:

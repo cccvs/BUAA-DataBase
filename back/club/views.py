@@ -12,15 +12,15 @@ jwtKey = '123456'
 jwtFailedDict = {'code': 666, 'message': 'jwt verified error'}
 userField = ['user_id', 'password', 'avatar', 'time', 'real_name', 'sex', 'institute', 'phone', 'email', 'level',
              'following', 'followers']
-clubField = ['club_id', 'name', 'type', 'star', 'member_count', 'score', 'time', 'intro', 'master_id', 'cover',
+clubField = ['club_id', 'name', 'type', 'star', 'member_count', 'time', 'intro', 'master_id', 'cover',
              'status', 'welcome', 'welcome_image']
+noticeField = ['notice_id', 'title', 'content', 'user_id', 'club_id', 'top']
 eventField = ['event_id', 'club_id', 'user_id', 'title', 'cover', 'content', 'time', 'apply_time', 'expired_time',
               'begin_time', 'end_time', 'member_count', 'member_limit', 'status', 'like', 'dislike']
-noticeField = ['notice_id', 'title', 'content', 'user_id', 'club_id', 'top']
+replyField = ['reply_id', 'post_id', 'user_id', 'time', 'content', 'like', 'dislike']
+postField = ['post_id', 'club_id', 'user_id', 'time', 'title', 'content', 'like', 'dislike']
 joiningClubField = ['form_id', 'applicant_id', 'club_id', 'status', 'time']
 messageField = ['message_id', 'receiver_id', 'time', 'content']
-postField = ['post_id', 'club_id', 'user_id', 'time', 'title', 'content', 'like', 'dislike']
-replyField = ['reply_id', 'post_id', 'user_id', 'time', 'content', 'like', 'dislike']
 
 
 def hashCode(s, salt='club_system'):
@@ -318,6 +318,23 @@ def getClubList(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 10, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getOneClub(request):
+    clubId = request.POST.get('club_id')
+    if request.method == 'POST':
+        try:
+            result = mysqlPack.getOneClub(clubId)[0]
+            resultItem = dict()
+            for num, field in enumerate(clubField):
+                resultItem[field] = result[num]
+            return JsonResponse({'code': 0, 'message': '', 'club': resultItem})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 51, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 

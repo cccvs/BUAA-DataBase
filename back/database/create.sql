@@ -31,7 +31,6 @@ create table `club`
     `type`          smallint           not null,
     `star`          smallint,
     `member_count`  int                not null,
-    `score`         float,
     `time`          varchar(31)        not null,
     `intro`         varchar(1022),
     `master_id`     varchar(31),
@@ -44,7 +43,6 @@ create table `club`
     check ( 0 <= `type` and `type` <= 5 ),
     check ( `star` is null or (0 <= `star` and `star` <= 5) ),
     check ( `member_count` >= 0 ),
-    check ( 1.0 <= `score` and `score` <= 5.0 ),
     check ( `status` in (0, 1, 2) )
 );
 
@@ -59,7 +57,7 @@ create table `notice`
     `top`       smallint,
     primary key (`notice_id`),
     foreign key (`user_id`) references `user` (`user_id`),
-    foreign key (`club_id`) references `club` (`club_id`),
+    foreign key (`club_id`) references `club` (`club_id`) on delete cascade ,
     check ( `top` = 0 or `top` = 1 )
 );
 
@@ -83,7 +81,7 @@ create table `event`
     `like`         int,
     `dislike`      int,
     primary key (`event_id`),
-    foreign key (`club_id`) references `club` (`club_id`),
+    foreign key (`club_id`) references `club` (`club_id`) on delete cascade ,
     foreign key (`user_id`) references `user` (`user_id`),
     check ( `member_count` >= 0),
     check ( `member_limit` >= 0 ),
@@ -104,7 +102,7 @@ create table `post`
     `like`    int                not null,
     `dislike` int                not null,
     primary key (`post_id`),
-    foreign key (`club_id`) references `club` (`club_id`),
+    foreign key (`club_id`) references `club` (`club_id`) on delete cascade ,
     foreign key (`user_id`) references `user` (`user_id`),
     check ( `like` >= 0 ),
     check ( `dislike` >= 0)
@@ -127,24 +125,6 @@ create table `reply`
     check ( `dislike` >= 0)
 );
 
-drop table if exists `comment`;
-create table `comment`
-(
-    `comment_id` int auto_increment not null,
-    `user_id`    varchar(31)        not null,
-    `event_id`   int                not null,
-    `time`       varchar(31)        not null,
-    `content`    varchar(1022),
-    `score`      float,
-    `like`       int                not null,
-    `dislike`    int                not null,
-    primary key (`comment_id`),
-    foreign key (`user_id`) references `user` (`user_id`),
-    foreign key (`event_id`) references `event` (`event_id`),
-    check ( `score` in (1.0, 2.0, 3.0, 4.0, 5.0) ),
-    check ( `like` >= 0 ),
-    check ( `dislike` >= 0)
-);
 
 drop table if exists `joining_club`;
 create table `joining_club`
@@ -156,7 +136,7 @@ create table `joining_club`
     `time`         varchar(31)        not null,
     primary key (`form_id`),
     foreign key (`applicant_id`) references `user` (`user_id`),
-    foreign key (`club_id`) references `club` (`club_id`),
+    foreign key (`club_id`) references `club` (`club_id`) on delete cascade ,
     check ( 0 <= `status` and `status` <= 2)
 );
 
@@ -181,7 +161,7 @@ create table `user_club`
     `label`    varchar(31),
     primary key (`user_id`, `club_id`),
     foreign key (`user_id`) references `user` (`user_id`),
-    foreign key (`club_id`) references `club` (`club_id`),
+    foreign key (`club_id`) references `club` (`club_id`) on delete cascade ,
     check (`identity` in (0, 1, 2))
 );
 
@@ -197,17 +177,6 @@ create table user_event_participate
     check ( `identity` in (0, 1, 2))
 );
 
-drop table if exists `score`;
-create table `score`
-(
-    `user_id` varchar(31) not null,
-    `club_id` int         not null,
-    `score`   float       not null,
-    primary key (`user_id`, `club_id`),
-    foreign key (`user_id`) references `user` (`user_id`),
-    foreign key (`club_id`) references `club` (`club_id`),
-    check ( `score` in (1.0, 2.0, 3.0, 4.0, 5.0) )
-);
 
 drop table if exists `user_post`;
 create table `user_post`
