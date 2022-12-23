@@ -113,11 +113,14 @@ create table `reply`
 (
     `reply_id` int auto_increment not null,
     `post_id`  int                not null,
+    `user_id`  varchar(31)        not null,
     `time`     varchar(31)        not null,
     `content`  varchar(1022)      not null,
     `like`     int                not null,
     `dislike`  int                not null,
-    primary key (`reply_id`),
+    primary key (`reply_id`) ,
+    foreign key (`post_id`) references post(`post_id`) on delete cascade ,
+    foreign key (`user_id`) references user(`user_id`),
     check ( `like` >= 0 ),
     check ( `dislike` >= 0)
 );
@@ -245,7 +248,7 @@ create table `user_event_like`
     `event_id` int         not null,
     `action`   smallint    not null,
     primary key (`user_id`, `event_id`),
-    foreign key (`user_id`) references `user` (`user_id`) on delete cascade ,
+    foreign key (`user_id`) references `user` (`user_id`) on delete cascade,
     foreign key (`event_id`) references `event` (`event_id`) on delete cascade,
     check ( `action` in (0, 1))
 );

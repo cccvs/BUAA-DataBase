@@ -90,7 +90,7 @@ begin
     declare eventId int;
     set eventId = allocId();
     insert into event(event_id, club_id, user_id, title, cover, content, time, apply_time, expired_time, begin_time,
-                      end_time, member_count, member_limit, status, `like`, dislike) VALUE (eventId, clubId, userId,
+                      end_time, member_count, member_limit, status, `like`, dislike) values (eventId, clubId, userId,
                                                                                             eventTitle,
                                                                                             eventCover,
                                                                                             eventContent,
@@ -250,7 +250,7 @@ end ;;
 delimiter ;
 
 delimiter ;;
-create procedure handleCreateClub(in clubId int, in op int)
+create procedure handleCreateClub(in clubId int, in op int, in userLabel varchar(31))
 begin
     declare masterId varchar(31);
     # op 0不通过, 1通过
@@ -258,7 +258,7 @@ begin
         # 0普通社员, 2社长
         set masterId = (select master_id from club where club_id = clubId);
         update club set status = 2 where club_id = clubId;
-        insert into user_club(user_id, club_id, identity, label) values (masterId, clubId, 2, '社长');
+        insert into user_club(user_id, club_id, identity, label) values (masterId, clubId, 2, userLabel);
         commit;
     else
         delete from club where club_id = clubId;
@@ -315,10 +315,18 @@ begin
 end ;;
 delimiter ;
 
-
 delimiter ;;
 create procedure modifyClubInfo(in clubId int, in clubName varchar(31), in clubType smallint, in clubIntro varchar(1022), in clubCover varchar(255))
 begin
     update club set name = clubName, type = clubType, intro = clubIntro, cover = clubCover where club_id = clubId;
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure replyPost(in userId varchar(31), in postId int, in postContent varchar(255))
+begin
+    declare replyId int;
+    set replyId = allocId();
+    insert into reply (reply_id, post_id, time, content, `like`, dislike) values (replyId, postId, from_unixtime(unix_timestamp()), postContent, 0, 0);
 end ;;
 delimiter ;

@@ -135,7 +135,7 @@ def createClub(name: str, clubType: str, masterId: str, intro: str, cover: str):
 def handleCreateClub(clubId: int, op: int):
     connect, cursor = connectDatabase()
     try:
-        cursor.callproc('handleCreateClub', [clubId, op])
+        cursor.callproc('handleCreateClub', [clubId, op, '社长'])
         connect.commit()
     except Exception as e:
         print(e)
