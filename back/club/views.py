@@ -624,6 +624,20 @@ def likePost(request):
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
 
+@csrf_exempt
+def deletePost(request):
+    if request.method == 'POST':
+        postId = request.POST.get('post_id')
+        try:
+            mysqlPack.deletePost(postId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 38, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
 # others
 @csrf_exempt
 def handleFollowing(request):
@@ -669,6 +683,34 @@ def publishNotice(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 25, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def deleteNotice(request):
+    if request.method == 'POST':
+        noticeId = request.POST.get('notice_id')
+        try:
+            mysqlPack.deleteNotice(noticeId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 39, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def deleteReply(request):
+    if request.method == 'POST':
+        replyId = request.POST.get('reply_id')
+        try:
+            mysqlPack.deleteReply(replyId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 40, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 

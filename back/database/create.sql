@@ -211,8 +211,8 @@ create table `user_post`
     `post_id` int         not null,
     `action`  smallint    not null,
     primary key (`user_id`, `post_id`),
-    foreign key (`user_id`) references `user` (`user_id`),
-    foreign key (`post_id`) references `post` (`post_id`),
+    foreign key (`user_id`) references `user` (`user_id`) on delete cascade,
+    foreign key (`post_id`) references `post` (`post_id`) on delete cascade,
     check ( `action` in (0, 1) )
 );
 
@@ -223,8 +223,8 @@ create table `user_reply`
     `reply_id` int         not null,
     `action`   smallint    not null,
     primary key (`user_id`, `reply_id`),
-    foreign key (`user_id`) references `user` (`user_id`),
-    foreign key (`reply_id`) references `reply` (`reply_id`),
+    foreign key (`user_id`) references `user` (`user_id`) on delete cascade,
+    foreign key (`reply_id`) references `reply` (`reply_id`) on delete cascade,
     check ( `action` in (0, 1) )
 );
 
@@ -234,8 +234,8 @@ create table `follow`
     `follower_id` varchar(31) not null,
     `friend_id`   varchar(31) not null,
     primary key (`follower_id`, `friend_id`),
-    foreign key (`follower_id`) references `user` (`user_id`),
-    foreign key (`friend_id`) references `user` (`user_id`)
+    foreign key (`follower_id`) references `user` (`user_id`) on delete cascade,
+    foreign key (`friend_id`) references `user` (`user_id`) on delete cascade
 );
 
 drop table if exists `user_event_like`;
@@ -245,8 +245,8 @@ create table `user_event_like`
     `event_id` int         not null,
     `action`   smallint    not null,
     primary key (`user_id`, `event_id`),
-    foreign key (`user_id`) references `user` (`user_id`),
-    foreign key (`event_id`) references `event` (`event_id`),
+    foreign key (`user_id`) references `user` (`user_id`) on delete cascade ,
+    foreign key (`event_id`) references `event` (`event_id`) on delete cascade,
     check ( `action` in (0, 1))
 );
 

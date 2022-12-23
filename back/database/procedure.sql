@@ -285,3 +285,25 @@ begin
 end ;;
 delimiter ;
 
+# 1223
+delimiter ;;
+create procedure deleteNotice(in noticeId int)
+begin
+    delete from notice where notice_id = noticeId;
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure deletePost(in postId int)
+begin
+    # 级联删除
+    delete from post where post_id = postId;
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure deleteReply(in replyId int)
+begin
+    delete from reply where reply_id = replyId;
+end ;;
+delimiter ;
