@@ -59,6 +59,9 @@
         <el-form-item prop="introduction">
           <el-input v-model="createClubForm.introduction" class="form__input" type="text" placeholder="社团简介"/>
         </el-form-item>
+        <el-form-item prop="welcome">
+          <el-input v-model="createClubForm.welcome" class="form__input" type="text" placeholder="社团欢迎语"/>
+        </el-form-item>
         <el-form-item>
           <div class="primary-btn" @click="create" v-show="onCreate">立即注册</div>
           <div class="primary-btn" @click="change" v-show="!onCreate">确认修改</div>
@@ -73,6 +76,11 @@
 import Qs from "qs";
 
 export default {
+  /*
+  TODO: 社团信息需要额外收集欢迎照片和欢迎语
+  welcomeUrl
+  welcome
+   */
   name: "FindClub2",
   props: ['onCreate'],
   data() {
@@ -86,11 +94,13 @@ export default {
         clubName: '',
         clubType: '',
         introduction: '',
+        welcome: '',
       },
       createClubRules: {
         clubName: [{required: true, message: '请输入社团名称', trigger: 'blur'}],
         clubType: [{required: true, message: '请选择社团类型', trigger: 'blur'}],
         introduction: [{required: true, message: '请输入社团简介', trigger: 'blur'}],
+
       }
     }
   },
@@ -163,7 +173,7 @@ export default {
   width: 100%;
   min-width: 1000px;
   min-height: 300px;
-  height: 600px;
+  height: 700px;
   background-color: #ecf0f3;
   box-shadow: 10px 10px 10px #c3d5f3, -10px -10px 10px #f9f9f9;
   border-radius: 12px;

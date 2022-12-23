@@ -4,6 +4,7 @@
     <v-card
         class="mx-auto"
         width="98%"
+        color="blue lighten-5"
     >
       <v-card-title>
         <v-list-item-avatar color="grey darken-3">
@@ -34,7 +35,6 @@
       </v-card-title>
       <pre v-html="post.content"></pre>
     </v-card>
-
     <v-list>
       <v-list-item
           v-for="reply in replies"
@@ -44,6 +44,7 @@
         <v-card
             class="mx-auto"
             width="100%"
+            color="blue-grey lighten-4"
         >
           <v-card-title>
             <v-list-item-avatar color="grey darken-3">
@@ -69,6 +70,9 @@
                   <v-icon>mdi-thumb-down</v-icon>
                 </v-btn>
                 <div>{{ reply.dislike }}</div>
+                <v-btn icon color="indigo" @click="deleteReply(reply.reply_id)">
+                  <v-icon>mdi-comment-remove</v-icon>
+                </v-btn>
               </v-row>
             </v-list-item-content>
           </v-card-title>
@@ -133,6 +137,12 @@ export default {
       }).catch((error)=>{
         console.log(error)
       })
+    },
+    deleteReply(reply_id) {
+      /*
+      TODO:删除回复帖
+       */
+      console.log(reply_id);
     }
   },
 }

@@ -18,6 +18,7 @@
               :color="curColor(notice.notice_id)"
               class="mx-0"
               outlined
+              @click="deleteNotice(notice.notice_id)"
           >
             删除公告
           </v-btn>
@@ -52,6 +53,14 @@ export default {
           icon: 'mdi-atom',
         },
       ],
+    }
+  },
+  methods: {
+    deleteNotice(notice_id) {
+      console.log(notice_id);
+      /*
+      TODO: 删除公告，前端限制只有社长可以
+       */
     }
   },
   computed: {
