@@ -11,7 +11,6 @@
                   :before-upload="beforeAvatarUpload"
                   :on-success="handleAvatarSuccess"
                   :limit=1
-                  :data="{user_id:this.user_id}"
                   accept=".png,.jpg,.jepg"
                   action="http://127.0.0.1:8000/upload/img"
                   list-type="picture-card"
@@ -47,10 +46,9 @@
             <el-col span="8">
               <el-upload
                   :auto-upload="true"
-                  :before-upload="beforeAvatarUpload"
-                  :on-success="handleAvatarSuccess"
+                  :before-upload="beforeAvatarUpload2"
+                  :on-success="handleAvatarSuccess2"
                   :limit=1
-                  :data="{user_id:this.user_id}"
                   accept=".png,.jpg,.jepg"
                   action="http://127.0.0.1:8000/upload/img"
                   list-type="picture-card"
@@ -65,14 +63,14 @@
                 <span class="el-upload-list__item-actions">
                     <span
                         class="el-upload-list__item-preview"
-                        @click="handlePictureCardPreview(file)"
+                        @click="handlePictureCardPreview2(file)"
                     >
                       <i class="el-icon-zoom-in"></i>
                     </span>
                     <span
                         v-if="!disabled"
                         class="el-upload-list__item-delete"
-                        @click="handleRemove(file)"
+                        @click="handleRemove2(file)"
                     >
                       <i class="el-icon-delete"></i>
                       </span>
@@ -80,8 +78,8 @@
               </div>
                 <i slot="default" class="el-icon-plus"></i>
               </el-upload>
-              <el-dialog :visible.sync="dialogVisible">
-              <img width="100%" :src="dialogImageUrl" alt="">
+              <el-dialog :visible.sync="dialogVisible2">
+              <img width="100%" :src="dialogImageUrl2" alt="">
             </el-dialog>
             </el-col>
           </el-row>
@@ -121,7 +119,7 @@ import Qs from "qs";
 
 export default {
   /*
-  TODO: 社团信息需要额外收集欢迎照片和欢迎语
+  DO: 社团信息需要额外收集欢迎照片和欢迎语
   welcomeUrl
   welcome
    */
@@ -132,9 +130,13 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       disabled: false,
+      dialogImageUrl2: '',
+      dialogVisible2: false,
+      disabled2: false,
       user_id: localStorage.getItem('user_id'),
       createClubForm: {
         imageUrl: '',
+        welcomeImage: '',
         clubName: '',
         clubType: '',
         introduction: '',
@@ -144,12 +146,40 @@ export default {
         clubName: [{required: true, message: '请输入社团名称', trigger: 'blur'}],
         clubType: [{required: true, message: '请选择社团类型', trigger: 'blur'}],
         introduction: [{required: true, message: '请输入社团简介', trigger: 'blur'}],
-
+        welcome: [{required: true, message: '请输入社团欢迎语', trigger: 'blur'}],
       }
     }
   },
   methods: {
     change() {
+      let con = {};
+      con['image_url'] = this.createClubForm.imageUrl;
+      con['name'] = this.createClubForm.clubName;
+      con['type'] = this.createClubForm.clubType;
+      con['intro'] = this.createClubForm.introduction;
+      con['welcome_image'] = this.createClubForm.welcomeImage;
+      con['welcome'] = this.createClubForm.welcome;
+      con['jwt'] = {
+        'code': localStorage.getItem('code'),
+        'user_id': localStorage.getItem('user_id'),
+        'time': localStorage.getItem('time')
+      };
+      this.$axios({
+        url: 'http://127.0.0.1:8000/api/modify_club_info',
+        method: 'post',
+        data: Qs.stringify(con),
+      }).then((ret) => {
+        if (ret.data.code === 0) {
+          this.$message.success("社团信息修改成功");
+          this.$refs.upload.clearFiles();
+          this.createClubForm.imageUrl = '';
+          this.createClubForm.clubName = '';
+          this.createClubForm.clubType = '';
+          this.createClubForm.introduction = '';
+          this.createClubForm.welcomeImage = '';
+          this.createClubForm.welcome = '';
+        } else this.$notify.error(ret.data.message + "，修改失败");
+      })
     },
     create: function () {
       let con = {};
@@ -157,6 +187,8 @@ export default {
       con['name'] = this.createClubForm.clubName;
       con['type'] = this.createClubForm.clubType;
       con['intro'] = this.createClubForm.introduction;
+      con['welcome_image'] = this.createClubForm.welcomeImage;
+      con['welcome'] = this.createClubForm.welcome;
       con['jwt'] = {
         'code': localStorage.getItem('code'),
         'user_id': localStorage.getItem('user_id'),
@@ -174,6 +206,8 @@ export default {
           this.createClubForm.clubName = '';
           this.createClubForm.clubType = '';
           this.createClubForm.introduction = '';
+          this.createClubForm.welcomeImage = '';
+          this.createClubForm.welcome = '';
         } else this.$notify.error(ret.data.message + "，申请失败");
       })
     },
@@ -205,6 +239,36 @@ export default {
       }
       this.createClubForm.imageUrl = res.image_path
       console.log(this.createClubForm.imageUrl)
+      // this.$message.success('上传成功')
+    },
+    beforeAvatarUpload2(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isJPG && isLt2M;
+    },
+    //清除图片缓存
+    handleRemove2(file) {
+      console.log(file)
+      this.$refs.upload.clearFiles();
+    },
+    //展示图片预览图
+    handlePictureCardPreview2(file) {
+      this.dialogImageUrl2 = file.url;
+      this.dialogVisible2 = true;
+    },
+    handleAvatarSuccess2(res) {
+      if (res.code !== 0) {
+        this.$message.error(res.message)
+        return false
+      }
+      this.createClubForm.welcomeImage = res.image_path
+      // console.log(this.createClubForm.imageUrl)
       // this.$message.success('上传成功')
     },
   }
