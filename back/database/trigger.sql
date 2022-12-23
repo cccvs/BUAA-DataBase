@@ -32,8 +32,8 @@ create trigger updateUnfollow
     after delete on follow
     for each row
 begin
-    update user set following = following + 1 where user_id = OLD.follower_id;
-    update user set followers = followers + 1 where user_id = OLD.friend_id;
+    update user set following = following - 1 where user_id = OLD.follower_id;
+    update user set followers = followers - 1 where user_id = OLD.friend_id;
 end ;;
 
 drop trigger if exists updateUserPost1;

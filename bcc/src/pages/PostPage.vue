@@ -18,6 +18,7 @@
 import MyHeader from "@/components/MyHeader";
 import SideBar from "@/components/SideBar";
 import ReplyList from "@/components/ReplyList";
+import Qs from "qs";
 
 export default {
   name: "PostPage",
@@ -25,7 +26,7 @@ export default {
   data() {
     return {
       /*
-      TODO: 通过路由参数获取post
+      DO: 通过路由参数获取post
        */
       curPost: {
         post_id: 1,
@@ -58,6 +59,40 @@ export default {
       }],
     }
   },
+  methods: {
+    getPost() {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_post",
+          Qs.stringify({
+            post_id:this.$router.history.current.params.id
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.curPost = res.data.post;
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    getPostReplies() {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_post_replies",
+          Qs.stringify({
+            post_id:this.$router.history.current.params.id
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.replies = res.data.reply_list;
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+  },
+  mounted() {
+    this.getPost()
+    this.getPostReplies()
+  }
 }
 </script>
 

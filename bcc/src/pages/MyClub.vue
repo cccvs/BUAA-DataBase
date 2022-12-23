@@ -343,7 +343,8 @@ export default {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_members",
           Qs.stringify({
-            club_id: this.curClub[0].club_id
+            club_id: this.curClub[0].club_id,
+            user_id:localStorage.getItem('user_id')
           })
       ).then((res) => {
         if (res.data.code === 0) {
