@@ -830,7 +830,7 @@ def getOnePost(request):
         try:
             result = mysqlPack.getOnePost(postId)[0]
             resultItem = dict()
-            for num, field in enumerate(postField):
+            for num, field in enumerate(postField + ['user_avatar', 'user_name']):
                 resultItem[field] = result[num]
             if resultItem['post_id'] in likeSet:
                 resultItem['op'] = 0
@@ -921,5 +921,22 @@ def addComment(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 26, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def joinClubBulk(request):
+    length = request.POST.get('length')
+    clubId = request.POST.get('club_id')
+    userIdList = [request.POST.get("data[%d][item][user_id]" % i) for i in range(length)]
+    if request.method == 'POST':
+        try:
+            for userId in userIdList:
+                mysqlPack.joinClubDirect(userId, clubId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 50, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})

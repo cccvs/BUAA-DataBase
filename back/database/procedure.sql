@@ -61,7 +61,7 @@ delimiter ;
 
 delimiter ;;
 # handleJoiningClub
-create procedure handleJoiningClub(in op smallint, in formId int)
+create procedure handleJoiningClub(in op smallint, in formId int, in clubLabel varchar(31))
 begin
     # type: 0->accept, 1->reject
     # status: 0->处理中, 1->已拒绝, 2->已接受
@@ -77,7 +77,7 @@ begin
     set clubName = (select name from club where club_id = clubId);
     if op = 0 then
         update joining_club set status = 2 where form_id = formId;
-        insert into user_club(user_id, club_id, identity, label) values (applicantId, clubId, 0, null);
+        insert into user_club(user_id, club_id, identity, label) values (applicantId, clubId, 0, clubLabel);
         # 消息
         insert into message(message_id, receiver_id, time, content)
         values (messageId, receiverId, from_unixtime(unix_timestamp()),
@@ -177,6 +177,15 @@ begin
     delete from joining_club where applicant_id = userId and club_id = clubId;
     insert into joining_club(form_id, applicant_id, club_id, status, time)
     values (formId, userId, clubId, 0, from_unixtime(unix_timestamp()));
+end ;;
+delimiter ;
+
+delimiter ;;
+# joinClub
+create procedure joinClubDirect(in userId varchar(31), in clubId int, in clubLabel varchar(31))
+begin
+    delete from user_club where user_id = userId and club_id = clubId;
+    insert into user_club(user_id, club_id, identity, label) values (userId, clubId, 0, clubLabel);
 end ;;
 delimiter ;
 

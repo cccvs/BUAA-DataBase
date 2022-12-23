@@ -304,7 +304,7 @@ def updateUserClubLabel(userId: str, clubId: int, label: str):
 def handleJoiningClub(op: int, formId: int):
     connect, cursor = connectDatabase()
     try:
-        cursor.callproc('handleJoiningClub', (op, formId))
+        cursor.callproc('handleJoiningClub', (op, formId, '社员'))
         connect.commit()
     except Exception as e:
         print(e)
@@ -318,6 +318,19 @@ def joinClub(userId: str, clubId: int):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('joinClub', (userId, clubId))
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def joinClubDirect(userId: str, clubId: int):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('joinClubDirect', (userId, clubId, '社员'))
         connect.commit()
     except Exception as e:
         print(e)
@@ -357,7 +370,8 @@ def rateClubStar(clubId: int, star: int):
         closeDatabase(connect, cursor)
 
 
-def modifyClubInfo(clubId: int, name: str, clubType: str, clubIntro: str, clubCover: str, welcome: str, welcomeImage: str):
+def modifyClubInfo(clubId: int, name: str, clubType: str, clubIntro: str, clubCover: str, welcome: str,
+                   welcomeImage: str):
     connect, cursor = connectDatabase()
     try:
         typeNum = clubTypeToNum[clubType]
@@ -625,7 +639,7 @@ def getPostReplies(postId: str):
 def getOnePost(postId: str):
     connect, cursor = connectDatabase()
     try:
-        ins = 'select * from post where post_id = %s'
+        ins = 'select post.*, user.avatar, user.real_name from post, user where post.user_id = user.user_id and post_id = %s'
         cursor.execute(ins, [postId])
         result = cursor.fetchall()
         connect.commit()
