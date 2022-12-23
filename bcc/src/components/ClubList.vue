@@ -19,13 +19,13 @@
           <v-btn v-show="leaveClub" style="margin-right: 5px" color="yellow lighten-3" @click="quitClub(club.club_id)">
             退出社团
           </v-btn>
-          <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club.id)"
+          <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club.club_id)"
                  style="margin-right: 20px">
             <v-icon>
               mdi-check
             </v-icon>
           </v-btn>
-          <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(club.id)"
+          <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(club.club_id)"
                  style="margin-right: 5px">
             <v-icon>
               mdi-close
@@ -105,7 +105,7 @@ export default {
           "http://127.0.0.1:8000/api/handle_create_club",
           Qs.stringify({
             club_id: id,
-            op: 0
+            op: 1
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -123,7 +123,7 @@ export default {
           "http://127.0.0.1:8000/api/handle_create_club",
           Qs.stringify({
             club_id: id,
-            op: 1
+            op: 0
           })
       ).then((res) => {
         if (res.data.code === 0) {

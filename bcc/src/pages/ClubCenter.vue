@@ -205,6 +205,34 @@ export default {
         show: false,
       }]
     }
+  },
+  methods: {
+    getUnhandledClubs() {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_unhandled_clubs",
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.clubList = res.data.club_list;
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    getUnhandledEvents() {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_unhandled_events",
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.activities = res.data.event_list;
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+  },
+  mounted() {
+    this.getUnhandledClubs()
+    this.getUnhandledEvents()
   }
 }
 </script>

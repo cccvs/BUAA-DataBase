@@ -6,11 +6,10 @@
         @dblclick="detailForPost(post.post_id)"
     >
       <v-avatar>
-        <img :src="post.avatar" alt="头像">
+        <img :src="post.user_avatar" alt="头像">
       </v-avatar>
       <v-list-item-content style="padding-left: 10px">
         <v-list-item-title>{{post.title}} - {{post.user_name}}</v-list-item-title>
-        <pre v-html="post.content"></pre>
       </v-list-item-content>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
