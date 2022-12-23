@@ -10,6 +10,7 @@
               :before-upload="beforeAvatarUpload"
               :on-success="handleAvatarSuccess"
               :limit=2
+              multiple
               accept=".png,.jpg,.jepg"
               action="http://127.0.0.1:8000/upload/img"
               list-type="picture-card"
@@ -195,38 +196,8 @@ export default {
         this.$message.error(res.message)
         return false
       }
-      this.createClubForm.imageUrl = res.image_path
-      console.log(this.createClubForm.imageUrl)
-      // this.$message.success('上传成功')
-    },
-    beforeAvatarUpload2(file) {
-      const isJPG = file.type === 'image/jpeg';
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
-      }
-      return isJPG && isLt2M;
-    },
-    //清除图片缓存
-    handleRemove2(file) {
-      console.log(file)
-      this.$refs.upload.clearFiles();
-    },
-    //展示图片预览图
-    handlePictureCardPreview2(file) {
-      this.dialogImageUrl2 = file.url;
-      this.dialogVisible2 = true;
-    },
-    handleAvatarSuccess2(res) {
-      if (res.code !== 0) {
-        this.$message.error(res.message)
-        return false
-      }
-      this.createClubForm.welcomeImage = res.image_path
-      // console.log(this.createClubForm.imageUrl)
+      if (this.createClubForm.imageUrl === '') this.createClubForm.imageUrl = res.image_path
+      else this.createClubForm.welcomeImage = res.image_path
       // this.$message.success('上传成功')
     },
   }

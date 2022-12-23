@@ -28,14 +28,14 @@
               <div
                   style="margin-left: 300px;width: 600px;"
               >
-                <v-img src="../assets/png/loop-2.jpg">
+                <v-img :src="curClub.welcome_image">
                   <v-row
                       align="center"
                       justify="center"
                       style="margin-top: 50%"
                   >
                     <v-col class="text-center" cols="12">
-                      <h4 style="font-style: italic">欢迎每一个热爱户外，热爱自然的你！</h4>
+                      <h4 style="font-style: italic">{{curClub.welcome}}</h4>
                     </v-col>
                   </v-row>
                 </v-img>
@@ -314,6 +314,21 @@ export default {
     }
   },
   methods: {
+    getOneClub(id) {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_one_club",
+          Qs.stringify({
+            club_id: id,
+            user_id:localStorage.getItem('user_id')
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.curClub = res.data.club;
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
     getAllClubs() {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_all_clubs",
@@ -326,28 +341,21 @@ export default {
       })
     },
     getClubList() {
-      return new Promise((resolve) => {
-        this.$axios.post(
-            "http://127.0.0.1:8000/api/get_club_list",
-            Qs.stringify({
-              jwt: {
-                'code': localStorage.getItem('code'),
-                'user_id': localStorage.getItem('user_id'),
-                'time': localStorage.getItem('time')
-              }
-            })
-        ).then((res) => {
-          if (res.data.code === 0) {
-            this.myClubList = res.data.club_list;
-            let id = Number(this.$router.history.current.params.id);
-            this.curClub = this.myClubList.filter((club) => {
-              return club.club_id === id
-            })
-            resolve();
-          } else this.$notify.error(res.data.message)
-        }).catch((error) => {
-          console.log(error)
-        })
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_club_list",
+          Qs.stringify({
+            jwt: {
+              'code': localStorage.getItem('code'),
+              'user_id': localStorage.getItem('user_id'),
+              'time': localStorage.getItem('time')
+            }
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.myClubList = res.data.club_list;
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
       })
     },
     getMembers() {
@@ -355,13 +363,12 @@ export default {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_members",
           Qs.stringify({
-            club_id: this.curClub[0].club_id,
+            club_id: this.$router.history.current.params.id,
             user_id:localStorage.getItem('user_id')
           })
       ).then((res) => {
         if (res.data.code === 0) {
           this.members = res.data.member_list;
-          console.log(this.members)
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
@@ -371,14 +378,12 @@ export default {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_events",
           Qs.stringify({
-            club_id: this.curClub[0].club_id,
+            club_id: this.$router.history.current.params.id,
             user_id:localStorage.getItem('user_id')
           })
       ).then((res) => {
         if (res.data.code === 0) {
           this.activities = res.data.event_list;
-          console.log("here")
-          console.log(res.data)
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
@@ -388,7 +393,7 @@ export default {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_notices",
           Qs.stringify({
-            club_id: this.curClub[0].club_id
+            club_id: this.$router.history.current.params.id
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -402,13 +407,11 @@ export default {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_posts",
           Qs.stringify({
-            club_id: this.curClub[0].club_id,
+            club_id: this.$router.history.current.params.id,
             user_id:localStorage.getItem('user_id'),
           })
       ).then((res) => {
         if (res.data.code === 0) {
-          console.log(this.curClub[0].club_id)
-          console.log(res.data)
           this.posts = res.data.post_list;
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
@@ -558,15 +561,6 @@ export default {
         myChart.resize();
       });
     },
-    init() {
-      Promise.all([this.getClubList()])
-          .then(() => {
-            this.getMembers();
-            this.getActivities();
-            this.getNotices();
-            this.getPosts();
-          })
-    },
     toExcel() {
       /*
       DO: 输出的数据来源
@@ -646,8 +640,13 @@ export default {
     },
   },
   mounted() {
-    this.init();
-    this.getAllClubs()
+    this.getClubList();
+    this.getMembers();
+    this.getActivities();
+    this.getNotices();
+    this.getPosts();
+    this.getAllClubs();
+    this.getOneClub(this.$router.history.current.params.id);
     // let myClubList = [
     //   {
     //     id: 1,
@@ -687,7 +686,7 @@ export default {
   beforeRouteUpdate(to, from, next) {
     if (to.params && from.params && to.params.id !== from.params.id) {
       console.log("update");
-      let id = Number(to.params.id);
+      this.getOneClub(Number(to.params.id))
       // let myClubList = [
       //   {
       //     id: 1,
@@ -726,9 +725,6 @@ export default {
       /*
       DO: curClub应该是一个数组
        */
-      this.curClub = this.clubList.filter((club) => {
-        return club.id === id
-      })
       next();
     }
   }
