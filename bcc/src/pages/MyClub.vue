@@ -26,7 +26,7 @@
                         style="margin-left: 300px;max-height: 250px"
               ></ClubList>
               <div
-                  style="margin-left: 300px;width: 650px;"
+                  style="margin-left: 300px;width: 600px;"
               >
                 <v-img src="../assets/png/loop-2.jpg">
                   <v-row
