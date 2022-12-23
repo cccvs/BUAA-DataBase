@@ -25,20 +25,21 @@
                         :check-info="false"
                         style="margin-left: 300px;max-height: 250px"
               ></ClubList>
-              <v-parallax
-                  src="../assets/png/loop-3.jpg"
-                  style="margin-left: 300px;width: 650px"
+              <div
+                  style="margin-left: 300px;width: 650px;"
               >
-                <v-row
-                    align="center"
-                    justify="center"
-                >
-                  <v-col class="text-center" cols="12">
-                    <h1 class="display-1 font-weight-thin mb-4">{{ curClub[0].name }}</h1>
-                    <h4 class="subheading">欢迎每一个热爱户外，热爱自然的你！</h4>
-                  </v-col>
-                </v-row>
-              </v-parallax>
+                <v-img src="../assets/png/loop-2.jpg">
+                  <v-row
+                      align="center"
+                      justify="center"
+                      style="margin-top: 50%"
+                  >
+                    <v-col class="text-center" cols="12">
+                      <h4 style="font-style: italic">欢迎每一个热爱户外，热爱自然的你！</h4>
+                    </v-col>
+                  </v-row>
+                </v-img>
+              </div>
             </v-tab-item>
             <v-tab-item>
               <v-row style="margin-left: 10px;margin-top: 10px">
