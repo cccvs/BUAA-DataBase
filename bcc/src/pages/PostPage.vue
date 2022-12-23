@@ -62,9 +62,10 @@ export default {
   methods: {
     getPost() {
       this.$axios.post(
-          "http://127.0.0.1:8000/api/get_post",
+          "http://127.0.0.1:8000/api/get_one_post",
           Qs.stringify({
-            post_id:this.$router.history.current.params.id
+            post_id:this.$router.history.current.params.id,
+            user_id:localStorage.getItem('user_id'),
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -76,13 +77,14 @@ export default {
     },
     getPostReplies() {
       this.$axios.post(
-          "http://127.0.0.1:8000/api/get_post_replies",
+          "http://127.0.0.1:8000/api/get_post_replied",
           Qs.stringify({
             post_id:this.$router.history.current.params.id
           })
       ).then((res) => {
         if (res.data.code === 0) {
           this.replies = res.data.reply_list;
+          console.log(this.replies)
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
