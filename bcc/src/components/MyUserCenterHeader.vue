@@ -110,9 +110,6 @@ import Qs from "qs";
 export default {
   name: "MyUserCenterHeader",
   components: {MySnackBar},
-  /*
-  FIXME: 本来avatar属性应该也是由父组件传递进来的，但是发现url不能跨域传递？
-   */
   props: ["real_name", "following", "followers","avatar"],
   data() {
     let validatePass = (rule, value, callback) => {

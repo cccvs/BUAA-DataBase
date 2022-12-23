@@ -60,7 +60,8 @@
           <el-input v-model="createClubForm.introduction" class="form__input" type="text" placeholder="社团简介"/>
         </el-form-item>
         <el-form-item>
-          <div class="primary-btn" @click="create">{{ option }}</div>
+          <div class="primary-btn" @click="create" v-show="onCreate">立即注册</div>
+          <div class="primary-btn" @click="change" v-show="!onCreate">确认修改</div>
         </el-form-item>
       </el-form>
     </div>
@@ -73,7 +74,7 @@ import Qs from "qs";
 
 export default {
   name: "FindClub2",
-  props: ['option'],
+  props: ['onCreate'],
   data() {
     return {
       dialogImageUrl: '',
@@ -94,6 +95,9 @@ export default {
     }
   },
   methods: {
+    change() {
+
+    },
     create: function () {
       let con = {};
       con['image_url'] = this.createClubForm.imageUrl;

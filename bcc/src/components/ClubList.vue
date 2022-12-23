@@ -4,7 +4,7 @@
       <div><img :src="club.cover" alt="社团封面" class="club_picture"></div>
       <div class="club_name">{{ club.name }}
         <div class="club_level" v-show="rateClub">
-          <v-rating color="yellow" background-color="grey lighten-1" v-model="club.level"></v-rating>
+          <v-rating color="yellow" background-color="grey lighten-1" v-model="club.level" @click="starRating(club.club_id,club.level)"></v-rating>
         </div>
         <div class="club_check">
           <!--          <el-switch-->
@@ -52,6 +52,21 @@ export default {
         path
       });
     },
+    starRating(id,level) {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/star_rating",
+          Qs.stringify({
+            club_id: id,
+            level: level
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.$message.success("社团星级已修改");
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
     joinInClub(id) {
       this.$axios.post(
           "http://127.0.0.1:8000/api/join_club",
@@ -82,43 +97,41 @@ export default {
         console.log(error)
       })
     },
-    methods: {
-      handlePass(id) {
-        /*
-        DO:团委老师通过社团审批
-         */
-        this.$axios.post(
-            "http://127.0.0.1:8000/api/handle_create_club",
-            Qs.stringify({
-              club_id: id,
-              op: 0
-            })
-        ).then((res) => {
-          if (res.data.code === 0) {
-            this.$message.success("社团审批通过");
-          } else this.$notify.error(res.data.message)
-        }).catch((error) => {
-          console.log(error)
-        })
-      },
-      handleFailPass(id) {
-        /*
-        DO:团委老师拒绝了社团申请
-         */
-        this.$axios.post(
-            "http://127.0.0.1:8000/api/handle_create_club",
-            Qs.stringify({
-              club_id: id,
-              op: 1
-            })
-        ).then((res) => {
-          if (res.data.code === 0) {
-            this.$message.success("社团审批拒绝");
-          } else this.$notify.error(res.data.message)
-        }).catch((error) => {
-          console.log(error)
-        })
-      }
+    handlePass(id) {
+      /*
+      DO:团委老师通过社团审批
+       */
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/handle_create_club",
+          Qs.stringify({
+            club_id: id,
+            op: 0
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.$message.success("社团审批通过");
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    handleFailPass(id) {
+      /*
+      DO:团委老师拒绝了社团申请
+       */
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/handle_create_club",
+          Qs.stringify({
+            club_id: id,
+            op: 1
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.$message.success("社团审批拒绝");
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
     }
   }
 }
