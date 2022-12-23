@@ -19,7 +19,7 @@
               class="mx-0"
               outlined
           >
-            确认收到
+            删除公告
           </v-btn>
         </v-card-text>
       </v-card>

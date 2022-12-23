@@ -690,6 +690,9 @@ export default {
       //     level: 2
       //   }
       // ];
+      /*
+      TODO: curClub应该是一个数组
+       */
       this.curClub = this.myClubList.filter((club) => {
         return club.id === id
       })
