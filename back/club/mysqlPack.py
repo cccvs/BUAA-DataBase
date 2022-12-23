@@ -145,6 +145,20 @@ def handleCreateClub(clubId: int, op: int):
         closeDatabase(connect, cursor)
 
 
+def getUnhandledClubs():
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select * from club where status = 0'
+        cursor.execute(ins, [])
+        result = cursor.fetchall()
+    except Exception as e:
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
 def getUserClub(userId: str):
     connect, cursor = connectDatabase()
     try:
@@ -335,6 +349,35 @@ def createEvent(clubId: int, userId: str, eventTitle: str, eventCover: str, even
         closeDatabase(connect, cursor)
 
 
+def handleCreateEvent(eventId: int, op: int):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('handleCreateEvent', [eventId, op])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+def getUnhandledEvents():
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select * from event where status = 0'
+        cursor.execute(ins, [])
+        result = cursor.fetchall()
+    except Exception as e:
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
 def participateEvent(userId: str, eventId: int):
     connect, cursor = connectDatabase()
     try:
@@ -354,21 +397,6 @@ def likeEvent(userId: str, eventId: int, op: int):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('likeEvent', [userId, eventId, op])
-        result = cursor.fetchall()
-        connect.commit()
-    except Exception as e:
-        print(e)
-        connect.rollback()
-        raise e
-    finally:
-        closeDatabase(connect, cursor)
-    return result
-
-
-def handleCreateEvent(eventId: int, op: int):
-    connect, cursor = connectDatabase()
-    try:
-        cursor.callproc('handleCreateEvent', [eventId, op])
         result = cursor.fetchall()
         connect.commit()
     except Exception as e:

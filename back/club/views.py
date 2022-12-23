@@ -212,6 +212,25 @@ def handleCreateClub(request):
 
 
 @csrf_exempt
+def getUnhandledClubs(request):
+    if request.method == 'POST':
+        try:
+            result = mysqlPack.getUnhandledClubs()
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(clubField):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'club_list': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 41, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
 def findClub(request):
     retDict = dict()
     if request.method == 'POST':
@@ -535,6 +554,25 @@ def handleCreateEvent(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 32, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getUnhandledEvents(request):
+    if request.method == 'POST':
+        try:
+            result = mysqlPack.getUnhandledEvents()
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(eventField):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'event_list': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 41, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
