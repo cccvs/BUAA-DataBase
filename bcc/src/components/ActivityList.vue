@@ -7,7 +7,7 @@
     <v-list-item
         v-for="activity in activities"
         :key="activity.event_id"
-        style="margin-top: 20px; min-width: 400px; float: left"
+        style="margin-top: 20px; width: 400px; margin-left:20px; float: left"
     >
       <v-card
           class="mx-auto"
@@ -37,9 +37,6 @@
         </div>
         <div v-show="!audit">
           报名人数：{{ activity.member_count }} / {{ activity.member_limit }}
-          <v-btn small style="margin-left: 230px;" color="purple lighten-5" v-show="!audit" @click="participate(activity.event_id)">
-            报名
-          </v-btn>
         </div>
         <div v-show="audit">
           活动人数上限：{{ activity.member_limit }}
@@ -62,6 +59,9 @@
             查看详情
           </v-btn>
           <v-spacer></v-spacer>
+          <v-btn small color="purple lighten-5" v-show="!audit" @click="participate(activity.event_id)">
+            报名
+          </v-btn>
           <v-btn icon color="deep-orange" v-show="!audit" @click="likeEvent(activity.event_id,activity.op)">
             <v-icon>mdi-thumb-up</v-icon>
           </v-btn>
