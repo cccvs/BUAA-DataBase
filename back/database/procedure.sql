@@ -18,14 +18,14 @@ delimiter ;
 delimiter ;;
 # createClub
 create procedure createClub(in clubName varchar(31), in clubType smallint, in masterId varchar(31),
-                            in clubIntro varchar(1022), in clubCover varchar(255))
+                            in clubIntro varchar(1022), in clubCover varchar(255), in clubWelcome varchar(255), in clubWelcomeImage varchar(255))
 begin
     declare clubId int;
     set clubId = allocId();
     # 审核状态，0-2分别对应：审核中，未通过，已通过
     insert into club(club_id, name, type, star, member_count, score, time, intro, master_id, cover,
-                     status) value (clubId, clubName, clubType, 0, 0, null, from_unixtime(unix_timestamp()), clubIntro,
-                                    masterId, clubCover, 0);
+                     status, welcome, welcome_image) value (clubId, clubName, clubType, 0, 0, null, from_unixtime(unix_timestamp()), clubIntro,
+                                    masterId, clubCover, 0, clubWelcome, clubWelcomeImage);
     commit;
     # end
 end;;
@@ -358,9 +358,9 @@ delimiter ;
 
 delimiter ;;
 create procedure modifyClubInfo(in clubId int, in clubName varchar(31), in clubType smallint,
-                                in clubIntro varchar(1022), in clubCover varchar(255))
+                                in clubIntro varchar(1022), in clubCover varchar(255), in clubWelcome varchar(255), in clubWelcomeImage varchar(255))
 begin
-    update club set name = clubName, type = clubType, intro = clubIntro, cover = clubCover where club_id = clubId;
+    update club set name = clubName, type = clubType, intro = clubIntro, cover = clubCover, welcome = clubWelcome, welcome_image = clubWelcomeImage where club_id = clubId;
 end ;;
 delimiter ;
 

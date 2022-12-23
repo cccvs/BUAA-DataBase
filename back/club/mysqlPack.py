@@ -117,11 +117,11 @@ def getFriendIds(userId: str):
 
 
 # club
-def createClub(name: str, clubType: str, masterId: str, intro: str, cover: str):
+def createClub(name: str, clubType: str, masterId: str, intro: str, cover: str, welcome: str, welcomeImage: str):
     typeNum = clubTypeToNum[clubType]
     connect, cursor = connectDatabase()
     try:
-        cursor.callproc('createClub', (name, typeNum, masterId, intro, cover))
+        cursor.callproc('createClub', [name, typeNum, masterId, intro, cover, welcome, welcomeImage])
         connect.commit()
     except Exception as e:
         print(e)
@@ -357,11 +357,11 @@ def rateClubStar(clubId: int, star: int):
         closeDatabase(connect, cursor)
 
 
-def modifyClubInfo(clubId: int, name: str, clubType: str, clubIntro: str, clubCover: str):
+def modifyClubInfo(clubId: int, name: str, clubType: str, clubIntro: str, clubCover: str, welcome: str, welcomeImage: str):
     connect, cursor = connectDatabase()
     try:
         typeNum = clubTypeToNum[clubType]
-        cursor.callproc('modifyClubInfo', [clubId, name, typeNum, clubIntro, clubCover])
+        cursor.callproc('modifyClubInfo', [clubId, name, typeNum, clubIntro, clubCover, welcome, welcomeImage])
         connect.commit()
     except Exception as e:
         print(e)
@@ -621,6 +621,7 @@ def getOnePost(postId: str):
     finally:
         closeDatabase(connect, cursor)
     return result
+
 
 # others
 def handleFollowing(followerId: str, friendId: str):
