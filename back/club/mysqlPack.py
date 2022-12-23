@@ -435,7 +435,7 @@ def handleCreateEvent(eventId: int, op: int):
 def getUnhandledEvents():
     connect, cursor = connectDatabase()
     try:
-        ins = 'select * from event where status = 0'
+        ins = 'select event.*, club.cover, club.name, user.real_name from event, club, user where event.status = 0 and event.club_id = club.club_id and event.user_id = user.user_id'
         cursor.execute(ins, [])
         result = cursor.fetchall()
     except Exception as e:

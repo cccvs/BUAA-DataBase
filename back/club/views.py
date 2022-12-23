@@ -640,7 +640,7 @@ def getUnhandledEvents(request):
             resultList = []
             for data in result:
                 resultItem = dict()
-                for num, field in enumerate(eventField):
+                for num, field in enumerate(eventField + ['club_cover', 'club_name', 'user_real_name']):
                     resultItem[field] = data[num]
                 resultList.append(resultItem)
             return JsonResponse({'code': 0, 'message': '', 'event_list': resultList})
