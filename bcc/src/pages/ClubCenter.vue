@@ -18,7 +18,7 @@
             <v-tab>社团活动审批</v-tab>
             <v-tab>社团星级评定</v-tab>
             <v-tab-item>
-              <ClubList :clubs="clubList" check-info="true"></ClubList>
+              <ClubList :clubs="unhandledClubList" check-info="true"></ClubList>
             </v-tab-item>
             <v-tab-item>
               <ActivityList :activities="activities" audit="true" text="审批社团发起的活动"></ActivityList>
@@ -44,6 +44,7 @@ export default {
   components: {ClubList, MyHeader, SideBar, ActivityList},
   data() {
     return {
+      unhandledClubList: [],
       clubList: [
         {
           id: 1,
@@ -212,7 +213,7 @@ export default {
           "http://127.0.0.1:8000/api/get_unhandled_clubs",
       ).then((res) => {
         if (res.data.code === 0) {
-          this.clubList = res.data.club_list;
+          this.unhandledClubList = res.data.club_list;
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
@@ -229,10 +230,22 @@ export default {
         console.log(error)
       })
     },
+    getAllClubs() {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_all_clubs",
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.clubList = res.data.club_list;
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
   },
   mounted() {
     this.getUnhandledClubs()
     this.getUnhandledEvents()
+    this.getAllClubs()
   }
 }
 </script>

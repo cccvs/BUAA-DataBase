@@ -3,8 +3,8 @@
     <div class="clubBar" v-for="club in clubs" :key="club.data" @dblclick="gotoClub(club)">
       <div><img :src="club.cover" alt="社团封面" class="club_picture"></div>
       <div class="club_name">{{ club.name }}
-        <div class="club_level" v-show="rateClub">
-          <v-rating color="yellow" background-color="grey lighten-1" v-model="club.level" @click="starRating(club.club_id,club.level)"></v-rating>
+        <div class="club_level" v-show="rateClub" @click="starRating(club.club_id,club.level)">
+          <v-rating color="yellow" background-color="grey lighten-1" v-model="club.level"></v-rating>
         </div>
         <div class="club_check">
           <!--          <el-switch-->
@@ -54,7 +54,7 @@ export default {
     },
     starRating(id,level) {
       this.$axios.post(
-          "http://127.0.0.1:8000/api/star_rating",
+          "http://127.0.0.1:8000/api/rate_club_star",
           Qs.stringify({
             club_id: id,
             level: level
