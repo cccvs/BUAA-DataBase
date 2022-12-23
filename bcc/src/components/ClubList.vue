@@ -141,6 +141,9 @@ export default {
         console.log(error)
       })
     }
+  },
+  created() {
+    console.log(this.clubs)
   }
 }
 </script>

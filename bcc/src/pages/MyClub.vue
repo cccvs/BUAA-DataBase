@@ -28,14 +28,14 @@
               <div
                   style="margin-left: 300px;width: 600px;"
               >
-                <v-img :src="curClub.welcome_image">
+                <v-img :src="curClub[0].welcome_image">
                   <v-row
                       align="center"
                       justify="center"
                       style="margin-top: 50%"
                   >
                     <v-col class="text-center" cols="12">
-                      <h4 style="font-style: italic">{{curClub.welcome}}</h4>
+                      <h4 style="font-style: italic">{{curClub[0].welcome}}</h4>
                     </v-col>
                   </v-row>
                 </v-img>
@@ -119,6 +119,7 @@ export default {
      members是当前社团的所有成员，activities是当前社团的所有活动，notices是当前社团的所有公告
      */
     return {
+      club:{},
       myClubList: [],
       clubList:[],
       curClub: [{
@@ -323,7 +324,7 @@ export default {
           })
       ).then((res) => {
         if (res.data.code === 0) {
-          this.curClub = res.data.club;
+          this.club = res.data.club;
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
@@ -353,6 +354,10 @@ export default {
       ).then((res) => {
         if (res.data.code === 0) {
           this.myClubList = res.data.club_list;
+          let id = Number(this.$router.history.current.params.id);
+          this.curClub = this.myClubList.filter((club) => {
+            return club.club_id === id
+          })
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
@@ -640,13 +645,13 @@ export default {
     },
   },
   mounted() {
+    // this.getOneClub(this.$router.history.current.params.id);
     this.getClubList();
     this.getMembers();
     this.getActivities();
     this.getNotices();
     this.getPosts();
     this.getAllClubs();
-    this.getOneClub(this.$router.history.current.params.id);
     // let myClubList = [
     //   {
     //     id: 1,
@@ -686,7 +691,8 @@ export default {
   beforeRouteUpdate(to, from, next) {
     if (to.params && from.params && to.params.id !== from.params.id) {
       console.log("update");
-      this.getOneClub(Number(to.params.id))
+      let id = Number(to.params.id);
+      // this.getOneClub(Number(to.params.id))
       // let myClubList = [
       //   {
       //     id: 1,
@@ -725,6 +731,9 @@ export default {
       /*
       DO: curClub应该是一个数组
        */
+      this.curClub = this.clubList.filter((club) => {
+        return club.id === id
+      })
       next();
     }
   }

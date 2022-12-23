@@ -23,8 +23,8 @@ begin
     declare clubId int;
     set clubId = allocId();
     # 审核状态，0-2分别对应：审核中，未通过，已通过
-    insert into club(club_id, name, type, star, member_count, score, time, intro, master_id, cover,
-                     status, welcome, welcome_image) value (clubId, clubName, clubType, 0, 0, null, from_unixtime(unix_timestamp()), clubIntro,
+    insert into club(club_id, name, type, star, member_count, time, intro, master_id, cover,
+                     status, welcome, welcome_image) value (clubId, clubName, clubType, 0, 0, from_unixtime(unix_timestamp()), clubIntro,
                                     masterId, clubCover, 0, clubWelcome, clubWelcomeImage);
     commit;
     # end
