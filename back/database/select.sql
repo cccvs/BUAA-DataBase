@@ -19,6 +19,7 @@ select user.*, label from user, user_club where user.user_id = user_club.user_id
 
 # getClubEvents
 select event.*, club.cover, club.name, user.real_name from event, club, user where event.club_id = 1001 and event.status = 2 and club.club_id = event.club_id and user.user_id = event.user_id;
+
 # getClubNotices
 select * from notice where club_id = '%s';
 
@@ -31,3 +32,6 @@ select name from club where club_id = '%s';
 
 # getMessages
 select * from message where receiver_id = '%s';
+
+# getClubPosts
+select post.*, user.avatar, user.real_name from post, user where club_id = 1001 and post.user_id = user.user_id;

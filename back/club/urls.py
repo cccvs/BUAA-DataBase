@@ -27,6 +27,7 @@ urlpatterns = [
     # club
     path('create_club', views.createClub),
     path('handle_create_club', views.handleCreateClub),
+    path('get_unhandled_clubs', views.getUnhandledClubs),
     path('find_club', views.findClub),
     path('change_position', views.changePosition),
     path('get_club_list', views.getClubList),
@@ -41,6 +42,7 @@ urlpatterns = [
     # event
     path('create_event', views.createEvent),
     path('handle_create_event', views.handleCreateEvent),
+    path('get_unhandled_events', views.getUnhandledEvents),
     path('participate_event', views.participateEvent),
     path('like_event', views.likeEvent),
     # message
@@ -51,9 +53,12 @@ urlpatterns = [
     path('get_club_posts', views.getClubPosts),
     path('publish_post', views.publishPost),
     path('like_post', views.likePost),
+    path('delete_post', views.deletePost),
     # others
     path('handle_following', views.handleFollowing),
     path('handle_unfollowing', views.handleUnfollowing),
     path('publish_notice', views.publishNotice),
+    path('delete_notice', views.deleteNotice),
+    path('delete_reply', views.deleteReply),
     path('add_comment', views.addComment),
 ]

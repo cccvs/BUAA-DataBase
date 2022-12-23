@@ -75,6 +75,7 @@ begin
     else
         update joining_club set status = 1 where form_id = formId;
     end if;
+    delete from joining_club where form_id = formId;
     # end
 end;;
 delimiter ;
@@ -88,13 +89,16 @@ create procedure createEvent(in clubId int, in userId varchar(31), in eventTitle
 begin
     declare eventId int;
     set eventId = allocId();
-    insert into event(event_id, club_id, user_id, title, cover, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit, status, `like`, dislike) VALUE (eventId, clubId, userId, eventTitle,
-                                                                                    eventCover,
-                                                                                    eventContent,
-                                                                                    from_unixtime(unix_timestamp()),
-                                                                                    applyTime, expiredTime, beginTime,
-                                                                                    endTime, 0,
-                                                                                    memberLimit,0, 0, 0);
+    insert into event(event_id, club_id, user_id, title, cover, content, time, apply_time, expired_time, begin_time,
+                      end_time, member_count, member_limit, status, `like`, dislike) VALUE (eventId, clubId, userId,
+                                                                                            eventTitle,
+                                                                                            eventCover,
+                                                                                            eventContent,
+                                                                                            from_unixtime(unix_timestamp()),
+                                                                                            applyTime, expiredTime,
+                                                                                            beginTime,
+                                                                                            endTime, 0,
+                                                                                            memberLimit, 0, 0, 0);
     # end
 end;;
 delimiter ;
@@ -201,8 +205,14 @@ delimiter ;
 delimiter ;;
 create procedure participateEvent(in userId varchar(31), in eventId int)
 begin
-    delete from user_event_participate where user_id = userId and event_id = eventId;
-    insert into user_event_participate (user_id, event_id, identity) values (userId, eventId, 0);
+    declare memberCount int;
+    declare memberLimit int;
+    set memberCount = (select member_count from event where event_id = eventId);
+    set memberLimit = (select member_limit from event where event_id = eventId);
+    if memberCount < memberLimit then
+        delete from user_event_participate where user_id = userId and event_id = eventId;
+        insert into user_event_participate (user_id, event_id, identity) values (userId, eventId, 0);
+    end if;
 end ;;
 delimiter ;
 
@@ -275,3 +285,25 @@ begin
 end ;;
 delimiter ;
 
+# 1223
+delimiter ;;
+create procedure deleteNotice(in noticeId int)
+begin
+    delete from notice where notice_id = noticeId;
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure deletePost(in postId int)
+begin
+    # 级联删除
+    delete from post where post_id = postId;
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure deleteReply(in replyId int)
+begin
+    delete from reply where reply_id = replyId;
+end ;;
+delimiter ;

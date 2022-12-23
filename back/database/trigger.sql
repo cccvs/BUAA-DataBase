@@ -118,4 +118,20 @@ begin
     end if ;
 end ;;
 
+drop trigger if exists updateUserEventParticipate1;
+create trigger updateUserEventParticipate1
+    after insert on user_event_participate
+    for each row
+begin
+    update event set member_count = member_count + 1;
+end ;;
+
+drop trigger if exists updateUserEventParticipate2;
+create trigger updateUserEventParticipate2
+    after delete on user_event_participate
+    for each row
+begin
+    update event set member_count = member_count - 1;
+end ;;
+
 delimiter ;
