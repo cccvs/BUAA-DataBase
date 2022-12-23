@@ -625,7 +625,7 @@ def getPostReplies(postId: str):
 def getOnePost(postId: str):
     connect, cursor = connectDatabase()
     try:
-        ins = 'select * from post where post_id = %s'
+        ins = 'select post.*, user.avatar, user.real_name from post, user where post.user_id = user.user_id and post_id = %s'
         cursor.execute(ins, [postId])
         result = cursor.fetchall()
         connect.commit()
