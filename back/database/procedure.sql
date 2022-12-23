@@ -73,7 +73,7 @@ begin
     set applicantId = (select applicant_id from joining_club where form_id = formId);
     set clubId = (select club_id from joining_club where form_id = formId);
     set messageId = allocId();
-    set receiverId = (select master_id from club where club_id = clubId);
+    set receiverId = applicantId;
     set clubName = (select name from club where club_id = clubId);
     if op = 0 then
         update joining_club set status = 2 where form_id = formId;
