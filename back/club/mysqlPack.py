@@ -220,7 +220,7 @@ def getClubMembers(clubId: int):
 def getClubEvents(clubId: int):
     connect, cursor = connectDatabase()
     try:
-        ins = 'select * from event where club_id = %s and status = 2'
+        ins = 'select event.*, club.cover, club.name, user.real_name from event, club, user where event.club_id = %s and event.status = 2 and club.club_id = event.club_id and user.user_id = event.user_id'
         cursor.execute(ins, [clubId])
         result = cursor.fetchall()
     except Exception as e:
