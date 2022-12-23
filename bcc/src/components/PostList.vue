@@ -18,11 +18,11 @@
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
-      <v-btn icon color="deep-orange">
+      <v-btn icon color="deep-orange" @click="likePost(post.post_id)">
         <v-icon>mdi-thumb-up</v-icon>
       </v-btn>
       <div>{{ post.like }}</div>
-      <v-btn icon color="blue-grey darken-2">
+      <v-btn icon color="blue-grey darken-2" @click="dislikePost(post.post_id)">
         <v-icon>mdi-thumb-down</v-icon>
       </v-btn>
       <div>{{ post.dislike }}</div>
@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import Qs from "qs";
+
 export default {
   name: "PostList",
   props: ["posts"],
@@ -43,7 +45,39 @@ export default {
       this.$router.push({
         path
       });
-    }
+    },
+    likePost(id) {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/like_post",
+          Qs.stringify({
+            user_id: localStorage.getItem('user_id'),
+            post_id: id,
+            op: 0
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.$message.success("点赞成功");
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    dislikePost(id) {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/like_post",
+          Qs.stringify({
+            user_id: localStorage.getItem('user_id'),
+            post_id: id,
+            op: 1
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.$message.success("点踩成功");
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
   }
 }
 </script>
