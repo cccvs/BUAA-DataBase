@@ -6,7 +6,7 @@
         @dblclick="detailForPost(post.post_id)"
     >
       <v-avatar>
-        <img :src="post.user_avatar" alt="头像">
+        <img :src="post.avatar" alt="头像">
       </v-avatar>
       <v-list-item-content style="padding-left: 10px">
         <v-list-item-title>{{post.title}} - {{post.user_name}}</v-list-item-title>
@@ -25,7 +25,10 @@
         <v-icon>mdi-thumb-down</v-icon>
       </v-btn>
       <div>{{ post.dislike }}</div>
-      <v-list-item-content style="margin-right: 10px;margin-left: 20px">{{post.time}}</v-list-item-content>
+      <v-btn icon color="indigo" @click="deletePost(post.post_id)">
+        <v-icon>mdi-comment-remove</v-icon>
+      </v-btn>
+      <v-list-item-content style="margin-left: 20px">{{ post.time }}</v-list-item-content>
     </v-list-item>
   </v-list>
 </template>
@@ -77,6 +80,12 @@ export default {
         console.log(error)
       })
     },
+    deletePost(post_id) {
+      /*
+      TODO:删除主题帖
+       */
+      console.log(post_id);
+    }
   }
 }
 </script>

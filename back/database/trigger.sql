@@ -83,9 +83,9 @@ create trigger updateUserEventLike1
     for each row
 begin
     if NEW.action = 0 then
-        update post set `like` = `like` + 1;
+        update event set `like` = `like` + 1;
     else
-        update post set dislike = dislike + 1;
+        update event set dislike = dislike + 1;
     end if ;
 end ;;
 
@@ -95,14 +95,14 @@ create trigger updateUserEventLike2
     for each row
 begin
     if OLD.action = 0 then
-        update post set `like` = `like` - 1;
+        update event set `like` = `like` - 1;
     else
-        update post set dislike = dislike - 1;
+        update event set dislike = dislike - 1;
     end if ;
     if NEW.action = 0 then
-        update post set `like` = `like` + 1;
+        update event set `like` = `like` + 1;
     else
-        update post set dislike = dislike + 1;
+        update event set dislike = dislike + 1;
     end if ;
 end ;;
 
@@ -112,9 +112,9 @@ create trigger updateUserEventLike3
     for each row
 begin
     if OLD.action = 0 then
-        update post set `like` = `like` - 1;
+        update event set `like` = `like` - 1;
     else
-        update post set dislike = dislike - 1;
+        update event set dislike = dislike - 1;
     end if ;
 end ;;
 

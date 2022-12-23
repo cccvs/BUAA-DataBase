@@ -307,3 +307,18 @@ begin
     delete from reply where reply_id = replyId;
 end ;;
 delimiter ;
+
+delimiter ;;
+create procedure rateClubStar(in clubId int, in clubStar smallint)
+begin
+    update club set star = clubStar where club_id = clubId;
+end ;;
+delimiter ;
+
+
+delimiter ;;
+create procedure modifyClubInfo(in clubId int, in clubName varchar(31), in clubType smallint, in clubIntro varchar(1022), in clubCover varchar(255))
+begin
+    update club set name = clubName, type = clubType, intro = clubIntro, cover = clubCover where club_id = clubId;
+end ;;
+delimiter ;

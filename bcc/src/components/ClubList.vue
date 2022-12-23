@@ -152,7 +152,7 @@ export default {
 }
 
 .clubBar {
-  width: 650px;
+  width: 600px;
   float: left;
   height: 200px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
@@ -169,8 +169,8 @@ export default {
 }
 
 .club_name {
-  font-size: 50px;
-  width: 410px;
+  font-size: 30px;
+  width: 360px;
   float: left;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -178,7 +178,7 @@ export default {
 
 .club_info {
   float: left;
-  width: 410px;
+  width: 360px;
   margin-bottom: 10px;
 }
 

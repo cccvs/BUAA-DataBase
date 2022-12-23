@@ -231,6 +231,24 @@ def getUnhandledClubs(request):
 
 
 @csrf_exempt
+def getAllClubs(request):
+    if request.method == 'POST':
+        try:
+            result = mysqlPack.getAllClubs()
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(clubField):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'club_list': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 45, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+@csrf_exempt
 def findClub(request):
     retDict = dict()
     if request.method == 'POST':
@@ -469,6 +487,40 @@ def quitClub(request):
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
 
+@csrf_exempt
+def rateClubStar(request):
+    if request.method == 'POST':
+        clubId = request.POST.get('club_id')
+        star = request.POST.get('star')
+        try:
+            mysqlPack.rateClubStar(clubId, star)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 43, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def modifyClubInfo(request):
+    if request.method == 'POST':
+        clubId = request.POST.get('club_id')
+        name = request.POST.get('name')
+        clubType = request.POST.get('type')
+        intro = request.POST.get('intro')
+        cover = request.POST.get('cover')
+        try:
+            mysqlPack.modifyClubInfo(clubId, name, clubType, intro, cover)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 44, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+
 # message
 @csrf_exempt
 def deleteMessage(request):
@@ -572,7 +624,7 @@ def getUnhandledEvents(request):
             return JsonResponse({'code': 0, 'message': '', 'event_list': resultList})
         except Exception as e:
             print(e)
-            return JsonResponse({'code': 41, 'message': 'error'})
+            return JsonResponse({'code': 42, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
