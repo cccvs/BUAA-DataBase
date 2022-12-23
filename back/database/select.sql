@@ -15,7 +15,7 @@ from club
 where club_id in (select club_id from user_club where user_id = '%s');
 
 # getClubMembers
-select * from user where user_id in (select user_id from user_club where club_id = '%s');
+select user.*, label from user, user_club where user.user_id = user_club.user_id and club_id = 1;
 
 # getClubEvents
 select * from event where club_id = '%s' and status = 2;

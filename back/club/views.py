@@ -319,7 +319,7 @@ def getClubMembers(request):
             resultList = []
             for data in result:
                 resultItem = dict()
-                for num, field in enumerate(userField):
+                for num, field in enumerate(userField + ['label']):
                     resultItem[field] = data[num]
                 # 社长是否关注了该成员
                 resultItem['is_follow'] = 1 if friendIdSet.__contains__(resultItem['user_id']) else 0

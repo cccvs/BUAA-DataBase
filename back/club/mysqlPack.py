@@ -206,7 +206,7 @@ def getMasterClubList(userId: str):
 def getClubMembers(clubId: int):
     connect, cursor = connectDatabase()
     try:
-        ins = 'select * from user where user_id in (select user_id from user_club where club_id = %s)'
+        ins = 'select user.*, label from user, user_club where user.user_id = user_club.user_id and club_id = %s'
         cursor.execute(ins, [clubId])
         result = cursor.fetchall()
     except Exception as e:
