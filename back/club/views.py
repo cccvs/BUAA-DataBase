@@ -926,10 +926,14 @@ def addComment(request):
 
 
 @csrf_exempt
-def submitForm(request):
-    print(request)
+def joinClubBulk(request):
+    length = request.POST.get('length')
+    clubId = request.POST.get('club_id')
+    userIdList = [request.POST.get("data[%d][item][user_id]" % i) for i in range(length)]
     if request.method == 'POST':
         try:
+            for userId in userIdList:
+                mysqlPack.joinClubDirect(userId, clubId)
             return JsonResponse({'code': 0, 'message': ''})
         except Exception as e:
             print(e)

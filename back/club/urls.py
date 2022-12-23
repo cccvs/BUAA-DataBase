@@ -39,6 +39,7 @@ urlpatterns = [
     path('get_club_requests', views.getClubRequests),
     path('handle_joining_club', views.handleJoiningClub),
     path('join_club', views.joinClub),
+    path('join_club_bulk', views.joinClubBulk),
     path('quit_club', views.quitClub),
     path('rate_club_star', views.rateClubStar),
     path('modify_club_info', views.modifyClubInfo),
@@ -68,5 +69,4 @@ urlpatterns = [
     path('publish_notice', views.publishNotice),
     path('delete_notice', views.deleteNotice),
     path('add_comment', views.addComment),
-    path('submit_form', views.submitForm)
 ]
