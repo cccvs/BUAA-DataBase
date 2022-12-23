@@ -93,6 +93,8 @@
 </template>
 
 <script>
+import Qs from "qs";
+
 export default {
   name: "ReplyList",
   props: ["replies", "post"],
@@ -112,11 +114,25 @@ export default {
     },
     // 提交
     submit() {
-      console.log(this.newReply.content); //内容
-      // console.log(this.newReply.html);
       /*
-      TODO:将这里的数据传到后端，在后端存储生成id存储
+      DO:将这里的数据传到后端，在后端存储生成id存储
        */
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/reply_post",
+          Qs.stringify({
+            content:this.newReply.html,
+            user_id:localStorage.getItem('user_id'),
+            post_id:this.post.post_id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          console.log(this.clubId)
+          this.newReply.content = ''
+          this.$message.success("回复成功");
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
     }
   },
 }
