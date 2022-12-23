@@ -70,6 +70,7 @@ export default {
       ).then((res) => {
         if (res.data.code === 0) {
           this.curPost = res.data.post;
+          console.log(this.curPost)
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)

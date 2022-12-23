@@ -15,7 +15,7 @@
       >
         <v-list-item>
           <v-list-item-avatar color="grey">
-            <img :src="activity.cover" alt="头像">
+            <img :src="activity.club_cover" alt="头像">
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="headline">{{ activity.title }}</v-list-item-title>
@@ -30,10 +30,10 @@
         ></v-img>
         <!--            src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg"-->
         <div style="float: right">
-          {{ activity.real_name }} 发布于：{{ activity.time }}
+          {{ activity.user_real_name }} 发布于：{{ activity.time }}
         </div>
         <div class="desBlock">
-          报名时间：{{ activity.apply_time }}
+          报名时间：{{ activity.apply_time }}--{{activity.expired_time}}
         </div>
         <div v-show="!audit">
           报名人数：{{ activity.member_count }} / {{ activity.member_limit }}
@@ -42,7 +42,7 @@
           活动人数上限：{{ activity.member_limit }}
         </div>
         <div>
-          活动时间：{{ activity.begin_time }}
+          活动时间：{{ activity.begin_time }}--{{activity.end_time}}
         </div>
 <!--        <div v-show="!audit">-->
 <!--          评价该活动：（{{ activity.score }}），平均评分：（{{ activity.avg_score }}）-->
@@ -198,6 +198,9 @@ export default {
         console.log(error)
       })
     }
+  },
+  mounted() {
+    console.log(this.activities)
   }
 }
 </script>

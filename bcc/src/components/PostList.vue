@@ -99,6 +99,9 @@ export default {
         console.log(error)
       })
     }
+  },
+  mounted() {
+    console.log(this.posts)
   }
 }
 </script>
