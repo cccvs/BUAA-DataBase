@@ -25,9 +25,10 @@
           </v-list-item-content>
         </v-list-item>
         <v-img
-            src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg"
+            :src="activity.cover"
             height="194"
         ></v-img>
+        <!--            src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg"-->
         <div style="float: right">
           {{ activity.real_name }} 发布于：{{ activity.time }}
         </div>

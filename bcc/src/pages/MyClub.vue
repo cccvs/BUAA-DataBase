@@ -338,7 +338,7 @@ export default {
       })
     },
     getMembers() {
-      console.log(this.curClub[0].club_id)
+      // console.log(this.curClub[0].club_id)
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_members",
           Qs.stringify({
@@ -362,6 +362,8 @@ export default {
       ).then((res) => {
         if (res.data.code === 0) {
           this.activities = res.data.event_list;
+          console.log("here")
+          console.log(res.data)
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)

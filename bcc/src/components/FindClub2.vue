@@ -148,7 +148,7 @@ export default {
       }
       this.createClubForm.imageUrl = res.image_path
       console.log(this.createClubForm.imageUrl)
-      this.$message.success('上传成功')
+      // this.$message.success('上传成功')
     },
   }
 }

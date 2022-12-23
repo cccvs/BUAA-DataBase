@@ -125,10 +125,9 @@ export default {
   data() {
     return {
       activity: {
-        id: 1,
+        imageUrl: '',
         title: "",
         content: "",
-        user_id: "20373021",
         apply_time: "",
         begin_time: "",
         limit: 24
@@ -156,7 +155,7 @@ export default {
             club_id:this.club_id,
             user_id:localStorage.getItem('user_id'),
             title:this.activity.title,
-            cover:'',
+            cover:this.activity.imageUrl,
             content:this.activity.content,
             apply_time:this.activity.apply_time[0],
             expired_time:this.activity.apply_time[1],
@@ -168,6 +167,7 @@ export default {
         if(res.data.code===0){
           console.log(this.activity.content)
           this.$bus.$emit('showSnackBar', "活动已发布！")
+          this.$refs.upload.clearFiles();
           this.activity.title = ''
           this.activity.content = ''
           this.activity.apply_time = ''
@@ -199,8 +199,8 @@ export default {
       return isJPG && isLt2M;
     },
     //清除图片缓存
-    handleRemove(file) {
-      console.log(file)
+    handleRemove() {
+      // console.log(file)
       this.$refs.upload.clearFiles();
     },
     //展示图片预览图
@@ -213,9 +213,8 @@ export default {
         this.$message.error(res.message)
         return false
       }
-      this.createClubForm.imageUrl = res.image_path
-      console.log(this.createClubForm.imageUrl)
-      this.$message.success('上传成功')
+      this.activity.imageUrl = res.image_path
+      // this.$message.success('上传成功')
     },
   }
 }
