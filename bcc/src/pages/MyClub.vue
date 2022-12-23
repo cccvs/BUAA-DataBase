@@ -629,7 +629,7 @@ export default {
       DO:这里会获取data，（格式为json），将其写入数据库
        */
       this.$axios.post(
-          "http://127.0.0.1:8000/api/get_post_replied",
+          "http://127.0.0.1:8000/api/join_club_bulk",
           Qs.stringify({
             data:data,
             length:data.length,
@@ -637,7 +637,7 @@ export default {
           })
       ).then((res) => {
         if (res.data.code === 0) {
-          console.log(this.replies)
+          this.$message.success("批量添加社员成功");
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
