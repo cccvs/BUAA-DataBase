@@ -86,7 +86,7 @@
         fontSize="16px">
     </mavon-editor>
     <v-btn @click="submit" style="margin-top: 20px;float: left;width: 20px" color="primary">
-      提交
+      回帖
     </v-btn>
   </v-app>
 
