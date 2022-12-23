@@ -35,7 +35,7 @@
                       style="margin-top: 50%"
                   >
                     <v-col class="text-center" cols="12">
-                      <h4 style="font-style: italic">{{curClub[0].welcome}}</h4>
+                      <h4 style="font-style: italic">{{ curClub[0].welcome }}</h4>
                     </v-col>
                   </v-row>
                 </v-img>
@@ -119,9 +119,9 @@ export default {
      members是当前社团的所有成员，activities是当前社团的所有活动，notices是当前社团的所有公告
      */
     return {
-      club:{},
+      club: {},
       myClubList: [],
-      clubList:[],
+      clubList: [],
       curClub: [{
         id: 1,
         name: "凌峰社",
@@ -320,7 +320,7 @@ export default {
           "http://127.0.0.1:8000/api/get_one_club",
           Qs.stringify({
             club_id: id,
-            user_id:localStorage.getItem('user_id')
+            user_id: localStorage.getItem('user_id')
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -336,6 +336,12 @@ export default {
       ).then((res) => {
         if (res.data.code === 0) {
           this.clubList = res.data.club_list;
+          let id = Number(this.$router.history.current.params.id);
+          console.log("mounted id", id);
+          this.curClub = this.clubList.filter((club) => {
+            return club.club_id === id
+          })
+          console.log("curClub is ", this.curClub);
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
@@ -355,9 +361,11 @@ export default {
         if (res.data.code === 0) {
           this.myClubList = res.data.club_list;
           let id = Number(this.$router.history.current.params.id);
+          console.log("mounted id", id);
           this.curClub = this.myClubList.filter((club) => {
             return club.club_id === id
           })
+          console.log("curClub is ", this.curClub);
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
@@ -369,7 +377,7 @@ export default {
           "http://127.0.0.1:8000/api/get_club_members",
           Qs.stringify({
             club_id: this.$router.history.current.params.id,
-            user_id:localStorage.getItem('user_id')
+            user_id: localStorage.getItem('user_id')
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -384,7 +392,7 @@ export default {
           "http://127.0.0.1:8000/api/get_club_events",
           Qs.stringify({
             club_id: this.$router.history.current.params.id,
-            user_id:localStorage.getItem('user_id')
+            user_id: localStorage.getItem('user_id')
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -413,7 +421,7 @@ export default {
           "http://127.0.0.1:8000/api/get_club_posts",
           Qs.stringify({
             club_id: this.$router.history.current.params.id,
-            user_id:localStorage.getItem('user_id'),
+            user_id: localStorage.getItem('user_id'),
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -630,9 +638,9 @@ export default {
       this.$axios.post(
           "http://127.0.0.1:8000/api/join_club_bulk",
           Qs.stringify({
-            data:data,
-            length:data.length,
-            club_id:this.$router.history.current.params.id,
+            data: data,
+            length: data.length,
+            club_id: this.$router.history.current.params.id,
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -646,96 +654,31 @@ export default {
   },
   mounted() {
     // this.getOneClub(this.$router.history.current.params.id);
+    console.log("here mounted");
+
     this.getClubList();
     this.getMembers();
     this.getActivities();
     this.getNotices();
     this.getPosts();
     this.getAllClubs();
-    // let myClubList = [
-    //   {
-    //     id: 1,
-    //     name: "凌峰社",
-    //     time: '2010.11.11',
-    //     type: "体育",
-    //     description: "是一个以攀岩、暑期登山、科考，以及其他户外活动为特色的北航“明星社团”",
-    //     num: 200,
-    //     level: 5
-    //   },
-    //   {
-    //     id: 2,
-    //     name: "篮球裁判社",
-    //     type: "体育",
-    //     time: '2011.11.11',
-    //     num: 50,
-    //     level: 4
-    //   },
-    //   {
-    //     id: 3,
-    //     name: "科协",
-    //     type: "科技",
-    //     time: '2012.11.11',
-    //     num: 150,
-    //     level: 3
-    //   },
-    //   {
-    //     id: 4,
-    //     name: "知行学社",
-    //     type: "人文",
-    //     time: '2013.11.11',
-    //     num: 100,
-    //     level: 2
-    //   }
-    // ];
+
   },
   beforeRouteUpdate(to, from, next) {
-    if (to.params && from.params && to.params.id !== from.params.id) {
-      console.log("update");
-      let id = Number(to.params.id);
-      // this.getOneClub(Number(to.params.id))
-      // let myClubList = [
-      //   {
-      //     id: 1,
-      //     name: "凌峰社",
-      //     time: '2010.11.11',
-      //     type: "体育",
-      //     description: "是一个以攀岩、暑期登山、科考，以及其他户外活动为特色的北航“明星社团”",
-      //     num: 200,
-      //     level: 5
-      //   },
-      //   {
-      //     id: 2,
-      //     name: "篮球裁判社",
-      //     type: "体育",
-      //     time: '2011.11.11',
-      //     num: 50,
-      //     level: 4
-      //   },
-      //   {
-      //     id: 3,
-      //     name: "科协",
-      //     type: "科技",
-      //     time: '2012.11.11',
-      //     num: 150,
-      //     level: 3
-      //   },
-      //   {
-      //     id: 4,
-      //     name: "知行学社",
-      //     type: "人文",
-      //     time: '2013.11.11',
-      //     num: 100,
-      //     level: 2
-      //   }
-      // ];
-      /*
-      DO: curClub应该是一个数组
-       */
-      this.curClub = this.clubList.filter((club) => {
-        return club.id === id
-      })
-      next();
-    }
+    console.log("update");
+    let id = Number(to.params.id);
+    /*
+    DO: curClub应该是一个数组
+     */
+    console.log("here!!!!");
+    console.log(id);
+    console.log(this.clubList);
+    this.curClub = this.clubList.filter((club) => {
+      return club.club_id === id
+    })
+    console.log(this.curClub);
+    next();
+
   }
 }
 </script>
