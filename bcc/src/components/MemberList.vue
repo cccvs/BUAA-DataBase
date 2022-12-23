@@ -40,7 +40,7 @@
              color="blue lighten-3"
              @click="handelChangePosition(member.user_id)">确认修改
       </v-btn>
-      <v-btn v-show="follow&&!member.following&&(member.user_id !== curId)"
+      <v-btn v-show="follow&&member.is_follow === 0&&(member.user_id !== curId)"
              color="blue lighten-3"
              @click="handelFollow(member.user_id)"
              style="min-width: 120px">
@@ -49,7 +49,7 @@
         </v-icon>
         关注
       </v-btn>
-      <v-btn v-show="follow&&member.following&&(member.user_id !== curId)"
+      <v-btn v-show="follow&&member.is_follow === 1&&(member.user_id !== curId)"
              color="orange lighten-3"
              @click="handleUnFollow(member.user_id)"
       >
@@ -72,9 +72,9 @@ export default {
     return {
       // '社长', '副社长', '办公室部长'
       /*
-      TODO: 获取当前ID
+      DO: 获取当前ID
        */
-      curId:"",
+      curId:localStorage.getItem('user_id'),
       items: [{
         id: 1,
         label: "社长"
@@ -102,14 +102,27 @@ export default {
       ).then((res) => {
         if (res.data.code === 0) {
           // console.log(res.data)
-          this.$bus.$emit('showSnackBar', "你已成功关注！")
+          this.$message.success("你已成功关注！")
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
       })
     },
     handleUnFollow(id) {
-      console.log(id);
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/handle_unfollowing",
+          Qs.stringify({
+            'follower_id': localStorage.getItem('user_id'),
+            'friend_id': id
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          // console.log(res.data)
+          this.$message.success("你已成功取消关注！")
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
     },
     handlePass(id) {
       this.$bus.$emit('handlePass', id)
@@ -129,9 +142,6 @@ export default {
       }
     }
   },
-  created() {
-    console.log(this.members)
-  }
 }
 </script>
 <style>

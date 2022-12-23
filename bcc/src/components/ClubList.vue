@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="club_info">{{club.type}} {{club.level}}星级 {{club.time}}</div>
-      <div class="club_dis">{{club.description}}</div>
+      <div class="club_dis">{{club.intro}}</div>
     </div>
   </div>
 </template>
