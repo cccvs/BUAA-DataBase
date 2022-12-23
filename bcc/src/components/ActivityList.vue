@@ -11,6 +11,7 @@
     >
       <v-card
           class="mx-auto"
+          style="min-width: 400px"
       >
         <v-list-item>
           <v-list-item-avatar color="grey">
