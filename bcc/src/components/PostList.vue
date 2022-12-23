@@ -9,8 +9,7 @@
         <img :src="post.avatar" alt="头像">
       </v-avatar>
       <v-list-item-content style="padding-left: 10px">
-        <v-list-item-title v-text="post.title"></v-list-item-title>
-        <v-list-item-subtitle>{{post.user_name}}:</v-list-item-subtitle>
+        <v-list-item-title>{{post.title}} - {{post.user_name}}</v-list-item-title>
         <pre v-html="post.content"></pre>
       </v-list-item-content>
       <v-spacer></v-spacer>
