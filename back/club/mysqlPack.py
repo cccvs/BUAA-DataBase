@@ -380,6 +380,21 @@ def handleCreateEvent(eventId: int, op: int):
     return result
 
 
+def getUserEventAction(userId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select event_id, action from user_event_like where user_id = %s'
+        cursor.execute(ins, [userId])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
 # others
 def handleFollowing(followerId: str, friendId: str):
     connect, cursor = connectDatabase()
@@ -479,7 +494,7 @@ def getMessages(userId: str):
 def getClubPosts(clubId: int):
     connect, cursor = connectDatabase()
     try:
-        ins = 'select * from post where club_id = %s'
+        ins = 'select post.*, user.avatar, user.real_name from post, user where club_id = %s and post.user_id = user.user_id'
         cursor.execute(ins, [clubId])
         result = cursor.fetchall()
         connect.commit()

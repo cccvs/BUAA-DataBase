@@ -75,6 +75,7 @@ begin
     else
         update joining_club set status = 1 where form_id = formId;
     end if;
+    delete from joining_club where form_id = formId;
     # end
 end;;
 delimiter ;

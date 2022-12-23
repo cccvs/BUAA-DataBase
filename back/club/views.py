@@ -336,14 +336,25 @@ def getClubMembers(request):
 def getClubEvents(request):
     if request.method == 'POST':
         clubId = request.POST.get('club_id')
+        userId = request.POST.get('user_id')
         try:
+            eventActionList = mysqlPack.getUserEventAction(userId)
+            likeSet = {x[0] for x in eventActionList if x[1] == 0}
+            dislikeSet = {x[0] for x in eventActionList if x[1] == 1}
             result = mysqlPack.getClubEvents(clubId)
             resultList = []
             for data in result:
                 resultItem = dict()
                 for num, field in enumerate(eventField + ['club_cover', 'club_name', 'user_real_name']):
                     resultItem[field] = data[num]
+                # extra field, 0:点赞, 1:点踩, 2:无操作
                 resultItem['show'] = False
+                if resultItem['event_id'] in likeSet:
+                    resultItem['op'] = 0
+                elif resultItem['event_id'] in dislikeSet:
+                    resultItem['op'] = 1
+                else:
+                    resultItem['op'] = 2
                 resultList.append(resultItem)
             return JsonResponse({'code': 0, 'message': '', 'event_list': resultList})
         except Exception as e:
@@ -569,7 +580,7 @@ def getClubPosts(request):
             resultList = []
             for data in result:
                 resultItem = dict()
-                for num, field in enumerate(postField):
+                for num, field in enumerate(postField + ['user_avatar', 'user_name']):
                     resultItem[field] = data[num]
                 resultList.append(resultItem)
             return JsonResponse({'code': 0, 'message': '', 'post_list': resultList})
