@@ -923,3 +923,16 @@ def addComment(request):
             return JsonResponse({'code': 26, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def submitForm(request):
+    print(request)
+    if request.method == 'POST':
+        try:
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 50, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})

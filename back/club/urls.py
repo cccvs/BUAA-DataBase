@@ -68,4 +68,5 @@ urlpatterns = [
     path('publish_notice', views.publishNotice),
     path('delete_notice', views.deleteNotice),
     path('add_comment', views.addComment),
+    path('submit_form', views.submitForm)
 ]
