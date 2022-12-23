@@ -57,11 +57,14 @@ urlpatterns = [
     path('publish_post', views.publishPost),
     path('like_post', views.likePost),
     path('delete_post', views.deletePost),
+    path('delete_reply', views.deleteReply),
+    path('reply_post', views.replyPost),
+    path('get_post_replied', views.getPostReplies),
+    path('get_one_post', views.getOnePost),
     # others
     path('handle_following', views.handleFollowing),
     path('handle_unfollowing', views.handleUnfollowing),
     path('publish_notice', views.publishNotice),
     path('delete_notice', views.deleteNotice),
-    path('delete_reply', views.deleteReply),
     path('add_comment', views.addComment),
 ]

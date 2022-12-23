@@ -135,7 +135,7 @@ def createClub(name: str, clubType: str, masterId: str, intro: str, cover: str):
 def handleCreateClub(clubId: int, op: int):
     connect, cursor = connectDatabase()
     try:
-        cursor.callproc('handleCreateClub', [clubId, op])
+        cursor.callproc('handleCreateClub', [clubId, op, '社长'])
         connect.commit()
     except Exception as e:
         print(e)
@@ -565,6 +565,63 @@ def deletePost(postId: str):
         closeDatabase(connect, cursor)
 
 
+def deleteReply(replyId: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('deleteReply', [replyId])
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def replyPost(userId: str, postId: int, content: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('replyPost', [userId, postId, content])
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def getPostReplies(postId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select post.*, avatar, real_name from post, user where post_id = %s and post.user_id = user.user_id'
+        cursor.execute(ins, [postId])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+def getOnePost(postId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select * from post where post_id = %s'
+        cursor.execute(ins, [postId])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
 # others
 def handleFollowing(followerId: str, friendId: str):
     connect, cursor = connectDatabase()
@@ -609,19 +666,6 @@ def deleteNotice(noticeId: str):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('deleteNotice', [noticeId])
-        connect.commit()
-    except Exception as e:
-        print(e)
-        connect.rollback()
-        raise e
-    finally:
-        closeDatabase(connect, cursor)
-
-
-def deleteReply(replyId: str):
-    connect, cursor = connectDatabase()
-    try:
-        cursor.callproc('deleteReply', [replyId])
         connect.commit()
     except Exception as e:
         print(e)
