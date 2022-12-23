@@ -117,11 +117,11 @@ def getFriendIds(userId: str):
 
 
 # club
-def createClub(name: str, clubType: str, masterId: str, intro: str, cover: str):
+def createClub(name: str, clubType: str, masterId: str, intro: str, cover: str, welcome: str, welcomeImage: str):
     typeNum = clubTypeToNum[clubType]
     connect, cursor = connectDatabase()
     try:
-        cursor.callproc('createClub', (name, typeNum, masterId, intro, cover))
+        cursor.callproc('createClub', [name, typeNum, masterId, intro, cover, welcome, welcomeImage])
         connect.commit()
     except Exception as e:
         print(e)
@@ -135,7 +135,7 @@ def createClub(name: str, clubType: str, masterId: str, intro: str, cover: str):
 def handleCreateClub(clubId: int, op: int):
     connect, cursor = connectDatabase()
     try:
-        cursor.callproc('handleCreateClub', [clubId, op])
+        cursor.callproc('handleCreateClub', [clubId, op, '社长'])
         connect.commit()
     except Exception as e:
         print(e)
@@ -357,11 +357,11 @@ def rateClubStar(clubId: int, star: int):
         closeDatabase(connect, cursor)
 
 
-def modifyClubInfo(clubId: int, name: str, clubType: str, clubIntro: str, clubCover: str):
+def modifyClubInfo(clubId: int, name: str, clubType: str, clubIntro: str, clubCover: str, welcome: str, welcomeImage: str):
     connect, cursor = connectDatabase()
     try:
         typeNum = clubTypeToNum[clubType]
-        cursor.callproc('modifyClubInfo', [clubId, name, typeNum, clubIntro, clubCover])
+        cursor.callproc('modifyClubInfo', [clubId, name, typeNum, clubIntro, clubCover, welcome, welcomeImage])
         connect.commit()
     except Exception as e:
         print(e)
@@ -505,7 +505,7 @@ def getMessages(userId: str):
     return result
 
 
-# post
+# post reply
 def getClubPosts(clubId: int):
     connect, cursor = connectDatabase()
     try:
@@ -552,6 +552,21 @@ def likePost(userId: str, postId: int, op: int):
     return result
 
 
+def likeReply(userId: str, replyId: int, op: int):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('likeReply', [userId, replyId, op])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
 def deletePost(postId: str):
     connect, cursor = connectDatabase()
     try:
@@ -563,6 +578,96 @@ def deletePost(postId: str):
         raise e
     finally:
         closeDatabase(connect, cursor)
+
+
+def deleteReply(replyId: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('deleteReply', [replyId])
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def replyPost(userId: str, postId: int, content: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('replyPost', [userId, postId, content])
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def getPostReplies(postId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select reply.*, avatar, real_name from reply, user where post_id = %s and reply.user_id = user.user_id'
+        cursor.execute(ins, [postId])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+def getOnePost(postId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select * from post where post_id = %s'
+        cursor.execute(ins, [postId])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+def getUserPostAction(userId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select post_id, action from user_post where user_id = %s'
+        cursor.execute(ins, [userId])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
+def getUserReplyAction(userId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select reply_id, action from user_reply where user_id = %s'
+        cursor.execute(ins, [userId])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
 
 
 # others
@@ -609,19 +714,6 @@ def deleteNotice(noticeId: str):
     connect, cursor = connectDatabase()
     try:
         cursor.callproc('deleteNotice', [noticeId])
-        connect.commit()
-    except Exception as e:
-        print(e)
-        connect.rollback()
-        raise e
-    finally:
-        closeDatabase(connect, cursor)
-
-
-def deleteReply(replyId: str):
-    connect, cursor = connectDatabase()
-    try:
-        cursor.callproc('deleteReply', [replyId])
         connect.commit()
     except Exception as e:
         print(e)

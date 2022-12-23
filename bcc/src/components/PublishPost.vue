@@ -73,6 +73,8 @@ export default {
       ).then((res) => {
         if (res.data.code === 0) {
           this.$message.success("发布成功");
+          this.newPost.title = ''
+          this.newPost.content = ''
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)

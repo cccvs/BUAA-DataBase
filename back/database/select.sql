@@ -35,3 +35,9 @@ select * from message where receiver_id = '%s';
 
 # getClubPosts
 select post.*, user.avatar, user.real_name from post, user where club_id = 1001 and post.user_id = user.user_id;
+
+# getPostReplies
+select post.*, avatar, real_name from post, user where post_id = 1 and post.user_id = user.user_id;
+
+# getOnePost
+select * from post where post_id = 1;

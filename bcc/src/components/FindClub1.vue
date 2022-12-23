@@ -6,7 +6,7 @@
       </div>
       <div class="dropdownLevel-box">
         <el-dropdown placement="bottom" trigger="click" @command="handleSelectLevel">
-          <span style="cursor: pointer;color: dodgerblue">星级{{level}}<i class="el-icon-arrow-down el-icon--right"/></span>
+          <span style="cursor: pointer;color: dodgerblue">星级{{star}}<i class="el-icon-arrow-down el-icon--right"/></span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="1">1</el-dropdown-item>
             <el-dropdown-item command="2">2</el-dropdown-item>
@@ -19,13 +19,14 @@
       </div>
       <div class="dropdownType-box">
         <el-dropdown placement="bottom" trigger="click" @command="handleSelectType">
-          <span style="cursor: pointer;color: dodgerblue">类型{{type}}<i class="el-icon-arrow-down el-icon--right"/></span>
+          <span style="cursor: pointer;color: dodgerblue">类型{{curType}}<i class="el-icon-arrow-down el-icon--right"/></span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="科技">科技</el-dropdown-item>
             <el-dropdown-item command="人文">人文</el-dropdown-item>
             <el-dropdown-item command="实践">实践</el-dropdown-item>
             <el-dropdown-item command="体育">体育</el-dropdown-item>
             <el-dropdown-item command="艺术">艺术</el-dropdown-item>
+            <el-dropdown-item command="其它">其它</el-dropdown-item>
             <el-dropdown-item command="空">-</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -70,9 +71,10 @@ export default {
     return{
       searchClubName: '',
       sortType:'按成立时间降序',
-      level: null,
+      star: null,
       isLevel: false,
       type: null,
+      curType: null,
       isType: false,
       club:{
         clubName:"",
@@ -183,23 +185,23 @@ export default {
     selectLevel(){
       this.levelList = [];
       if (this.isType) {
-        if (this.level == null) {
+        if (this.star == null) {
           this.levelList = this.typeList;
         } else {
           let j = 0;
           for(let i = 0; i < this.typeList.length; i++){
-            if (this.typeList[i].level === this.level){
+            if (this.typeList[i].star === this.star){
               this.levelList[j++] = this.typeList[i];
             }
           }
         }
       } else {
-        if (this.level == null) {
+        if (this.star == null) {
           this.levelList = this.clubList;
         } else {
           let j = 0;
           for(let i = 0; i < this.clubList.length; i++){
-            if (this.clubList[i].level === this.level){
+            if (this.clubList[i].star === this.star){
               this.levelList[j++] = this.clubList[i];
             }
           }
@@ -209,10 +211,10 @@ export default {
     },
     handleSelectLevel(command){
       if (command !== '6') {
-        this.level = command - '0';
+        this.star = command - '0';
         this.isLevel = true;
       } else {
-        this.level = null;
+        this.star = null;
         this.isLevel = false;
       }
       this.selectLevel();
@@ -247,10 +249,17 @@ export default {
     },
     handleSelectType(command){
       if (command !== "空") {
-        this.type = command;
+        if (command === '科技') this.type = 0
+        if (command === '人文') this.type = 1
+        if (command === '实践') this.type = 2
+        if (command === '体育') this.type = 3
+        if (command === '艺术') this.type = 4
+        if (command === '其它') this.type = 5
+        this.curType = command
         this.isType = true;
       } else {
         this.type = null;
+        this.curType = null
         this.isType = false;
       }
       this.selectType();

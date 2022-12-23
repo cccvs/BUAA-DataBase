@@ -3,8 +3,8 @@
     <div class="clubBar" v-for="club in clubs" :key="club.data" @dblclick="gotoClub(club)">
       <div><img :src="club.cover" alt="社团封面" class="club_picture"></div>
       <div class="club_name">{{ club.name }}
-        <div class="club_level" v-show="rateClub">
-          <v-rating color="yellow" background-color="grey lighten-1" v-model="club.level" @click="starRating(club.club_id,club.level)"></v-rating>
+        <div class="club_level" v-show="rateClub" @click="starRating(club.club_id,club.star)">
+          <v-rating color="yellow" background-color="grey lighten-1" v-model="club.star"></v-rating>
         </div>
         <div class="club_check">
           <!--          <el-switch-->
@@ -19,13 +19,13 @@
           <v-btn v-show="leaveClub" style="margin-right: 5px" color="yellow lighten-3" @click="quitClub(club.club_id)">
             退出社团
           </v-btn>
-          <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club.id)"
+          <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club.club_id)"
                  style="margin-right: 20px">
             <v-icon>
               mdi-check
             </v-icon>
           </v-btn>
-          <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(club.id)"
+          <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(club.club_id)"
                  style="margin-right: 5px">
             <v-icon>
               mdi-close
@@ -33,7 +33,7 @@
           </v-btn>
         </div>
       </div>
-      <div class="club_info">{{club.type}} {{club.level}}星级 {{club.time}}</div>
+      <div class="club_info">{{clubType(club.type)}} {{club.star}}星级 {{club.time}}</div>
       <div class="club_dis">{{club.intro}}</div>
     </div>
   </div>
@@ -46,6 +46,14 @@ export default {
   name: "ClubList",
   props: ["clubs", "rateClub", "checkInfo", "joinClub", "leaveClub"],
   methods: {
+    clubType(type) {
+      if (type === 0) return '科技'
+      if (type === 1) return '人文'
+      if (type === 2) return '实践'
+      if (type === 3) return '体育'
+      if (type === 4) return '艺术'
+      if (type === 5) return '其它'
+    },
     gotoClub(club) {
       let path = "/myclub/" + club.club_id + "/" + club.name;
       this.$router.push({
@@ -54,10 +62,10 @@ export default {
     },
     starRating(id,level) {
       this.$axios.post(
-          "http://127.0.0.1:8000/api/star_rating",
+          "http://127.0.0.1:8000/api/rate_club_star",
           Qs.stringify({
             club_id: id,
-            level: level
+            star: level
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -105,7 +113,7 @@ export default {
           "http://127.0.0.1:8000/api/handle_create_club",
           Qs.stringify({
             club_id: id,
-            op: 0
+            op: 1
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -123,7 +131,7 @@ export default {
           "http://127.0.0.1:8000/api/handle_create_club",
           Qs.stringify({
             club_id: id,
-            op: 1
+            op: 0
           })
       ).then((res) => {
         if (res.data.code === 0) {

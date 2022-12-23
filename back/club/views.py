@@ -13,13 +13,14 @@ jwtFailedDict = {'code': 666, 'message': 'jwt verified error'}
 userField = ['user_id', 'password', 'avatar', 'time', 'real_name', 'sex', 'institute', 'phone', 'email', 'level',
              'following', 'followers']
 clubField = ['club_id', 'name', 'type', 'star', 'member_count', 'score', 'time', 'intro', 'master_id', 'cover',
-             'status']
+             'status', 'welcome', 'welcome_image']
 eventField = ['event_id', 'club_id', 'user_id', 'title', 'cover', 'content', 'time', 'apply_time', 'expired_time',
               'begin_time', 'end_time', 'member_count', 'member_limit', 'status', 'like', 'dislike']
 noticeField = ['notice_id', 'title', 'content', 'user_id', 'club_id', 'top']
 joiningClubField = ['form_id', 'applicant_id', 'club_id', 'status', 'time']
 messageField = ['message_id', 'receiver_id', 'time', 'content']
 postField = ['post_id', 'club_id', 'user_id', 'time', 'title', 'content', 'like', 'dislike']
+replyField = ['reply_id', 'post_id', 'user_id', 'time', 'content', 'like', 'dislike']
 
 
 def hashCode(s, salt='club_system'):
@@ -180,13 +181,15 @@ def createClub(request):
         clubType = request.POST.get('type')
         intro = request.POST.get('intro')
         cover = request.POST.get('image_url')
+        welcome = request.POST.get('welcome')
+        welcomeImage = request.POST.get('welcome_image')
         jwtDict = {'code': request.POST.get('jwt[code]'), 'user_id': request.POST.get('jwt[user_id]'),
                    'time': request.POST.get('jwt[time]')}
         masterId = jwtDict['user_id']
         if not checkJwt(jwtDict):
             return JsonResponse(jwtFailedDict)
         try:
-            mysqlPack.createClub(name, clubType, masterId, intro, cover)
+            mysqlPack.createClub(name, clubType, masterId, intro, cover, welcome, welcomeImage)
             return JsonResponse({'code': 0, 'message': ''})
         except Exception as e:
             print(e)
@@ -247,6 +250,7 @@ def getAllClubs(request):
             return JsonResponse({'code': 45, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
 
 @csrf_exempt
 def findClub(request):
@@ -510,15 +514,16 @@ def modifyClubInfo(request):
         clubType = request.POST.get('type')
         intro = request.POST.get('intro')
         cover = request.POST.get('cover')
+        welcome = request.POST.get('welcome')
+        welcomeImage = request.POST.get('welcome_image')
         try:
-            mysqlPack.modifyClubInfo(clubId, name, clubType, intro, cover)
+            mysqlPack.modifyClubInfo(clubId, name, clubType, intro, cover, welcome, welcomeImage)
             return JsonResponse({'code': 0, 'message': ''})
         except Exception as e:
             print(e)
             return JsonResponse({'code': 44, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
-
 
 
 # message
@@ -661,10 +666,14 @@ def likeEvent(request):
 
 
 @csrf_exempt
-# post
+# post/reply
 def getClubPosts(request):
     if request.method == 'POST':
         clubId = request.POST.get('club_id')
+        userId = request.POST.get('user_id')
+        postActionList = mysqlPack.getUserPostAction(userId)
+        likeSet = {x[0] for x in postActionList if x[1] == 0}
+        dislikeSet = {x[0] for x in postActionList if x[1] == 1}
         try:
             result = mysqlPack.getClubPosts(clubId)
             resultList = []
@@ -672,6 +681,12 @@ def getClubPosts(request):
                 resultItem = dict()
                 for num, field in enumerate(postField + ['user_avatar', 'user_name']):
                     resultItem[field] = data[num]
+                if resultItem['post_id'] in likeSet:
+                    resultItem['op'] = 0
+                elif resultItem['post_id'] in dislikeSet:
+                    resultItem['op'] = 1
+                else:
+                    resultItem['op'] = 2
                 resultList.append(resultItem)
             return JsonResponse({'code': 0, 'message': '', 'post_list': resultList})
         except Exception as e:
@@ -715,6 +730,22 @@ def likePost(request):
 
 
 @csrf_exempt
+def likeReply(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        replyId = request.POST.get('reply_id')
+        op = request.POST.get('op')
+        try:
+            mysqlPack.likeReply(userId, replyId, op)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 49, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
 def deletePost(request):
     if request.method == 'POST':
         postId = request.POST.get('post_id')
@@ -724,6 +755,93 @@ def deletePost(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 38, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def deleteReply(request):
+    if request.method == 'POST':
+        replyId = request.POST.get('reply_id')
+        try:
+            mysqlPack.deleteReply(replyId)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 40, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def replyPost(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        postId = request.POST.get('post_id')
+        content = request.POST.get('content')
+        try:
+            mysqlPack.replyPost(userId, postId, content)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 46, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getPostReplies(request):
+    if request.method == 'POST':
+        postId = request.POST.get('post_id')
+        userId = request.POST.get('user_id')
+        replyActionList = mysqlPack.getUserReplyAction(userId)
+        likeSet = {x[0] for x in replyActionList if x[1] == 0}
+        dislikeSet = {x[0] for x in replyActionList if x[1] == 1}
+        try:
+            result = mysqlPack.getPostReplies(postId)
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(replyField + ['user_avatar', 'user_name']):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+                if resultItem['reply_id'] in likeSet:
+                    resultItem['op'] = 0
+                elif resultItem['reply_id'] in dislikeSet:
+                    resultItem['op'] = 1
+                else:
+                    resultItem['op'] = 2
+            return JsonResponse({'code': 0, 'message': '', 'reply_list': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 47, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getOnePost(request):
+    if request.method == 'POST':
+        postId = request.POST.get('post_id')
+        userId = request.POST.get('user_id')
+        postActionList = mysqlPack.getUserPostAction(userId)
+        likeSet = {x[0] for x in postActionList if x[1] == 0}
+        dislikeSet = {x[0] for x in postActionList if x[1] == 1}
+        try:
+            result = mysqlPack.getOnePost(postId)[0]
+            resultItem = dict()
+            for num, field in enumerate(postField):
+                resultItem[field] = result[num]
+            if resultItem['post_id'] in likeSet:
+                resultItem['op'] = 0
+            elif resultItem['post_id'] in dislikeSet:
+                resultItem['op'] = 1
+            else:
+                resultItem['op'] = 2
+            return JsonResponse({'code': 0, 'message': '', 'post': resultItem})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 48, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
@@ -787,20 +905,6 @@ def deleteNotice(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 39, 'message': 'error'})
-    else:
-        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
-
-
-@csrf_exempt
-def deleteReply(request):
-    if request.method == 'POST':
-        replyId = request.POST.get('reply_id')
-        try:
-            mysqlPack.deleteReply(replyId)
-            return JsonResponse({'code': 0, 'message': ''})
-        except Exception as e:
-            print(e)
-            return JsonResponse({'code': 40, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 

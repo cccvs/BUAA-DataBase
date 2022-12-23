@@ -30,6 +30,8 @@
 
 <script>
 
+import Qs from "qs";
+
 export default {
   name: "NoticeList",
   props: ["notices"],
@@ -57,9 +59,20 @@ export default {
   },
   methods: {
     deleteNotice(notice_id) {
-      console.log(notice_id);
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/delete_notice",
+          Qs.stringify({
+            notice_id:notice_id
+          })
+      ).then((res)=>{
+        if(res.data.code===0){
+          this.$message.success("删除公告成功");
+        } else this.$notify.error(res.data.message)
+      }).catch((error)=>{
+        console.log(error)
+      })
       /*
-      TODO: 删除公告，前端限制只有社长可以
+      DO: 删除公告，前端限制只有社长可以
        */
     }
   },

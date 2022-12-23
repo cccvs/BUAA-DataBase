@@ -18,14 +18,14 @@ delimiter ;
 delimiter ;;
 # createClub
 create procedure createClub(in clubName varchar(31), in clubType smallint, in masterId varchar(31),
-                            in clubIntro varchar(1022), in clubCover varchar(255))
+                            in clubIntro varchar(1022), in clubCover varchar(255), in clubWelcome varchar(255), in clubWelcomeImage varchar(255))
 begin
     declare clubId int;
     set clubId = allocId();
     # 审核状态，0-2分别对应：审核中，未通过，已通过
     insert into club(club_id, name, type, star, member_count, score, time, intro, master_id, cover,
-                     status) value (clubId, clubName, clubType, 0, 0, null, from_unixtime(unix_timestamp()), clubIntro,
-                                    masterId, clubCover, 0);
+                     status, welcome, welcome_image) value (clubId, clubName, clubType, 0, 0, null, from_unixtime(unix_timestamp()), clubIntro,
+                                    masterId, clubCover, 0, clubWelcome, clubWelcomeImage);
     commit;
     # end
 end;;
@@ -67,13 +67,27 @@ begin
     # status: 0->处理中, 1->已拒绝, 2->已接受
     declare applicantId varchar(31);
     declare clubId int;
+    declare messageId int;
+    declare receiverId varchar(31);
+    declare clubName varchar(31);
+    set applicantId = (select applicant_id from joining_club where form_id = formId);
+    set clubId = (select club_id from joining_club where form_id = formId);
+    set messageId = allocId();
+    set receiverId = (select master_id from club where club_id = clubId);
+    set clubName = (select name from club where club_id = clubId);
     if op = 0 then
-        set applicantId = (select applicant_id from joining_club where form_id = formId);
-        set clubId = (select club_id from joining_club where form_id = formId);
         update joining_club set status = 2 where form_id = formId;
         insert into user_club(user_id, club_id, identity, label) values (applicantId, clubId, 0, null);
+        # 消息
+        insert into message(message_id, receiver_id, time, content)
+        values (messageId, receiverId, from_unixtime(unix_timestamp()),
+                concat('Your request of joining club \'', clubName, '\' has been approved.'));
     else
-        update joining_club set status = 1 where form_id = formId;
+        delete from joining_club where form_id = formId;
+        # 消息
+        insert into message(message_id, receiver_id, time, content)
+        values (messageId, receiverId, from_unixtime(unix_timestamp()),
+                concat('Your request of joining club \'', clubName, '\' has been rejected.'));
     end if;
     delete from joining_club where form_id = formId;
     # end
@@ -90,15 +104,16 @@ begin
     declare eventId int;
     set eventId = allocId();
     insert into event(event_id, club_id, user_id, title, cover, content, time, apply_time, expired_time, begin_time,
-                      end_time, member_count, member_limit, status, `like`, dislike) VALUE (eventId, clubId, userId,
-                                                                                            eventTitle,
-                                                                                            eventCover,
-                                                                                            eventContent,
-                                                                                            from_unixtime(unix_timestamp()),
-                                                                                            applyTime, expiredTime,
-                                                                                            beginTime,
-                                                                                            endTime, 0,
-                                                                                            memberLimit, 0, 0, 0);
+                      end_time, member_count, member_limit, status, `like`, dislike)
+    values (eventId, clubId, userId,
+            eventTitle,
+            eventCover,
+            eventContent,
+            from_unixtime(unix_timestamp()),
+            applyTime, expiredTime,
+            beginTime,
+            endTime, 0,
+            memberLimit, 0, 0, 0);
     # end
 end;;
 delimiter ;
@@ -233,7 +248,7 @@ begin
     delete from user_post where user_id = userId and post_id = postId;
     # 相应赞/踩
     if op <> 2 then
-        insert into user_event_like(user_id, event_id, action) values (userId, postId, op);
+        insert into user_post(user_id, post_id, action) values (userId, postId, op);
     end if;
 end ;;
 delimiter ;
@@ -250,18 +265,31 @@ end ;;
 delimiter ;
 
 delimiter ;;
-create procedure handleCreateClub(in clubId int, in op int)
+create procedure handleCreateClub(in clubId int, in op int, in userLabel varchar(31))
 begin
     declare masterId varchar(31);
+    declare messageId int;
+    declare receiverId varchar(31);
+    declare clubName varchar(31);
+    set messageId = allocId();
+    set receiverId = (select master_id from club where club_id = clubId);
+    set clubName = (select name from club where club_id = clubId);
     # op 0不通过, 1通过
     if op = 1 then
         # 0普通社员, 2社长
         set masterId = (select master_id from club where club_id = clubId);
         update club set status = 2 where club_id = clubId;
-        insert into user_club(user_id, club_id, identity, label) values (masterId, clubId, 2, '社长');
-        commit;
+        insert into user_club(user_id, club_id, identity, label) values (masterId, clubId, 2, userLabel);
+        # 通知
+        insert into message(message_id, receiver_id, time, content)
+        values (messageId, receiverId, from_unixtime(unix_timestamp()),
+                concat('Your request of creating club \'', clubName, '\' has been approved.'));
     else
         delete from club where club_id = clubId;
+        # 通知
+        insert into message(message_id, receiver_id, time, content)
+        values (messageId, receiverId, from_unixtime(unix_timestamp()),
+                concat('Your request of creating club \'', clubName, '\' has been rejected.'));
     end if;
     # 删除表单
 end ;;
@@ -271,15 +299,28 @@ delimiter ;;
 create procedure handleCreateEvent(in eventId int, in op int)
 begin
     declare userId varchar(31);
+    declare messageId int;
+    declare receiverId varchar(31);
+    declare eventTile varchar(31);
+    set messageId = allocId();
+    set receiverId = (select user_id from event where event_id = eventId);
+    set eventTile = (select title from event where event_id = eventId);
     # op 0不通过, 1通过
     if op = 1 then
         # 0参与者, 2发起者
         set userId = (select user_id from event where event_id = eventId);
         update event set status = 2 where event_id = eventId;
         insert into user_event_participate(user_id, event_id, identity) values (userId, eventId, 2);
-        commit;
+        # 通知
+        insert into message(message_id, receiver_id, time, content)
+        values (messageId, receiverId, from_unixtime(unix_timestamp()),
+                concat('Your request of creating event \'', eventTile, '\' has been approved.'));
     else
         delete from event where event_id = eventId;
+        # 通知
+        insert into message(message_id, receiver_id, time, content)
+        values (messageId, receiverId, from_unixtime(unix_timestamp()),
+                concat('Your request of creating event \'', eventTile, '\' has been rejected.'));
     end if;
     # 删除表单
 end ;;
@@ -315,10 +356,31 @@ begin
 end ;;
 delimiter ;
 
+delimiter ;;
+create procedure modifyClubInfo(in clubId int, in clubName varchar(31), in clubType smallint,
+                                in clubIntro varchar(1022), in clubCover varchar(255), in clubWelcome varchar(255), in clubWelcomeImage varchar(255))
+begin
+    update club set name = clubName, type = clubType, intro = clubIntro, cover = clubCover, welcome = clubWelcome, welcome_image = clubWelcomeImage where club_id = clubId;
+end ;;
+delimiter ;
 
 delimiter ;;
-create procedure modifyClubInfo(in clubId int, in clubName varchar(31), in clubType smallint, in clubIntro varchar(1022), in clubCover varchar(255))
+create procedure replyPost(in userId varchar(31), in postId int, in postContent varchar(255))
 begin
-    update club set name = clubName, type = clubType, intro = clubIntro, cover = clubCover where club_id = clubId;
+    declare replyId int;
+    set replyId = allocId();
+    insert into reply (reply_id, post_id, user_id, time, content, `like`, dislike)
+    values (replyId, postId, userId, from_unixtime(unix_timestamp()), postContent, 0, 0);
+end ;;
+delimiter ;
+
+delimiter ;;
+create procedure likeReply(in userId varchar(31), in replyId int, in op int)
+begin
+    delete from user_reply where user_id = userId and reply_id = replyId;
+    # 相应赞/踩
+    if op <> 2 then
+        insert into user_reply(user_id, reply_id, action) values (userId, replyId, op);
+    end if;
 end ;;
 delimiter ;

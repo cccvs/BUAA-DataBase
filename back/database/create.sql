@@ -26,17 +26,19 @@ create table `user`
 drop table if exists `club`;
 create table `club`
 (
-    `club_id`      int auto_increment not null,
-    `name`         varchar(31)        not null,
-    `type`         smallint           not null,
-    `star`         smallint,
-    `member_count` int                not null,
-    `score`        float,
-    `time`         varchar(31)        not null,
-    `intro`        varchar(1022),
-    `master_id`    varchar(31),
-    `cover`        varchar(255),
-    `status`       smallint           not null,
+    `club_id`       int auto_increment not null,
+    `name`          varchar(31)        not null,
+    `type`          smallint           not null,
+    `star`          smallint,
+    `member_count`  int                not null,
+    `score`         float,
+    `time`          varchar(31)        not null,
+    `intro`         varchar(1022),
+    `master_id`     varchar(31),
+    `cover`         varchar(255),
+    `status`        smallint           not null,
+    `welcome`       varchar(255),
+    `welcome_image` varchar(255),
     primary key (`club_id`),
     foreign key (`master_id`) references `user` (`user_id`),
     check ( 0 <= `type` and `type` <= 5 ),
@@ -113,11 +115,14 @@ create table `reply`
 (
     `reply_id` int auto_increment not null,
     `post_id`  int                not null,
+    `user_id`  varchar(31)        not null,
     `time`     varchar(31)        not null,
     `content`  varchar(1022)      not null,
     `like`     int                not null,
     `dislike`  int                not null,
     primary key (`reply_id`),
+    foreign key (`post_id`) references post (`post_id`) on delete cascade,
+    foreign key (`user_id`) references user (`user_id`),
     check ( `like` >= 0 ),
     check ( `dislike` >= 0)
 );
@@ -245,7 +250,7 @@ create table `user_event_like`
     `event_id` int         not null,
     `action`   smallint    not null,
     primary key (`user_id`, `event_id`),
-    foreign key (`user_id`) references `user` (`user_id`) on delete cascade ,
+    foreign key (`user_id`) references `user` (`user_id`) on delete cascade,
     foreign key (`event_id`) references `event` (`event_id`) on delete cascade,
     check ( `action` in (0, 1))
 );

@@ -15,7 +15,7 @@
       >
         <v-list-item>
           <v-list-item-avatar color="grey">
-            <img :src="activity.club_face" alt="头像">
+            <img :src="activity.cover" alt="头像">
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="headline">{{ activity.title }}</v-list-item-title>
@@ -62,11 +62,11 @@
             查看详情
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn icon color="deep-orange" v-show="!audit" @click="likeEvent(activity.event_id)">
+          <v-btn icon color="deep-orange" v-show="!audit" @click="likeEvent(activity.event_id,activity.op)">
             <v-icon>mdi-thumb-up</v-icon>
           </v-btn>
           <div v-show="!audit">{{ activity.like }}</div>
-          <v-btn icon color="blue-grey darken-2" v-show="!audit" @click="dislikeEvent(activity.event_id)">
+          <v-btn icon color="blue-grey darken-2" v-show="!audit" @click="dislikeEvent(activity.event_id,activity.op)">
             <v-icon>mdi-thumb-down</v-icon>
           </v-btn>
           <div v-show="!audit">{{ activity.dislike }}</div>
@@ -124,13 +124,16 @@ export default {
         console.log(error)
       })
     },
-    likeEvent(id) {
+    likeEvent(id,status) {
+      let op
+      if (status === 0) op = 2
+      else op = 0
       this.$axios.post(
           "http://127.0.0.1:8000/api/like_event",
           Qs.stringify({
             user_id: localStorage.getItem('user_id'),
             event_id: id,
-            op: 0
+            op: op
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -140,13 +143,16 @@ export default {
         console.log(error)
       })
     },
-    dislikeEvent(id) {
+    dislikeEvent(id,status) {
+      let op
+      if (status === 1) op = 2
+      else op = 1
       this.$axios.post(
           "http://127.0.0.1:8000/api/like_event",
           Qs.stringify({
             user_id: localStorage.getItem('user_id'),
             event_id: id,
-            op: 1
+            op: op
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -164,7 +170,7 @@ export default {
           "http://127.0.0.1:8000/api/handle_create_event",
           Qs.stringify({
             event_id: id,
-            op: 0
+            op: 1
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -182,7 +188,7 @@ export default {
           "http://127.0.0.1:8000/api/handle_create_event",
           Qs.stringify({
             event_id: id,
-            op: 1
+            op: 0
           })
       ).then((res) => {
         if (res.data.code === 0) {

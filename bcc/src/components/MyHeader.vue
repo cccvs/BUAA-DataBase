@@ -2,7 +2,7 @@
   <div>
     <div class="flexs">
       <h1>上午好，{{userName}}</h1>
-      <el-badge :value="messageCount" :hidden="hidden">
+      <el-badge :value="messages.length" :hidden="hidden">
         <el-button circle @click="quit" icon="el-icon-switch-button"></el-button>
         <el-button @click="drawer=true" circle icon="el-icon-message-solid"></el-button>
       </el-badge>
