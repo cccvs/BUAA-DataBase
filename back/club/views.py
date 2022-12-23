@@ -23,7 +23,6 @@ joiningClubField = ['form_id', 'applicant_id', 'club_id', 'status', 'time']
 messageField = ['message_id', 'receiver_id', 'time', 'content']
 
 
-
 def hashCode(s, salt='club_system'):
     h = hashlib.sha256()
     s += salt
@@ -319,6 +318,23 @@ def getClubList(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 10, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getOneClub(request):
+    clubId = request.POST.get('club_id')
+    if request.method == 'POST':
+        try:
+            result = mysqlPack.getOneClub(clubId)[0]
+            resultItem = dict()
+            for num, field in enumerate(clubField):
+                resultItem[field] = result[num]
+            return JsonResponse({'code': 0, 'message': '', 'club': resultItem})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 51, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
