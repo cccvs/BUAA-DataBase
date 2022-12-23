@@ -13,7 +13,7 @@ jwtFailedDict = {'code': 666, 'message': 'jwt verified error'}
 userField = ['user_id', 'password', 'avatar', 'time', 'real_name', 'sex', 'institute', 'phone', 'email', 'level',
              'following', 'followers']
 clubField = ['club_id', 'name', 'type', 'star', 'member_count', 'score', 'time', 'intro', 'master_id', 'cover',
-             'status']
+             'status', 'welcome', 'welcome_image']
 eventField = ['event_id', 'club_id', 'user_id', 'title', 'cover', 'content', 'time', 'apply_time', 'expired_time',
               'begin_time', 'end_time', 'member_count', 'member_limit', 'status', 'like', 'dislike']
 noticeField = ['notice_id', 'title', 'content', 'user_id', 'club_id', 'top']
@@ -181,13 +181,15 @@ def createClub(request):
         clubType = request.POST.get('type')
         intro = request.POST.get('intro')
         cover = request.POST.get('image_url')
+        welcome = request.POST.get('welcome')
+        welcomeImage = request.POST.get('welcome_image')
         jwtDict = {'code': request.POST.get('jwt[code]'), 'user_id': request.POST.get('jwt[user_id]'),
                    'time': request.POST.get('jwt[time]')}
         masterId = jwtDict['user_id']
         if not checkJwt(jwtDict):
             return JsonResponse(jwtFailedDict)
         try:
-            mysqlPack.createClub(name, clubType, masterId, intro, cover)
+            mysqlPack.createClub(name, clubType, masterId, intro, cover, welcome, welcomeImage)
             return JsonResponse({'code': 0, 'message': ''})
         except Exception as e:
             print(e)
@@ -512,8 +514,10 @@ def modifyClubInfo(request):
         clubType = request.POST.get('type')
         intro = request.POST.get('intro')
         cover = request.POST.get('cover')
+        welcome = request.POST.get('welcome')
+        welcomeImage = request.POST.get('welcome_image')
         try:
-            mysqlPack.modifyClubInfo(clubId, name, clubType, intro, cover)
+            mysqlPack.modifyClubInfo(clubId, name, clubType, intro, cover, welcome, welcomeImage)
             return JsonResponse({'code': 0, 'message': ''})
         except Exception as e:
             print(e)
@@ -711,6 +715,22 @@ def likePost(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 37, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def likeReply(request):
+    if request.method == 'POST':
+        userId = request.POST.get('user_id')
+        replyId = request.POST.get('reply_id')
+        op = request.POST.get('op')
+        try:
+            mysqlPack.likeReply(userId, replyId, op)
+            return JsonResponse({'code': 0, 'message': ''})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 49, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 
