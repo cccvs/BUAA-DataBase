@@ -231,6 +231,24 @@ def getUnhandledClubs(request):
 
 
 @csrf_exempt
+def getAllClubs(request):
+    if request.method == 'POST':
+        try:
+            result = mysqlPack.getAllClubs()
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(clubField):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'club_list': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 45, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+@csrf_exempt
 def findClub(request):
     retDict = dict()
     if request.method == 'POST':
@@ -497,7 +515,7 @@ def modifyClubInfo(request):
             return JsonResponse({'code': 0, 'message': ''})
         except Exception as e:
             print(e)
-            return JsonResponse({'code': 43, 'message': 'error'})
+            return JsonResponse({'code': 44, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
 

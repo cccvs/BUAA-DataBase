@@ -159,6 +159,20 @@ def getUnhandledClubs():
     return result
 
 
+def getAllClubs():
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select * from club where status = 2'
+        cursor.execute(ins, [])
+        result = cursor.fetchall()
+    except Exception as e:
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
 def getUserClub(userId: str):
     connect, cursor = connectDatabase()
     try:
