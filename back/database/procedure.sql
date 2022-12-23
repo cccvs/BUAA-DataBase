@@ -67,13 +67,27 @@ begin
     # status: 0->处理中, 1->已拒绝, 2->已接受
     declare applicantId varchar(31);
     declare clubId int;
+    declare messageId int;
+    declare receiverId varchar(31);
+    declare clubName varchar(31);
+    set applicantId = (select applicant_id from joining_club where form_id = formId);
+    set clubId = (select club_id from joining_club where form_id = formId);
+    set messageId = allocId();
+    set receiverId = (select master_id from club where club_id = clubId);
+    set clubName = (select name from club where club_id = clubId);
     if op = 0 then
-        set applicantId = (select applicant_id from joining_club where form_id = formId);
-        set clubId = (select club_id from joining_club where form_id = formId);
         update joining_club set status = 2 where form_id = formId;
         insert into user_club(user_id, club_id, identity, label) values (applicantId, clubId, 0, null);
+        # 消息
+        insert into message(message_id, receiver_id, time, content)
+        values (messageId, receiverId, from_unixtime(unix_timestamp()),
+                concat('Your request of joining club \'', clubName, '\' has been approved.'));
     else
-        update joining_club set status = 1 where form_id = formId;
+        delete from joining_club where form_id = formId;
+        # 消息
+        insert into message(message_id, receiver_id, time, content)
+        values (messageId, receiverId, from_unixtime(unix_timestamp()),
+                concat('Your request of joining club \'', clubName, '\' has been rejected.'));
     end if;
     delete from joining_club where form_id = formId;
     # end
@@ -254,15 +268,28 @@ delimiter ;;
 create procedure handleCreateClub(in clubId int, in op int, in userLabel varchar(31))
 begin
     declare masterId varchar(31);
+    declare messageId int;
+    declare receiverId varchar(31);
+    declare clubName varchar(31);
+    set messageId = allocId();
+    set receiverId = (select master_id from club where club_id = clubId);
+    set clubName = (select name from club where club_id = clubId);
     # op 0不通过, 1通过
     if op = 1 then
         # 0普通社员, 2社长
         set masterId = (select master_id from club where club_id = clubId);
         update club set status = 2 where club_id = clubId;
         insert into user_club(user_id, club_id, identity, label) values (masterId, clubId, 2, userLabel);
-        commit;
+        # 通知
+        insert into message(message_id, receiver_id, time, content)
+        values (messageId, receiverId, from_unixtime(unix_timestamp()),
+                concat('Your request of creating club \'', clubName, '\' has been approved.'));
     else
         delete from club where club_id = clubId;
+        # 通知
+        insert into message(message_id, receiver_id, time, content)
+        values (messageId, receiverId, from_unixtime(unix_timestamp()),
+                concat('Your request of creating club \'', clubName, '\' has been rejected.'));
     end if;
     # 删除表单
 end ;;
@@ -272,15 +299,28 @@ delimiter ;;
 create procedure handleCreateEvent(in eventId int, in op int)
 begin
     declare userId varchar(31);
+    declare messageId int;
+    declare receiverId varchar(31);
+    declare eventTile varchar(31);
+    set messageId = allocId();
+    set receiverId = (select user_id from event where event_id = eventId);
+    set eventTile = (select title from event where event_id = eventId);
     # op 0不通过, 1通过
     if op = 1 then
         # 0参与者, 2发起者
         set userId = (select user_id from event where event_id = eventId);
         update event set status = 2 where event_id = eventId;
         insert into user_event_participate(user_id, event_id, identity) values (userId, eventId, 2);
-        commit;
+        # 通知
+        insert into message(message_id, receiver_id, time, content)
+        values (messageId, receiverId, from_unixtime(unix_timestamp()),
+                concat('Your request of creating event \'', eventTile, '\' has been approved.'));
     else
         delete from event where event_id = eventId;
+        # 通知
+        insert into message(message_id, receiver_id, time, content)
+        values (messageId, receiverId, from_unixtime(unix_timestamp()),
+                concat('Your request of creating event \'', eventTile, '\' has been rejected.'));
     end if;
     # 删除表单
 end ;;
