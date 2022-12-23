@@ -39,6 +39,8 @@ urlpatterns = [
     path('handle_joining_club', views.handleJoiningClub),
     path('join_club', views.joinClub),
     path('quit_club', views.quitClub),
+    path('rate_club_star', views.rateClubStar),
+    path('modify_club_info', views.modifyClubInfo),
     # event
     path('create_event', views.createEvent),
     path('handle_create_event', views.handleCreateEvent),

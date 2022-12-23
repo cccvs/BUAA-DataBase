@@ -320,9 +320,34 @@ def quitClub(userId: str, clubId: int):
         clubInfo = cursor.fetchall()
         masterId = clubInfo[0][0]
         clubName = clubInfo[0][1]
-        print(masterId)
-        print(userId)
         cursor.callproc('quitClub', (userId, masterId, clubId, clubName))
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def rateClubStar(clubId: int, star: int):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('rateClubStar', [clubId, star])
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+
+
+def modifyClubInfo(clubId: int, name: str, clubType: str, clubIntro: str, clubCover: str):
+    connect, cursor = connectDatabase()
+    try:
+        typeNum = clubTypeToNum[clubType]
+        cursor.callproc('modifyClubInfo', [clubId, name, typeNum, clubIntro, clubCover])
         connect.commit()
     except Exception as e:
         print(e)
