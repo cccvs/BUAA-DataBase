@@ -96,7 +96,6 @@ export default {
   },
   methods: {
     change() {
-
     },
     create: function () {
       let con = {};
