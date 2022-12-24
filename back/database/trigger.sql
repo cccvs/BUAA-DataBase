@@ -10,8 +10,8 @@ begin
     update club set member_count = member_count + 1 where club_id = NEW.club_id;
 end ;;
 
-drop trigger if exists updateUserClub1;
-create trigger updateUserClub1
+drop trigger if exists updateUserClub2;
+create trigger updateUserClub2
     after delete on user_club
     for each row
 begin
@@ -117,7 +117,6 @@ begin
         update reply set `dislike` = `dislike` - 1 where reply.reply_id = OLD.reply_id;
     end if ;;
 end ;;
-
 
 drop trigger if exists updateUserEventLike1;
 create trigger updateUserEventLike1
