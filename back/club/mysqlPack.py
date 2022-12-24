@@ -492,6 +492,22 @@ def getUserEventAction(userId: str):
     return result
 
 
+def getUserEventParticipate(userId: str):
+    connect, cursor = connectDatabase()
+    try:
+        ins = 'select event_id from user_event_participate where user_id = %s'
+        cursor.execute(ins, [userId])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
+
+
 # message
 def deleteMessage(messageId: str):
     connect, cursor = connectDatabase()
