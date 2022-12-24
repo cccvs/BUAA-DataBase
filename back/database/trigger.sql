@@ -42,9 +42,9 @@ create trigger updateUserPost1
     for each row
 begin
     if NEW.action = 0 then
-        update post set `like` = `like` + 1;
+        update post set `like` = `like` + 1 where post.post_id = NEW.post_id;
     else
-        update post set dislike = dislike + 1;
+        update post set dislike = dislike + 1 where post.post_id = NEW.post_id;
     end if ;
 end ;;
 
@@ -54,14 +54,14 @@ create trigger updateUserPost2
     for each row
 begin
     if OLD.action = 0 then
-        update post set `like` = `like` - 1;
+        update post set `like` = `like` - 1 where post.post_id = OLD.post_id;
     else
-        update post set dislike = dislike - 1;
+        update post set dislike = dislike - 1 where post.post_id = OLD.post_id;
     end if ;
     if NEW.action = 0 then
-        update post set `like` = `like` + 1;
+        update post set `like` = `like` + 1 where post.post_id = NEW.post_id;
     else
-        update post set dislike = dislike + 1;
+        update post set dislike = dislike + 1 where post.post_id = NEW.post_id;
     end if ;
 end ;;
 
@@ -71,11 +71,53 @@ create trigger updateUserPost3
     for each row
 begin
     if OLD.action = 0 then
-        update post set `like` = `like` - 1;
+        update post set `like` = `like` - 1 where post.post_id = OLD.post_id;
     else
-        update post set dislike = dislike - 1;
+        update post set dislike = dislike - 1 where post.post_id = OLD.post_id;
     end if ;
 end ;;
+
+drop trigger if exists updateUserReply1;
+create trigger updateUserReply1
+    after insert on user_reply
+    for each row
+begin
+    if NEW.action = 0 then
+        update reply set `like` = `like` + 1 where reply.reply_id = NEW.reply_id;
+    else
+        update reply set `dislike` = `dislike` + 1 where reply.reply_id = NEW.reply_id;
+    end if ;;
+end ;;
+
+drop trigger if exists updateUserReply2;
+create trigger updateUserReply2
+    after update on user_reply
+    for each row
+begin
+    if OLD.action = 0 then
+        update reply set `like` = `like` - 1 where reply.reply_id = OLD.reply_id;
+    else
+        update reply set `dislike` = `dislike` - 1 where reply.reply_id = OLD.reply_id;
+    end if ;;
+    if NEW.action = 0 then
+        update reply set `like` = `like` + 1 where reply.reply_id = NEW.reply_id;
+    else
+        update reply set `dislike` = `dislike` + 1 where reply.reply_id = NEW.reply_id;
+    end if ;;
+end ;;
+
+drop trigger if exists updateUserReply3;
+create trigger updateUserReply3
+    after delete on user_reply
+    for each row
+begin
+    if OLD.action = 0 then
+        update reply set `like` = `like` - 1 where reply.reply_id = OLD.reply_id;
+    else
+        update reply set `dislike` = `dislike` - 1 where reply.reply_id = OLD.reply_id;
+    end if ;;
+end ;;
+
 
 drop trigger if exists updateUserEventLike1;
 create trigger updateUserEventLike1
@@ -83,9 +125,9 @@ create trigger updateUserEventLike1
     for each row
 begin
     if NEW.action = 0 then
-        update event set `like` = `like` + 1;
+        update event set `like` = `like` + 1 where event.event_id = NEW.event_id;
     else
-        update event set dislike = dislike + 1;
+        update event set dislike = dislike + 1 where event.event_id = NEW.event_id;
     end if ;
 end ;;
 
@@ -95,14 +137,14 @@ create trigger updateUserEventLike2
     for each row
 begin
     if OLD.action = 0 then
-        update event set `like` = `like` - 1;
+        update event set `like` = `like` - 1 where event.event_id = OLD.event_id;
     else
-        update event set dislike = dislike - 1;
+        update event set dislike = dislike - 1 where event.event_id = OLD.event_id;
     end if ;
     if NEW.action = 0 then
-        update event set `like` = `like` + 1;
+        update event set `like` = `like` + 1 where event.event_id = NEW.event_id;
     else
-        update event set dislike = dislike + 1;
+        update event set dislike = dislike + 1 where event.event_id = NEW.event_id;
     end if ;
 end ;;
 
@@ -112,9 +154,9 @@ create trigger updateUserEventLike3
     for each row
 begin
     if OLD.action = 0 then
-        update event set `like` = `like` - 1;
+        update event set `like` = `like` - 1 where event.event_id = OLD.event_id;
     else
-        update event set dislike = dislike - 1;
+        update event set dislike = dislike - 1 where event.event_id = OLD.event_id;
     end if ;
 end ;;
 
@@ -123,7 +165,7 @@ create trigger updateUserEventParticipate1
     after insert on user_event_participate
     for each row
 begin
-    update event set member_count = member_count + 1;
+    update event set member_count = member_count + 1 where event.event_id = NEW.event_id;
 end ;;
 
 drop trigger if exists updateUserEventParticipate2;
@@ -131,7 +173,7 @@ create trigger updateUserEventParticipate2
     after delete on user_event_participate
     for each row
 begin
-    update event set member_count = member_count - 1;
+    update event set member_count = member_count - 1 where event.event_id = OLD.event_id;
 end ;;
 
 delimiter ;

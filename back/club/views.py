@@ -110,11 +110,7 @@ def updateUserInformation(request):
 @csrf_exempt
 def getUserInformation(request):
     if request.method == 'POST':
-        jwtDict = {'code': request.POST.get('jwt[code]'), 'user_id': request.POST.get('jwt[user_id]'),
-                   'time': request.POST.get('jwt[time]')}
-        if not checkJwt(jwtDict):
-            return JsonResponse(jwtFailedDict)
-        userId = jwtDict['user_id']
+        userId = request.POST.get('user_id')
         try:
             userResultDict = dict()
             result = mysqlPack.getUser(userId)
@@ -397,8 +393,10 @@ def getClubEvents(request):
         userId = request.POST.get('user_id')
         try:
             eventActionList = mysqlPack.getUserEventAction(userId)
+            eventParticipateList = mysqlPack.getUserEventParticipate(userId)
             likeSet = {x[0] for x in eventActionList if x[1] == 0}
             dislikeSet = {x[0] for x in eventActionList if x[1] == 1}
+            eventIdSet = {x[0] for x in eventParticipateList}
             result = mysqlPack.getClubEvents(clubId)
             resultList = []
             for data in result:
@@ -407,6 +405,7 @@ def getClubEvents(request):
                     resultItem[field] = data[num]
                 # extra field, 0:点赞, 1:点踩, 2:无操作
                 resultItem['show'] = False
+                resultItem['is_participate'] = 1 if resultItem['event_id'] in eventIdSet else 0
                 if resultItem['event_id'] in likeSet:
                     resultItem['op'] = 0
                 elif resultItem['event_id'] in dislikeSet:
@@ -642,6 +641,7 @@ def getUnhandledEvents(request):
                 resultItem = dict()
                 for num, field in enumerate(eventField + ['club_cover', 'club_name', 'user_real_name']):
                     resultItem[field] = data[num]
+                resultItem['show'] = False
                 resultList.append(resultItem)
             return JsonResponse({'code': 0, 'message': '', 'event_list': resultList})
         except Exception as e:

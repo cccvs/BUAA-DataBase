@@ -40,6 +40,7 @@
           v-for="reply in replies"
           :key="reply.reply_id"
           style="margin-top: 20px;flex: auto"
+          v-show="reply.op < 3"
       >
         <v-card
             class="mx-auto"
@@ -62,15 +63,15 @@
                   justify="end"
                   style="margin-right: 20px;"
               >
-                <v-btn icon color="deep-orange">
+                <v-btn icon color="deep-orange" @click="likeReply(reply)">
                   <v-icon>mdi-thumb-up</v-icon>
                 </v-btn>
                 <div>{{ reply.like }}</div>
-                <v-btn icon color="blue-grey darken-2">
+                <v-btn icon color="blue-grey darken-2" @click="dislikeReply(reply)">
                   <v-icon>mdi-thumb-down</v-icon>
                 </v-btn>
                 <div>{{ reply.dislike }}</div>
-                <v-btn icon color="indigo" @click="deleteReply(reply.reply_id)">
+                <v-btn icon color="indigo" @click="deleteReply(reply)">
                   <v-icon>mdi-comment-remove</v-icon>
                 </v-btn>
               </v-row>
@@ -116,6 +117,70 @@ export default {
       // render 为 markdown 解析后的结果[html]
       this.newReply.html = render;
     },
+    likeReply(post) {
+      let op
+      if (post.op === 0) op = 2
+      else op = 0
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/like_reply",
+          Qs.stringify({
+            user_id: localStorage.getItem('user_id'),
+            reply_id: post.reply_id,
+            op: op
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          if (post.op === 0) {
+            post.op = 2
+            post.like -= 1
+            this.$message.success("取消点赞成功");
+          } else if (post.op === 1) {
+            post.op = 0
+            post.like += 1
+            post.dislike -= 1
+            this.$message.success("点赞成功");
+          } else {
+            post.op = 0
+            post.like += 1
+            this.$message.success("点赞成功");
+          }
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    dislikeReply(post) {
+      let op
+      if (post.op === 1) op = 2
+      else op = 1
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/like_reply",
+          Qs.stringify({
+            user_id: localStorage.getItem('user_id'),
+            reply_id: post.reply_id,
+            op: op
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          if (post.op === 1) {
+            post.op = 2
+            post.dislike -= 1
+            this.$message.success("取消点踩成功");
+          } else if (post.op === 0) {
+            post.op = 1
+            post.like -= 1
+            post.dislike += 1
+            this.$message.success("点踩成功");
+          } else {
+            post.op = 1
+            post.dislike += 1
+            this.$message.success("点踩成功");
+          }
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
     // 提交
     submit() {
       /*
@@ -133,23 +198,25 @@ export default {
         if(res.data.code===0){
           console.log(this.clubId)
           this.newReply.content = ''
+          location.reload(true)
           this.$message.success("回复成功");
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)
       })
     },
-    deleteReply(reply_id) {
+    deleteReply(reply) {
       /*
       DO:删除回复帖
        */
       this.$axios.post(
           "http://127.0.0.1:8000/api/delete_reply",
           Qs.stringify({
-            reply_id:reply_id
+            reply_id:reply.reply_id
           })
       ).then((res)=>{
         if(res.data.code===0){
+          reply.op = 3
           this.$message.success("删除回复成功");
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
