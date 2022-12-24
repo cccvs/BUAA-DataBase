@@ -18,7 +18,7 @@ delimiter ;
 delimiter ;;
 # createClub
 create procedure createClub(in clubName varchar(31), in clubType smallint, in masterId varchar(31),
-                            in clubIntro varchar(1022), in clubCover varchar(255), in clubWelcome varchar(255),
+                            in clubIntro varchar(16382), in clubCover varchar(255), in clubWelcome varchar(255),
                             in clubWelcomeImage varchar(255))
 begin
     declare clubId int;
@@ -98,7 +98,7 @@ delimiter ;
 delimiter ;;
 # createEvent
 create procedure createEvent(in clubId int, in userId varchar(31), in eventTitle varchar(31),
-                             in eventCover varchar(255), in eventContent varchar(255), in applyTime varchar(31),
+                             in eventCover varchar(255), in eventContent varchar(16382), in applyTime varchar(31),
                              in expiredTime varchar(31), in beginTime varchar(31), in endTime varchar(31),
                              in memberLimit int)
 begin
@@ -154,7 +154,7 @@ delimiter ;
 # 1221
 delimiter ;;
 # publishNotice
-create procedure publishNotice(in noticeTitle varchar(31), in noticeContent varchar(1022), in userId varchar(31),
+create procedure publishNotice(in noticeTitle varchar(31), in noticeContent varchar(16382), in userId varchar(31),
                                in clubId int,
                                in noticeTop smallint)
 begin
@@ -251,7 +251,7 @@ delimiter ;
 
 delimiter ;;
 create procedure publishPost(in userId varchar(31), in clubId int, in postTitle varchar(31),
-                             in postContent varchar(1022))
+                             in postContent varchar(16382))
 begin
     declare postId int;
     set postId = allocId();
@@ -354,7 +354,7 @@ delimiter ;
 
 delimiter ;;
 create procedure modifyClubInfo(in clubId int, in clubName varchar(31), in clubType smallint,
-                                in clubIntro varchar(1022), in clubCover varchar(255), in clubWelcome varchar(255),
+                                in clubIntro varchar(16382), in clubCover varchar(255), in clubWelcome varchar(255),
                                 in clubWelcomeImage varchar(255))
 begin
     update club
@@ -369,7 +369,7 @@ end ;;
 delimiter ;
 
 delimiter ;;
-create procedure replyPost(in userId varchar(31), in postId int, in postContent varchar(255))
+create procedure replyPost(in userId varchar(31), in postId int, in postContent varchar(16382))
 begin
     declare replyId int;
     set replyId = allocId();

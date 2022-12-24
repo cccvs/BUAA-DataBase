@@ -231,7 +231,6 @@ def getOneClub(clubId: int):
     return result
 
 
-
 def getMasterClubList(userId: str):
     connect, cursor = connectDatabase()
     try:
@@ -415,6 +414,10 @@ def createEvent(clubId: int, userId: str, eventTitle: str, eventCover: str, even
         raise e
     finally:
         closeDatabase(connect, cursor)
+
+
+print('a' * 512)
+createEvent(1001, '20373742', '', '', 'a' * 512, '', '', '', '', 3)
 
 
 def handleCreateEvent(eventId: int, op: int):
