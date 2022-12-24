@@ -351,7 +351,7 @@ export default {
         console.log(error)
       })
     },
-    getClubList() {
+    getClubList(club_id) {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_list",
           Qs.stringify({
@@ -364,7 +364,7 @@ export default {
       ).then((res) => {
         if (res.data.code === 0) {
           this.myClubList = res.data.club_list;
-          let id = Number(this.$router.history.current.params.id);
+          let id = Number(club_id);
           console.log("mounted id", id);
           this.curClub = this.myClubList.filter((club) => {
             return club.club_id === id
@@ -375,12 +375,12 @@ export default {
         console.log(error)
       })
     },
-    getMembers() {
+    getMembers(club_id) {
       // console.log(this.curClub[0].club_id)
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_members",
           Qs.stringify({
-            club_id: this.$router.history.current.params.id,
+            club_id: club_id,
             user_id: localStorage.getItem('user_id')
           })
       ).then((res) => {
@@ -391,11 +391,11 @@ export default {
         console.log(error)
       })
     },
-    getActivities() {
+    getActivities(club_id) {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_events",
           Qs.stringify({
-            club_id: this.$router.history.current.params.id,
+            club_id: club_id,
             user_id: localStorage.getItem('user_id')
           })
       ).then((res) => {
@@ -406,11 +406,11 @@ export default {
         console.log(error)
       })
     },
-    getNotices() {
+    getNotices(club_id) {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_notices",
           Qs.stringify({
-            club_id: this.$router.history.current.params.id
+            club_id: club_id
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -420,11 +420,11 @@ export default {
         console.log(error)
       })
     },
-    getPosts() {
+    getPosts(club_id) {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_club_posts",
           Qs.stringify({
-            club_id: this.$router.history.current.params.id,
+            club_id: club_id,
             user_id: localStorage.getItem('user_id'),
           })
       ).then((res) => {
@@ -662,6 +662,7 @@ export default {
       ).then((res) => {
         if (res.data.code === 0) {
           this.$message.success("批量添加社员成功");
+          this.getMembers();
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
@@ -671,16 +672,17 @@ export default {
   },
   mounted() {
     // this.getOneClub(this.$router.history.current.params.id);
+    let club_id = this.$router.history.current.params.id;
     console.log("here mounted");
-    this.getClubList();
-    this.getMembers();
-    this.getActivities();
-    this.getNotices();
-    this.getPosts();
-    this.getAllClubs();
+    this.getClubList(club_id);
+    this.getMembers(club_id);
+    this.getActivities(club_id);
+    this.getNotices(club_id);
+    this.getPosts(club_id);
+    this.getAllClubs(club_id);
   },
   beforeRouteUpdate(to, from, next) {
-    console.log("update");
+    console.log("update now");
     let id = Number(to.params.id);
     /*
     DO: curClub应该是一个数组
@@ -691,9 +693,17 @@ export default {
     this.curClub = this.clubList.filter((club) => {
       return club.club_id === id
     })
+    //this.getClubList();
+    this.getMembers(id);
+    this.getActivities(id);
+    this.getNotices(id);
+    this.getPosts(id);
+    this.getAllClubs(id);
+
     console.log(this.curClub);
     next();
-  }
+  },
+
 }
 </script>
 
