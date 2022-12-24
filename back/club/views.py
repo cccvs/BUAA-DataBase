@@ -110,11 +110,7 @@ def updateUserInformation(request):
 @csrf_exempt
 def getUserInformation(request):
     if request.method == 'POST':
-        jwtDict = {'code': request.POST.get('jwt[code]'), 'user_id': request.POST.get('jwt[user_id]'),
-                   'time': request.POST.get('jwt[time]')}
-        if not checkJwt(jwtDict):
-            return JsonResponse(jwtFailedDict)
-        userId = jwtDict['user_id']
+        userId = request.POST.get('user_id')
         try:
             userResultDict = dict()
             result = mysqlPack.getUser(userId)
