@@ -86,7 +86,7 @@ begin
         update reply set `like` = `like` + 1 where reply.reply_id = NEW.reply_id;
     else
         update reply set `dislike` = `dislike` + 1 where reply.reply_id = NEW.reply_id;
-    end if ;;
+    end if ;
 end ;;
 
 drop trigger if exists updateUserReply2;
@@ -98,12 +98,12 @@ begin
         update reply set `like` = `like` - 1 where reply.reply_id = OLD.reply_id;
     else
         update reply set `dislike` = `dislike` - 1 where reply.reply_id = OLD.reply_id;
-    end if ;;
+    end if ;
     if NEW.action = 0 then
         update reply set `like` = `like` + 1 where reply.reply_id = NEW.reply_id;
     else
         update reply set `dislike` = `dislike` + 1 where reply.reply_id = NEW.reply_id;
-    end if ;;
+    end if ;
 end ;;
 
 drop trigger if exists updateUserReply3;
@@ -115,7 +115,7 @@ begin
         update reply set `like` = `like` - 1 where reply.reply_id = OLD.reply_id;
     else
         update reply set `dislike` = `dislike` - 1 where reply.reply_id = OLD.reply_id;
-    end if ;;
+    end if ;
 end ;;
 
 drop trigger if exists updateUserEventLike1;

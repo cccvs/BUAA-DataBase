@@ -231,7 +231,6 @@ def getOneClub(clubId: int):
     return result
 
 
-
 def getMasterClubList(userId: str):
     connect, cursor = connectDatabase()
     try:
