@@ -416,10 +416,6 @@ def createEvent(clubId: int, userId: str, eventTitle: str, eventCover: str, even
         closeDatabase(connect, cursor)
 
 
-print('a' * 512)
-createEvent(1001, '20373742', '', '', 'a' * 512, '', '', '', '', 3)
-
-
 def handleCreateEvent(eventId: int, op: int):
     connect, cursor = connectDatabase()
     try:

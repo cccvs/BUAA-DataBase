@@ -433,6 +433,13 @@ def getClubNotices(request):
                 for num, field in enumerate(noticeField):
                     resultItem[field] = data[num]
                 resultList.append(resultItem)
+            topFirstList = []
+            for resultItem in resultList:
+                if resultItem['top'] == 1:
+                    topFirstList.append(resultItem)
+            for resultItem in resultList:
+                if resultItem['top'] != 1:
+                    topFirstList.append(resultItem)
             return JsonResponse({'code': 0, 'message': '', 'notice_list': resultList})
         except Exception as e:
             print(e)

@@ -221,7 +221,6 @@ begin
     set memberCount = (select member_count from event where event_id = eventId);
     set memberLimit = (select member_limit from event where event_id = eventId);
     if memberCount < memberLimit then
-        delete from user_event_participate where user_id = userId and event_id = eventId;
         insert into user_event_participate (user_id, event_id, identity) values (userId, eventId, 0);
     end if;
 end ;;
