@@ -50,7 +50,7 @@
             <v-list-item-avatar color="grey darken-3">
               <v-img
                   class="elevation-6"
-                  :src="reply.avatar"
+                  :src="reply.user_avatar"
               ></v-img>
             </v-list-item-avatar>
 
@@ -114,13 +114,14 @@ export default {
     // 所有操作都会被解析重新渲染
     change(value, render) {
       // render 为 markdown 解析后的结果[html]
-      this.html = render;
+      this.newReply.html = render;
     },
     // 提交
     submit() {
       /*
       DO:将这里的数据传到后端，在后端存储生成id存储
        */
+      console.log(this.newReply.html)
       this.$axios.post(
           "http://127.0.0.1:8000/api/reply_post",
           Qs.stringify({

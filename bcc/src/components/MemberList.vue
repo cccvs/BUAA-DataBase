@@ -42,7 +42,7 @@
       </v-btn>
       <v-btn v-show="follow&&member.is_follow === 0&&(member.user_id !== curId)"
              color="blue lighten-3"
-             @click="handelFollow(member.user_id)"
+             @click="handelFollow(member)"
              style="min-width: 120px">
         <v-icon>
           mdi-account-heart
@@ -51,7 +51,7 @@
       </v-btn>
       <v-btn v-show="follow&&member.is_follow === 1&&(member.user_id !== curId)"
              color="orange lighten-3"
-             @click="handleUnFollow(member.user_id)"
+             @click="handleUnFollow(member)"
       >
         <v-icon>
           mdi-account-cancel
@@ -91,33 +91,35 @@ export default {
     /*
     DO: 关注/取消关注接口
      */
-    handelFollow(id) {
+    handelFollow(member) {
       // console.log(id)
       this.$axios.post(
           "http://127.0.0.1:8000/api/handle_following",
           Qs.stringify({
             'follower_id': localStorage.getItem('user_id'),
-            'friend_id': id
+            'friend_id': member.user_id
           })
       ).then((res) => {
         if (res.data.code === 0) {
           // console.log(res.data)
+          member.is_follow = 1
           this.$message.success("你已成功关注！")
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
       })
     },
-    handleUnFollow(id) {
+    handleUnFollow(member) {
       this.$axios.post(
           "http://127.0.0.1:8000/api/handle_unfollowing",
           Qs.stringify({
             'follower_id': localStorage.getItem('user_id'),
-            'friend_id': id
+            'friend_id': member.user_id
           })
       ).then((res) => {
         if (res.data.code === 0) {
           // console.log(res.data)
+          member.is_follow = 0
           this.$message.success("你已成功取消关注！")
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
