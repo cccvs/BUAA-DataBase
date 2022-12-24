@@ -92,7 +92,6 @@ begin
                 concat('Your request of joining club \'', clubName, '\' has been rejected.'));
     end if;
     delete from joining_club where form_id = formId;
-    # end
 end;;
 delimiter ;
 
@@ -179,7 +178,7 @@ end ;;
 delimiter ;
 
 delimiter ;;
-# joinClub
+# joinClubDirect
 create procedure joinClubDirect(in userId varchar(31), in clubId int, in clubLabel varchar(31))
 begin
     delete from user_club where user_id = userId and club_id = clubId;
