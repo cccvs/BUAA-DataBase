@@ -960,6 +960,10 @@ def getLogs(request):
                 resultItem = dict()
                 for num, field in enumerate(messageField):
                     resultItem[field] = data[num]
+                resultItem['op'] = resultItem['content'].split(',')[0]
+                resultItem['user_id'] = resultItem['content'].split(',')[1]
+                resultItem['user_name'] = resultItem['content'].split(',')[2]
+                resultItem['succeed'] = True
                 resultList.append(resultItem)
             return JsonResponse({'code': 0, 'message': '', 'logs': resultList})
         except Exception as e:

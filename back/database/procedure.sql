@@ -15,7 +15,7 @@ begin
     # log
     insert into message(message_id, receiver_id, time, content, is_log)
     values (messageId, null, from_unixtime(unix_timestamp()),
-            concat('REGISTER: User[user_id:', userId, ', real_name:', realName, '].'), 1);
+            concat('REGISTER,', userId, ',', realName), 1);
 end;;
 delimiter ;
 
@@ -402,7 +402,7 @@ begin
     # log
     insert into message(message_id, receiver_id, time, content, is_log)
     values (messageId, null, from_unixtime(unix_timestamp()),
-            concat('LOGIN: User[user_id:', userId, ', real_name:', userName, '].'), 1);
+            concat('LOGIN,', userId, ',', userName), 1);
 end ;;
 delimiter ;
 
