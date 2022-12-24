@@ -82,7 +82,7 @@
       </v-list-item>
     </v-list>
 
-    <v-card-text style="margin-top: 30px">以陈俊杰的身份参与讨论：</v-card-text>
+    <v-card-text style="margin-top: 30px">以{{realName}}的身份参与讨论：</v-card-text>
     <mavon-editor
         v-model="newReply.content"
         style="margin-top: 20px;height: 100%;width:100%;align-self: center"
@@ -105,6 +105,7 @@ export default {
   props: ["replies", "post", "isMaster"],
   data() {
     return {
+      realName:'',
       newReply: {
         content: "",
         html: ""
@@ -222,9 +223,24 @@ export default {
       }).catch((error)=>{
         console.log(error)
       })
+    },
+    getUserName() {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_user_information",
+          Qs.stringify({
+            'user_id': localStorage.getItem('user_id')
+          })
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.realName = res.data.user.real_name
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
     }
   },
   created() {
+    this.getUserName()
     console.log(this.post)
   }
 }
