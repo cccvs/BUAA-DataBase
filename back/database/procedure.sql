@@ -8,8 +8,8 @@ create
                                                   in realName varchar(31), in userSex varchar(31),
                                                   in userInstitute varchar(31), in userEmail varchar(31))
 begin
-    insert into user(user_id, password, time, real_name, sex, institute, email, followers, following) value
-        (userId, UserPassword, from_unixtime(unix_timestamp()), realName, userSex, userInstitute, userEmail, 0, 0);
+    insert into user(user_id, password, time, real_name, sex, institute, email, followers, following, level) value
+        (userId, UserPassword, from_unixtime(unix_timestamp()), realName, userSex, userInstitute, userEmail, 0, 0, 0);
     # end
 end;;
 delimiter ;
