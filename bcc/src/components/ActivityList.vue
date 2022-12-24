@@ -59,14 +59,14 @@
             查看详情
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn small color="purple lighten-5" v-show="!audit" @click="participate(activity.event_id)">
+          <v-btn small color="purple lighten-5" v-show="!audit && activity.is_participate === 0" @click="participate(activity)">
             报名
           </v-btn>
-          <v-btn icon color="deep-orange" v-show="!audit" @click="likeEvent(activity.event_id,activity.op)">
+          <v-btn icon color="deep-orange" v-show="!audit" @click="likeEvent(activity)">
             <v-icon>mdi-thumb-up</v-icon>
           </v-btn>
           <div v-show="!audit">{{ activity.like }}</div>
-          <v-btn icon color="blue-grey darken-2" v-show="!audit" @click="dislikeEvent(activity.event_id,activity.op)">
+          <v-btn icon color="blue-grey darken-2" v-show="!audit" @click="dislikeEvent(activity)">
             <v-icon>mdi-thumb-down</v-icon>
           </v-btn>
           <div v-show="!audit">{{ activity.dislike }}</div>
@@ -109,54 +109,81 @@ export default {
   name: "ActivityList",
   props: ['activities', 'text', 'audit'],
   methods:{
-    participate(id) {
+    participate(activity) {
       this.$axios.post(
           "http://127.0.0.1:8000/api/participate_event",
           Qs.stringify({
             user_id: localStorage.getItem('user_id'),
-            event_id: id
+            event_id: activity.event_id
           })
       ).then((res) => {
         if (res.data.code === 0) {
+          activity.is_participate = 1
           this.$message.success("报名成功");
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
       })
     },
-    likeEvent(id,status) {
+    likeEvent(activity) {
       let op
-      if (status === 0) op = 2
+      if (activity.op === 0) op = 2
       else op = 0
       this.$axios.post(
           "http://127.0.0.1:8000/api/like_event",
           Qs.stringify({
             user_id: localStorage.getItem('user_id'),
-            event_id: id,
+            event_id: activity.event_id,
             op: op
           })
       ).then((res) => {
         if (res.data.code === 0) {
-          this.$message.success("点赞成功");
+          if (activity.op === 0) {
+            activity.op = 2
+            activity.like -= 1
+            this.$message.success("取消点赞成功");
+          } else if (activity.op === 1) {
+            activity.op = 0
+            activity.like += 1
+            activity.dislike -= 1
+            this.$message.success("点赞成功");
+          } else {
+            activity.op = 0
+            activity.like += 1
+            this.$message.success("点赞成功");
+          }
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
       })
     },
-    dislikeEvent(id,status) {
+    dislikeEvent(activity) {
       let op
-      if (status === 1) op = 2
+      if (activity.op === 1) op = 2
       else op = 1
       this.$axios.post(
           "http://127.0.0.1:8000/api/like_event",
           Qs.stringify({
             user_id: localStorage.getItem('user_id'),
-            event_id: id,
+            event_id: activity.event_id,
             op: op
           })
       ).then((res) => {
         if (res.data.code === 0) {
-          this.$message.success("点踩成功");
+          if (activity.op === 1) {
+            activity.op = 2
+            activity.dislike -= 1
+            this.$message.success("取消点踩成功");
+          } else if (activity.op === 0) {
+            activity.op = 1
+            activity.like -= 1
+            activity.dislike += 1
+            this.$message.success("点踩成功");
+          } else {
+            activity.op = 0
+            activity.dislike += 1
+            this.$message.success("点踩成功");
+          }
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
