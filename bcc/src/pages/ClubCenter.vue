@@ -250,8 +250,20 @@ export default {
   },
   methods: {
     /*
-    TODO: 获取tableData
+    DO: 获取tableData
      */
+    getLogs() {
+      this.$axios.post(
+          "http://127.0.0.1:8000/api/get_logs",
+      ).then((res) => {
+        if (res.data.code === 0) {
+          this.tableData = res.data.logs;
+          console.log(res.data.logs)
+        } else this.$notify.error(res.data.message)
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
     handleClick(row) {
       console.log(row);
     },
@@ -293,6 +305,7 @@ export default {
     this.getUnhandledClubs()
     this.getUnhandledEvents()
     this.getAllClubs()
+    this.getLogs()
   }
 }
 </script>
