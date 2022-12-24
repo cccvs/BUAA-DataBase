@@ -170,15 +170,20 @@ export default {
       }
     },
     sortClubs(){
-      for(let i = 0; i < this.selectedList.length; i++){
-        for(let j = 0; j < this.selectedList.length-i-1; j++){
-          if(this.sortCmp(this.selectedList[j],this.selectedList[j+1])){
-            let tmp = this.selectedList[j];
-            this.selectedList[j] = this.selectedList[j+1];
-            this.selectedList[j+1] = tmp;
+      let sortClub = []
+      for (let i = 0;i < this.selectedList.length;i++){
+        sortClub[i] = this.selectedList[i]
+      }
+      for(let i = 0; i < sortClub.length; i++){
+        for(let j = i+1; j < sortClub.length; j++){
+          if(this.sortCmp(sortClub[i],sortClub[j])){
+            let tmp = sortClub[j];
+            sortClub[j] = sortClub[i];
+            sortClub[i] = tmp;
           }
         }
       }
+      this.selectedList = sortClub
     },
     gotoClub(){
     },

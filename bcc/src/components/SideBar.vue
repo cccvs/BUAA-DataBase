@@ -50,6 +50,7 @@ export default {
   name: "SideBar",
   data() {
     return {
+      isAdmin:false,
       hasClub: false,
       isCollapse: true,
       user: {},
@@ -110,6 +111,7 @@ export default {
         if(res.data.code===0){
           console.log(res.data)
           this.user = res.data.user
+          this.isAdmin = res.data.user.level === 1
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)
