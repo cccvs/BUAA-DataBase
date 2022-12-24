@@ -5,6 +5,7 @@
         :key="notice.notice_id"
         :color="curColor(notice.notice_id)"
         :icon="curIcon(notice.notice_id)"
+        v-show="notice.top < 2"
         fill-dot
     >
       <v-card
@@ -18,7 +19,7 @@
               :color="curColor(notice.notice_id)"
               class="mx-0"
               outlined
-              @click="deleteNotice(notice.notice_id)"
+              @click="deleteNotice(notice)"
               v-show="isMaster"
           >
             删除公告
@@ -59,14 +60,15 @@ export default {
     }
   },
   methods: {
-    deleteNotice(notice_id) {
+    deleteNotice(notice) {
       this.$axios.post(
           "http://127.0.0.1:8000/api/delete_notice",
           Qs.stringify({
-            notice_id:notice_id
+            notice_id:notice.notice_id
           })
       ).then((res)=>{
         if(res.data.code===0){
+          notice.top = 2
           this.$message.success("删除公告成功");
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
