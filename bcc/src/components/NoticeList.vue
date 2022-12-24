@@ -19,6 +19,7 @@
               class="mx-0"
               outlined
               @click="deleteNotice(notice.notice_id)"
+              v-show="isMaster"
           >
             删除公告
           </v-btn>
@@ -34,7 +35,7 @@ import Qs from "qs";
 
 export default {
   name: "NoticeList",
-  props: ["notices"],
+  props: ["notices","isMaster"],
   data() {
     return {
       items: [

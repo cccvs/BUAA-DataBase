@@ -8,7 +8,7 @@
         <MyHeader></MyHeader>
       </el-header>
       <el-main>
-        <ReplyList :replies="replies" :post="curPost"></ReplyList>
+        <ReplyList :replies="replies" :post="curPost" :is-master="isMaster"></ReplyList>
       </el-main>
     </el-container>
   </el-container>
@@ -28,6 +28,7 @@ export default {
       /*
       DO: 通过路由参数获取post
        */
+      isMaster:false,
       curPost: {
         post_id: 1,
         avatar: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
@@ -70,6 +71,7 @@ export default {
       ).then((res) => {
         if (res.data.code === 0) {
           this.curPost = res.data.post;
+          this.isMaster = this.curPost.user_id === localStorage.getItem('user_id')
           console.log(this.curPost)
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
