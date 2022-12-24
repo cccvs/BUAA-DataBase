@@ -17,6 +17,7 @@
             <v-tab>社团申请审批</v-tab>
             <v-tab>社团活动审批</v-tab>
             <v-tab>社团星级评定</v-tab>
+            <v-tab>用户日志管理</v-tab>
             <v-tab-item>
               <ClubList :clubs="unhandledClubList" check-info="true" style="margin-left: 50px;"></ClubList>
             </v-tab-item>
@@ -25,6 +26,39 @@
             </v-tab-item>
             <v-tab-item>
               <ClubList :clubs="clubList" rate-club="true" style="margin-left: 50px;"></ClubList>
+            </v-tab-item>
+            <v-tab-item>
+              <el-table
+                  :data="tableData"
+                  border
+                  style="width: 100%">
+                <el-table-column
+                    fixed
+                    prop="user_id"
+                    label="用户ID"
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop="user_name"
+                    label="用户名"
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop="op"
+                    label="日志类型"
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop="time"
+                    label="时间"
+                    >
+                </el-table-column>
+                <el-table-column
+                    prop="succeed"
+                    label="操作结果"
+                    >
+                </el-table-column>
+              </el-table>
             </v-tab-item>
           </v-tabs>
         </v-app>
@@ -204,10 +238,23 @@ export default {
         like: 12,
         dislike: 10,
         show: false,
+      }],
+      tableData: [{
+        user_id: "20373021",
+        user_name: '陈俊杰',
+        time: '2022-05-02 12:20:00',
+        op: "log in",
+        succeed: "success",
       }]
     }
   },
   methods: {
+    /*
+    TODO: 获取tableData
+     */
+    handleClick(row) {
+      console.log(row);
+    },
     getUnhandledClubs() {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_unhandled_clubs",

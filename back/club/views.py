@@ -440,7 +440,7 @@ def getClubNotices(request):
             for resultItem in resultList:
                 if resultItem['top'] != 1:
                     topFirstList.append(resultItem)
-            return JsonResponse({'code': 0, 'message': '', 'notice_list': resultList})
+            return JsonResponse({'code': 0, 'message': '', 'notice_list': topFirstList})
         except Exception as e:
             print(e)
             return JsonResponse({'code': 13, 'message': 'error'})
@@ -935,9 +935,11 @@ def deleteNotice(request):
 
 @csrf_exempt
 def joinClubBulk(request):
-    length = request.POST.get('length')
+    print(request.POST)
+    length = int(request.POST.get('length'))
     clubId = request.POST.get('club_id')
     userIdList = [request.POST.get("data[%d][item][user_id]" % i) for i in range(length)]
+    print(userIdList)
     if request.method == 'POST':
         try:
             for userId in userIdList:
