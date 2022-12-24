@@ -34,7 +34,7 @@
         <i class="el-icon-s-order"></i>
         <span slot="title">社团管理</span>
       </el-menu-item>
-      <el-menu-item index="/clubcenter" router>
+      <el-menu-item index="/clubcenter" router v-show="isAdmin">
         <i class="el-icon-office-building"></i>
         <span slot="title">社团中心</span>
       </el-menu-item>
@@ -50,6 +50,7 @@ export default {
   name: "SideBar",
   data() {
     return {
+      isAdmin:false,
       hasClub: false,
       isCollapse: true,
       user: {},
@@ -110,6 +111,7 @@ export default {
         if(res.data.code===0){
           console.log(res.data)
           this.user = res.data.user
+          this.isAdmin = res.data.user.level === 1
         } else this.$notify.error(res.data.message)
       }).catch((error)=>{
         console.log(error)
