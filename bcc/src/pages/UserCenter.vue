@@ -6,99 +6,100 @@
     <v-app>
       <MySnackBar></MySnackBar>
     </v-app>
-    <el-container>
-      <el-header>
-        <MyHeader></MyHeader>
-      </el-header>
       <el-container>
-        <el-main>
-          <MyUserCenterHeader
-              :real_name="user.real_name"
-              :followers="user.followers"
-              :following="user.following"
-              :avatar="user.avatar"></MyUserCenterHeader>
-        </el-main>
-        <el-main class="el-main-table">
-          <el-descriptions class="margin-top" :column="1" border>
-            <el-descriptions-item>
-              <template slot="label">
-                <i class="el-icon-postcard"></i>
-                用户编号
-              </template>
-              {{ user.user_id }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template slot="label">
-                <i class="el-icon-time"></i>
-                注册时间
-              </template>
-              {{ user.time }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template slot="label">
-                <i class="el-icon-real_name"></i>
-                姓名
-              </template>
-              <label v-show="!isEdit">{{ user.real_name }}</label>
-              <el-input size="mini" v-model="user.real_name" v-show="isEdit"></el-input>
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template slot="label">
-                <i class="el-icon-sex"></i>
-                性别
-              </template>
-              <label v-show="!isEdit">{{ user.sex }}</label>
-              <template>
-                <el-radio size="mini" v-model="user.sex" v-show="isEdit" label="男">男</el-radio>
-                <el-radio size="mini" v-model="user.sex" v-show="isEdit" label="女">女</el-radio>
-              </template>
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template slot="label">
-                <i class="el-icon-s-check"></i>
-                职务
-              </template>
-              {{ user.level }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template slot="label">
-                <i class="el-icon-institute"></i>
-                学院
-              </template>
-              <label v-show="!isEdit">{{ user.institute }}</label>
-              <el-select size="mini" v-model="user.institute" filterable v-show="isEdit">
-                <el-option
-                    v-for="institute in institutes"
-                    :key="institute.name"
-                    :label="institute.name"
-                    :value="institute.name">
-                </el-option>
-              </el-select>
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template slot="label">
-                <i class="el-icon-mobile-phone"></i>
-                手机号
-              </template>
-              <label v-show="!isEdit">{{ user.phone }}</label>
-              <el-input size="mini" v-model="user.phone" v-show="isEdit"></el-input>
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template slot="label">
-                <i class="el-icon-email"></i>
-                邮箱
-              </template>
-              <label v-show="!isEdit">{{ user.email }}</label>
-              <el-input size="mini" v-model="user.email" v-show="isEdit"></el-input>
-            </el-descriptions-item>
-          </el-descriptions>
-          <div class="flexs">
-            <el-button type="primary" @click="submitChangeInfo">{{ mode }}</el-button>
-            <el-button type="primary" v-show="isEdit" @click="isEdit = !isEdit">取消</el-button>
-          </div>
-        </el-main>
+        <el-header>
+          <MyHeader></MyHeader>
+        </el-header>
+        <el-container>
+          <el-main>
+            <MyUserCenterHeader
+                :real_name="user.real_name"
+                :followers="user.followers"
+                :following="user.following"
+                :avatar="user.avatar"
+                :cur-id="this.$router.history.current.params.id"></MyUserCenterHeader>
+          </el-main>
+          <el-main class="el-main-table">
+            <el-descriptions class="margin-top" :column="1" border>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-postcard"></i>
+                  用户编号
+                </template>
+                {{ user.user_id }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-time"></i>
+                  注册时间
+                </template>
+                {{ user.time }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-real_name"></i>
+                  姓名
+                </template>
+                <label v-show="!isEdit">{{ user.real_name }}</label>
+                <el-input size="mini" v-model="user.real_name" v-show="isEdit"></el-input>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-sex"></i>
+                  性别
+                </template>
+                <label v-show="!isEdit">{{ user.sex }}</label>
+                <template>
+                  <el-radio size="mini" v-model="user.sex" v-show="isEdit" label="男">男</el-radio>
+                  <el-radio size="mini" v-model="user.sex" v-show="isEdit" label="女">女</el-radio>
+                </template>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-s-check"></i>
+                  职务
+                </template>
+                {{ user.level }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-institute"></i>
+                  学院
+                </template>
+                <label v-show="!isEdit">{{ user.institute }}</label>
+                <el-select size="mini" v-model="user.institute" filterable v-show="isEdit">
+                  <el-option
+                      v-for="institute in institutes"
+                      :key="institute.name"
+                      :label="institute.name"
+                      :value="institute.name">
+                  </el-option>
+                </el-select>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-mobile-phone"></i>
+                  手机号
+                </template>
+                <label v-show="!isEdit">{{ user.phone }}</label>
+                <el-input size="mini" v-model="user.phone" v-show="isEdit"></el-input>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  <i class="el-icon-email"></i>
+                  邮箱
+                </template>
+                <label v-show="!isEdit">{{ user.email }}</label>
+                <el-input size="mini" v-model="user.email" v-show="isEdit"></el-input>
+              </el-descriptions-item>
+            </el-descriptions>
+            <div class="flexs" v-show="this.$router.history.current.params.id === id">
+              <el-button type="primary" @click="submitChangeInfo">{{ mode }}</el-button>
+              <el-button type="primary" v-show="isEdit" @click="isEdit = !isEdit">取消</el-button>
+            </div>
+          </el-main>
+        </el-container>
       </el-container>
-    </el-container>
   </el-container>
 </template>
 
@@ -114,6 +115,7 @@ export default {
   components: {MySnackBar, MyUserCenterHeader, MyHeader, SideBar},
   data() {
     return {
+      id:localStorage.getItem('user_id'),
       user: {
         user_id: "20373021",
         password: "123456",
@@ -169,7 +171,7 @@ export default {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_user_information",
           Qs.stringify({
-            'user_id': localStorage.getItem('user_id'),
+            'user_id': this.$router.history.current.params.id
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -191,7 +193,7 @@ export default {
     }
   },
   mounted() {
-    this.getUserInformation();
+    this.getUserInformation()
     // let id = this.$router.history.current.params.id
     //根据id从后端获得用户数据，这里假设拿到了user_list
     /*
@@ -223,6 +225,22 @@ export default {
     // this.user = (userList.filter((user) => {
     //   return user.user_id === id;
     // })).pop();
+  },
+  beforeRouteUpdate(to,from,next){
+    this.$axios.post(
+        "http://127.0.0.1:8000/api/get_user_information",
+        Qs.stringify({
+          'user_id': to.params.id
+        })
+    ).then((res) => {
+      if (res.data.code === 0) {
+        console.log(res.data)
+        this.user = res.data.user
+      } else this.$notify.error(res.data.message)
+    }).catch((error) => {
+      console.log(error)
+    })
+    next()
   }
 }
 </script>

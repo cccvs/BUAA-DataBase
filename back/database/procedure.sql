@@ -8,8 +8,8 @@ create
                                                   in realName varchar(31), in userSex varchar(31),
                                                   in userInstitute varchar(31), in userEmail varchar(31))
 begin
-    insert into user(user_id, password, time, real_name, sex, institute, email, followers, following) value
-        (userId, UserPassword, from_unixtime(unix_timestamp()), realName, userSex, userInstitute, userEmail, 0, 0);
+    insert into user(user_id, password, time, real_name, sex, institute, email, followers, following, level) value
+        (userId, UserPassword, from_unixtime(unix_timestamp()), realName, userSex, userInstitute, userEmail, 0, 0, 0);
     # end
 end;;
 delimiter ;
@@ -92,7 +92,6 @@ begin
                 concat('Your request of joining club \'', clubName, '\' has been rejected.'));
     end if;
     delete from joining_club where form_id = formId;
-    # end
 end;;
 delimiter ;
 
@@ -179,7 +178,7 @@ end ;;
 delimiter ;
 
 delimiter ;;
-# joinClub
+# joinClubDirect
 create procedure joinClubDirect(in userId varchar(31), in clubId int, in clubLabel varchar(31))
 begin
     delete from user_club where user_id = userId and club_id = clubId;

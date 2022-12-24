@@ -55,8 +55,8 @@
               <v-btn @click="getPdf('#'+'mychart2', '成员分布')" v-show="chartsBar" color="blue lighten-3"
                      style="margin-left: 10px">导出成员分布PDF
               </v-btn>
-              <v-btn @click="toExcel" style="margin-left: 20px" color="blue lighten-3">导出成员数据</v-btn>
-              <v-btn style="margin-left: 20px" color="blue lighten-3">
+              <v-btn @click="toExcel" style="margin-left: 20px" color="blue lighten-3" v-show="isMaster">导出成员数据</v-btn>
+              <v-btn style="margin-left: 20px" color="blue lighten-3" v-show="isMaster">
                 Excel上传至数据库
                 <input
                     type="file"
@@ -77,14 +77,14 @@
                 <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
                 <h1 style="margin-left: 10px;margin-top: 5px">查看社团公告</h1>
               </v-row>
-              <NoticeList :notices="notices"></NoticeList>
+              <NoticeList :notices="notices" :is-master="isMaster"></NoticeList>
             </v-tab-item>
             <v-tab-item>
               <v-row style="margin-left: 10px;margin-top: 10px">
                 <v-icon color="blue">mdi-chat-plus</v-icon>
                 <h1 style="margin-left: 10px;margin-top: 10px">和社团的小伙伴一起尽情讨论吧！</h1>
               </v-row>
-              <PostList :posts="posts"></PostList>
+              <PostList :posts="posts" :is-master="isMaster"></PostList>
             </v-tab-item>
             <v-tab-item>
               <PublishPost :club-id="this.$router.history.current.params.id"></PublishPost>
@@ -119,6 +119,7 @@ export default {
      members是当前社团的所有成员，activities是当前社团的所有活动，notices是当前社团的所有公告
      */
     return {
+      isMaster: false,
       club: {},
       myClubList: [],
       clubList: [],
@@ -344,7 +345,7 @@ export default {
           this.curClub = this.clubList.filter((club) => {
             return club.club_id === id
           })
-          console.log("curClub is ", this.curClub);
+          this.isMaster = this.curClub[0].master_id === localStorage.getItem('user_id')
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
@@ -452,9 +453,18 @@ export default {
     initEchartsBar() {
       const chartDom = document.getElementById('mychart2');
       const myChart = echarts.init(chartDom);
-
-      let dataAxis = ["1系", "2系", "3系", "4系", "5系", "6系", "7系"];
-      let data = [220, 182, 191, 234, 123, 123, 32];
+      console.log(this.members[0].institute)
+      let dataName = ["交通学院", "自动化学院", "经济管理学院", "数学学院", "计算机学院", "可靠性与系统工程学院", "软件学院"];
+      let dataAxis = ["交通", "自动化", "经管", "数学", "计算机", "可靠性", "软件"];
+      let data = [0, 0, 0, 0, 0, 0, 0];
+      for (let i = 0;i < this.members.length;i++){
+        for (let j = 0;j < 7;j++) {
+          if (this.members[i].institute === dataName[j]) {
+            data[j]++
+            break
+          }
+        }
+      }
       let yMax = 500;
 
       let dataShadow = [];
@@ -536,6 +546,9 @@ export default {
       option && myChart.setOption(option);
     },
     initEcharts() {
+      let male = this.members.filter((member) => {
+        return member.sex === '男'
+      })
       const option = {
         tooltip: {
           trigger: 'item'
@@ -565,8 +578,8 @@ export default {
               show: false
             },
             data: [
-              {value: 1048, name: '男'},
-              {value: 735, name: '女'},
+              {value: male.length, name: '男'},
+              {value: this.members.length - male.length, name: '女'},
             ]
           }
         ]

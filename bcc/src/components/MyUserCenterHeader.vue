@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-app style="height: 100%;overflow-y: hidden;overflow-x: hidden">
-      <v-row style="max-height: 50px;margin-top: 10px;margin-left: 10px">
+      <v-row style="max-height: 50px;margin-top: 10px;margin-left: 10px" v-show="id === curId">
         <v-col cols="1">
           <v-icon color="blue">mdi-file-document-edit</v-icon>
         </v-col>
@@ -9,7 +9,7 @@
           <h1>管理您的账号</h1>
         </v-col>
       </v-row>
-      <v-row style="margin-left: 10px;max-height:50px;min-width: 300px">
+      <v-row style="margin-left: 10px;max-height:50px;min-width: 300px" v-show="id === curId">
         <v-btn color="deep-purple accent-1"
                elevation="5"
                @click="dialogFormVisible = true">
@@ -110,7 +110,7 @@ import Qs from "qs";
 export default {
   name: "MyUserCenterHeader",
   components: {MySnackBar},
-  props: ["real_name", "following", "followers","avatar"],
+  props: ["real_name", "following", "followers","avatar","curId"],
   data() {
     let validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -139,6 +139,7 @@ export default {
       }
     };
     return {
+      id:localStorage.getItem('user_id'),
       imageUrl:'',
       tmpUrl:'',
       modified:false,

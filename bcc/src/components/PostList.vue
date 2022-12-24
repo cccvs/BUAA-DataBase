@@ -28,7 +28,7 @@
         <v-icon>mdi-thumb-down</v-icon>
       </v-btn>
       <div>{{ post.dislike }}</div>
-      <v-btn icon color="indigo" @click="deletePost(post)">
+      <v-btn icon color="indigo" @click="deletePost(post)" v-show="isMaster">
         <v-icon>mdi-comment-remove</v-icon>
       </v-btn>
       <v-list-item-content style="margin-left: 20px">{{ post.time }}</v-list-item-content>
@@ -41,7 +41,7 @@ import Qs from "qs";
 
 export default {
   name: "PostList",
-  props: ["posts"],
+  props: ["posts","isMaster"],
   methods: {
     detailForPost(id) {
       // alert(id);

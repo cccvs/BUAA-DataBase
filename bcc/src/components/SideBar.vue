@@ -26,7 +26,7 @@
           {{club.name}}
         </el-menu-item>
       </el-submenu>
-      <el-menu-item :index="`/usercenter/${this.user.user_id}/${this.user.real_name}`" router>
+      <el-menu-item :index="`/usercenter/${this.user.user_id}/${this.user.real_name}`">
         <i class="el-icon-user-solid"></i>
         <span slot="title">个人中心</span>
       </el-menu-item>
@@ -104,7 +104,7 @@ export default {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_user_information",
           Qs.stringify({
-            jwt: {'code':localStorage.getItem('code'),'user_id':localStorage.getItem('user_id'),'time':localStorage.getItem('time')}
+            'user_id':localStorage.getItem('user_id')
           })
       ).then((res)=>{
         if(res.data.code===0){
