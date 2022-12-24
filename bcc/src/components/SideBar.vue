@@ -34,7 +34,7 @@
         <i class="el-icon-s-order"></i>
         <span slot="title">社团管理</span>
       </el-menu-item>
-      <el-menu-item index="/clubcenter" router>
+      <el-menu-item index="/clubcenter" router v-show="isAdmin">
         <i class="el-icon-office-building"></i>
         <span slot="title">社团中心</span>
       </el-menu-item>
