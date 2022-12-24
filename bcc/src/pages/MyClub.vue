@@ -35,7 +35,7 @@
                       style="margin-top: 50%"
                   >
                     <v-col class="text-center" cols="12">
-                      <h4 style="font-style: italic">{{ curClub[0].welcome }}</h4>
+                      <h4 style="font-style: italic;color: orange">{{ curClub[0].welcome }}</h4>
                     </v-col>
                   </v-row>
                 </v-img>
@@ -129,7 +129,10 @@ export default {
         type: "体育",
         description: "是一个以攀岩、暑期登山、科考，以及其他户外活动为特色的北航“明星社团”",
         num: 200,
-        level: 5
+        level: 5,
+        cover: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+        welcome: "你好",
+        welcome_image: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
       }],
       members: [{
         user_id: "20373021",
@@ -655,14 +658,12 @@ export default {
   mounted() {
     // this.getOneClub(this.$router.history.current.params.id);
     console.log("here mounted");
-
     this.getClubList();
     this.getMembers();
     this.getActivities();
     this.getNotices();
     this.getPosts();
     this.getAllClubs();
-
   },
   beforeRouteUpdate(to, from, next) {
     console.log("update");
