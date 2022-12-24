@@ -8,9 +8,14 @@ create
                                                   in realName varchar(31), in userSex varchar(31),
                                                   in userInstitute varchar(31), in userEmail varchar(31))
 begin
+    declare messageId int;
+    set messageId = allocId();
     insert into user(user_id, password, time, real_name, sex, institute, email, followers, following, level) value
         (userId, UserPassword, from_unixtime(unix_timestamp()), realName, userSex, userInstitute, userEmail, 0, 0, 0);
-    # end
+    # log
+    insert into message(message_id, receiver_id, time, content, is_log)
+    values (messageId, null, from_unixtime(unix_timestamp()),
+            concat('REGISTER: User[user_id:', userId, ', real_name:', realName, '].'), 1);
 end;;
 delimiter ;
 
@@ -29,7 +34,6 @@ begin
                                                             from_unixtime(unix_timestamp()), clubIntro,
                                                             masterId, clubCover, 0, clubWelcome, clubWelcomeImage);
     commit;
-    # end
 end;;
 delimiter ;
 
@@ -81,15 +85,15 @@ begin
         update joining_club set status = 2 where form_id = formId;
         insert into user_club(user_id, club_id, identity, label) values (applicantId, clubId, 0, clubLabel);
         # 消息
-        insert into message(message_id, receiver_id, time, content)
+        insert into message(message_id, receiver_id, time, content, is_log)
         values (messageId, receiverId, from_unixtime(unix_timestamp()),
-                concat('Your request of joining club \'', clubName, '\' has been approved.'));
+                concat('Your request of joining club \'', clubName, '\' has been approved.'), 0);
     else
         delete from joining_club where form_id = formId;
         # 消息
-        insert into message(message_id, receiver_id, time, content)
+        insert into message(message_id, receiver_id, time, content, is_log)
         values (messageId, receiverId, from_unixtime(unix_timestamp()),
-                concat('Your request of joining club \'', clubName, '\' has been rejected.'));
+                concat('Your request of joining club \'', clubName, '\' has been rejected.'), 0);
     end if;
     delete from joining_club where form_id = formId;
 end;;
@@ -193,8 +197,8 @@ begin
     declare messageId int;
     set messageId = allocId();
     delete from user_club where user_id = userId and club_id = clubId;
-    insert into message(message_id, receiver_id, time, content)
-    values (messageId, masterId, from_unixtime(unix_timestamp()), concat(userId, ' has quit club ', clubName, '.'));
+    insert into message(message_id, receiver_id, time, content, is_log)
+    values (messageId, masterId, from_unixtime(unix_timestamp()), concat(userId, ' has quit club ', clubName, '.'), 0);
 end ;;
 delimiter ;
 
@@ -276,15 +280,15 @@ begin
         update club set status = 2 where club_id = clubId;
         insert into user_club(user_id, club_id, identity, label) values (masterId, clubId, 2, userLabel);
         # 通知
-        insert into message(message_id, receiver_id, time, content)
+        insert into message(message_id, receiver_id, time, content, is_log)
         values (messageId, receiverId, from_unixtime(unix_timestamp()),
-                concat('Your request of creating club \'', clubName, '\' has been approved.'));
+                concat('Your request of creating club \'', clubName, '\' has been approved.'), 0);
     else
         delete from club where club_id = clubId;
         # 通知
-        insert into message(message_id, receiver_id, time, content)
+        insert into message(message_id, receiver_id, time, content, is_log)
         values (messageId, receiverId, from_unixtime(unix_timestamp()),
-                concat('Your request of creating club \'', clubName, '\' has been rejected.'));
+                concat('Your request of creating club \'', clubName, '\' has been rejected.'), 0);
     end if;
     # 删除表单
 end ;;
@@ -307,15 +311,15 @@ begin
         update event set status = 2 where event_id = eventId;
         insert into user_event_participate(user_id, event_id, identity) values (userId, eventId, 2);
         # 通知
-        insert into message(message_id, receiver_id, time, content)
+        insert into message(message_id, receiver_id, time, content, is_log)
         values (messageId, receiverId, from_unixtime(unix_timestamp()),
-                concat('Your request of creating event \'', eventTile, '\' has been approved.'));
+                concat('Your request of creating event \'', eventTile, '\' has been approved.'), 0);
     else
         delete from event where event_id = eventId;
         # 通知
-        insert into message(message_id, receiver_id, time, content)
+        insert into message(message_id, receiver_id, time, content, is_log)
         values (messageId, receiverId, from_unixtime(unix_timestamp()),
-                concat('Your request of creating event \'', eventTile, '\' has been rejected.'));
+                concat('Your request of creating event \'', eventTile, '\' has been rejected.'), 0);
     end if;
     # 删除表单
 end ;;
@@ -387,3 +391,18 @@ begin
     end if;
 end ;;
 delimiter ;
+
+delimiter ;;
+create procedure writeLoginLog(in userId varchar(31))
+begin
+    declare messageId int;
+    declare userName varchar(31);
+    set messageId = allocId();
+    set userName = (select real_name from user where user_id = userId);
+    # log
+    insert into message(message_id, receiver_id, time, content, is_log)
+    values (messageId, null, from_unixtime(unix_timestamp()),
+            concat('LOGIN: User[user_id:', userId, ', real_name:', userName, '].'), 1);
+end ;;
+delimiter ;
+

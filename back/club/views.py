@@ -20,7 +20,7 @@ eventField = ['event_id', 'club_id', 'user_id', 'title', 'cover', 'content', 'ti
 replyField = ['reply_id', 'post_id', 'user_id', 'time', 'content', 'like', 'dislike']
 postField = ['post_id', 'club_id', 'user_id', 'time', 'title', 'content', 'like', 'dislike']
 joiningClubField = ['form_id', 'applicant_id', 'club_id', 'status', 'time']
-messageField = ['message_id', 'receiver_id', 'time', 'content']
+messageField = ['message_id', 'receiver_id', 'time', 'content', 'is_log']
 
 
 def hashCode(s, salt='club_system'):
@@ -52,11 +52,11 @@ def loginUser(request):
         jwtDict = {'code': code.decode(), 'user_id': userId, 'time': curTime}
         # logics
         result = mysqlPack.getUser(userId)
-        print(result)
         if result:
             if result[0][1] != hashCode(password):
                 return JsonResponse({'code': 3, 'message': 'wrong password'})
             else:
+                mysqlPack.writeLoginLog(userId)
                 return JsonResponse(
                     {'code': 0, 'message': 'login succeess', 'jwt': jwtDict})
         else:
@@ -946,5 +946,24 @@ def joinClubBulk(request):
         except Exception as e:
             print(e)
             return JsonResponse({'code': 50, 'message': 'error'})
+    else:
+        return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
+
+
+@csrf_exempt
+def getLogs(request):
+    if request.method == 'POST':
+        try:
+            result = mysqlPack.getLogs()
+            resultList = []
+            for data in result:
+                resultItem = dict()
+                for num, field in enumerate(messageField):
+                    resultItem[field] = data[num]
+                resultList.append(resultItem)
+            return JsonResponse({'code': 0, 'message': '', 'logs': resultList})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 51, 'message': 'error'})
     else:
         return JsonResponse({'code': 1, 'message': 'expect POST, get GET.'})
