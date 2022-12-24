@@ -18,13 +18,13 @@
             <v-tab>社团活动审批</v-tab>
             <v-tab>社团星级评定</v-tab>
             <v-tab-item>
-              <ClubList :clubs="unhandledClubList" check-info="true"></ClubList>
+              <ClubList :clubs="unhandledClubList" check-info="true" style="margin-left: 50px;"></ClubList>
             </v-tab-item>
             <v-tab-item>
               <ActivityList :activities="activities" audit="true" text="审批社团发起的活动"></ActivityList>
             </v-tab-item>
             <v-tab-item>
-              <ClubList :clubs="clubList" rate-club="true"></ClubList>
+              <ClubList :clubs="clubList" rate-club="true" style="margin-left: 50px;"></ClubList>
             </v-tab-item>
           </v-tabs>
         </v-app>
