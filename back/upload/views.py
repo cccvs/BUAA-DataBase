@@ -13,7 +13,6 @@ PIC_URL_BASE = 'http://localhost:8000/'
 def uploadImage(request):
     # file template
     file = request.FILES.get('file')
-    # userId = request.POST.get('user_id')
     fileName = file.name
     try:
         # 图片格式
@@ -21,7 +20,6 @@ def uploadImage(request):
         if imageFormat not in ['jpeg', 'jpg', 'png', 'bmp', 'tif', 'gif']:
             return JsonResponse({'code': -2, 'message': '图片格式有误'})
         # 图片路径
-
         if not os.path.exists(MEDIA_ROOT):
             os.makedirs(MEDIA_ROOT)
         newName = str(time.time()).replace('.', '') + fileName
