@@ -71,7 +71,7 @@
                   <v-icon>mdi-thumb-down</v-icon>
                 </v-btn>
                 <div>{{ reply.dislike }}</div>
-                <v-btn icon color="indigo" @click="deleteReply(reply)">
+                <v-btn icon color="indigo" @click="deleteReply(reply)" v-show="isMaster">
                   <v-icon>mdi-comment-remove</v-icon>
                 </v-btn>
               </v-row>
@@ -102,7 +102,7 @@ import Qs from "qs";
 
 export default {
   name: "ReplyList",
-  props: ["replies", "post"],
+  props: ["replies", "post", "isMaster"],
   data() {
     return {
       newReply: {

@@ -55,8 +55,8 @@
               <v-btn @click="getPdf('#'+'mychart2', '成员分布')" v-show="chartsBar" color="blue lighten-3"
                      style="margin-left: 10px">导出成员分布PDF
               </v-btn>
-              <v-btn @click="toExcel" style="margin-left: 20px" color="blue lighten-3">导出成员数据</v-btn>
-              <v-btn style="margin-left: 20px" color="blue lighten-3">
+              <v-btn @click="toExcel" style="margin-left: 20px" color="blue lighten-3" v-show="isMaster">导出成员数据</v-btn>
+              <v-btn style="margin-left: 20px" color="blue lighten-3" v-show="isMaster">
                 Excel上传至数据库
                 <input
                     type="file"
@@ -77,14 +77,14 @@
                 <v-icon color="blue">mdi-clipboard-check-multiple-outline</v-icon>
                 <h1 style="margin-left: 10px;margin-top: 5px">查看社团公告</h1>
               </v-row>
-              <NoticeList :notices="notices"></NoticeList>
+              <NoticeList :notices="notices" :is-master="isMaster"></NoticeList>
             </v-tab-item>
             <v-tab-item>
               <v-row style="margin-left: 10px;margin-top: 10px">
                 <v-icon color="blue">mdi-chat-plus</v-icon>
                 <h1 style="margin-left: 10px;margin-top: 10px">和社团的小伙伴一起尽情讨论吧！</h1>
               </v-row>
-              <PostList :posts="posts"></PostList>
+              <PostList :posts="posts" :is-master="isMaster"></PostList>
             </v-tab-item>
             <v-tab-item>
               <PublishPost :club-id="this.$router.history.current.params.id"></PublishPost>
@@ -119,6 +119,7 @@ export default {
      members是当前社团的所有成员，activities是当前社团的所有活动，notices是当前社团的所有公告
      */
     return {
+      isMaster: false,
       club: {},
       myClubList: [],
       clubList: [],
@@ -344,7 +345,7 @@ export default {
           this.curClub = this.clubList.filter((club) => {
             return club.club_id === id
           })
-          console.log("curClub is ", this.curClub);
+          this.isMaster = this.curClub[0].master_id === localStorage.getItem('user_id')
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
