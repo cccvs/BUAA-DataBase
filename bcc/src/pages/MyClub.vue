@@ -35,7 +35,7 @@
                       style="margin-top: 50%"
                   >
                     <v-col class="text-center" cols="12">
-                      <h4 style="font-style: italic">{{ curClub[0].welcome }}</h4>
+                      <h4 style="font-style: italic;color: orange">{{ curClub[0].welcome }}</h4>
                     </v-col>
                   </v-row>
                 </v-img>
@@ -129,7 +129,10 @@ export default {
         type: "体育",
         description: "是一个以攀岩、暑期登山、科考，以及其他户外活动为特色的北航“明星社团”",
         num: 200,
-        level: 5
+        level: 5,
+        cover: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+        welcome: "你好",
+        welcome_image: "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
       }],
       members: [{
         user_id: "20373021",
@@ -449,9 +452,18 @@ export default {
     initEchartsBar() {
       const chartDom = document.getElementById('mychart2');
       const myChart = echarts.init(chartDom);
-
-      let dataAxis = ["1系", "2系", "3系", "4系", "5系", "6系", "7系"];
-      let data = [220, 182, 191, 234, 123, 123, 32];
+      console.log(this.members[0].institute)
+      let dataName = ["交通学院", "自动化学院", "经济管理学院", "数学学院", "计算机学院", "可靠性与系统工程学院", "软件学院"];
+      let dataAxis = ["交通", "自动化", "经管", "数学", "计算机", "可靠性", "软件"];
+      let data = [0, 0, 0, 0, 0, 0, 0];
+      for (let i = 0;i < this.members.length;i++){
+        for (let j = 0;j < 7;j++) {
+          if (this.members[i].institute === dataName[j]) {
+            data[j]++
+            break
+          }
+        }
+      }
       let yMax = 500;
 
       let dataShadow = [];
@@ -533,6 +545,9 @@ export default {
       option && myChart.setOption(option);
     },
     initEcharts() {
+      let male = this.members.filter((member) => {
+        return member.sex === '男'
+      })
       const option = {
         tooltip: {
           trigger: 'item'
@@ -562,8 +577,8 @@ export default {
               show: false
             },
             data: [
-              {value: 1048, name: '男'},
-              {value: 735, name: '女'},
+              {value: male.length, name: '男'},
+              {value: this.members.length - male.length, name: '女'},
             ]
           }
         ]
@@ -656,14 +671,12 @@ export default {
   mounted() {
     // this.getOneClub(this.$router.history.current.params.id);
     console.log("here mounted");
-
     this.getClubList();
     this.getMembers();
     this.getActivities();
     this.getNotices();
     this.getPosts();
     this.getAllClubs();
-
   },
   beforeRouteUpdate(to, from, next) {
     console.log("update");

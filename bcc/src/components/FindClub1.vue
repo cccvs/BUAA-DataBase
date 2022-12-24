@@ -43,7 +43,7 @@
         </el-dropdown>
       </div>
     </div>
-    <ClubList :clubs="selectedList" join-club="true"></ClubList>
+    <ClubList :clubs="selectedList" join-club="true" style="margin-left: 50px;"></ClubList>
 <!--    <div class="clubs-container" style="margin-top: 10px">-->
 <!--      <div class="clubBar" v-for="item in selectedList" :key="item.data" @click="gotoClub(item)">-->
 <!--        <div class="club_picture"><img src="../assets/logo.png"></div>-->

@@ -16,7 +16,8 @@
                 :real_name="user.real_name"
                 :followers="user.followers"
                 :following="user.following"
-                :avatar="user.avatar"></MyUserCenterHeader>
+                :avatar="user.avatar"
+                :cur-id="this.$router.history.current.params.id"></MyUserCenterHeader>
           </el-main>
           <el-main class="el-main-table">
             <el-descriptions class="margin-top" :column="1" border>
@@ -92,7 +93,7 @@
                 <el-input size="mini" v-model="user.email" v-show="isEdit"></el-input>
               </el-descriptions-item>
             </el-descriptions>
-            <div class="flexs">
+            <div class="flexs" v-show="this.$router.history.current.params.id === id">
               <el-button type="primary" @click="submitChangeInfo">{{ mode }}</el-button>
               <el-button type="primary" v-show="isEdit" @click="isEdit = !isEdit">取消</el-button>
             </div>
@@ -114,6 +115,7 @@ export default {
   components: {MySnackBar, MyUserCenterHeader, MyHeader, SideBar},
   data() {
     return {
+      id:localStorage.getItem('user_id'),
       user: {
         user_id: "20373021",
         password: "123456",
@@ -169,11 +171,7 @@ export default {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_user_information",
           Qs.stringify({
-            jwt: {
-              'code': localStorage.getItem('code'),
-              'user_id': localStorage.getItem('user_id'),
-              'time': localStorage.getItem('time')
-            }
+            'user_id': this.$router.history.current.params.id
           })
       ).then((res) => {
         if (res.data.code === 0) {
@@ -195,7 +193,7 @@ export default {
     }
   },
   mounted() {
-    this.getUserInformation();
+    this.getUserInformation()
     // let id = this.$router.history.current.params.id
     //根据id从后端获得用户数据，这里假设拿到了user_list
     /*
@@ -227,6 +225,22 @@ export default {
     // this.user = (userList.filter((user) => {
     //   return user.user_id === id;
     // })).pop();
+  },
+  beforeRouteUpdate(to,from,next){
+    this.$axios.post(
+        "http://127.0.0.1:8000/api/get_user_information",
+        Qs.stringify({
+          'user_id': to.params.id
+        })
+    ).then((res) => {
+      if (res.data.code === 0) {
+        console.log(res.data)
+        this.user = res.data.user
+      } else this.$notify.error(res.data.message)
+    }).catch((error) => {
+      console.log(error)
+    })
+    next()
   }
 }
 </script>

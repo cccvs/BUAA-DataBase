@@ -83,11 +83,7 @@ export default {
       this.$axios.post(
           "http://127.0.0.1:8000/api/get_user_information",
           Qs.stringify({
-            jwt: {
-              'code': localStorage.getItem('code'),
-              'user_id': localStorage.getItem('user_id'),
-              'time': localStorage.getItem('time')
-            }
+            'user_id': localStorage.getItem('user_id'),
           })
       ).then((res) => {
         if (res.data.code === 0) {
