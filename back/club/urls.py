@@ -69,4 +69,5 @@ urlpatterns = [
     path('handle_unfollowing', views.handleUnfollowing),
     path('publish_notice', views.publishNotice),
     path('delete_notice', views.deleteNotice),
+    path('get_logs', views.getLogs)
 ]

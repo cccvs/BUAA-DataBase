@@ -537,7 +537,7 @@ def deleteAllMessages(userId: str):
 def getMessages(userId: str):
     connect, cursor = connectDatabase()
     try:
-        cursor.execute('select * from message where receiver_id = %s', [userId])
+        cursor.execute('select * from message where receiver_id = %s and is_log = 0', [userId])
         result = cursor.fetchall()
         connect.commit()
     except Exception as e:
@@ -548,6 +548,20 @@ def getMessages(userId: str):
         closeDatabase(connect, cursor)
     return result
 
+
+def getLogs():
+    connect, cursor = connectDatabase()
+    try:
+        cursor.execute('select * from message where is_log = 1', [])
+        result = cursor.fetchall()
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
+    return result
 
 # post reply
 def getClubPosts(clubId: int):
@@ -767,6 +781,17 @@ def deleteNotice(noticeId: str):
         closeDatabase(connect, cursor)
 
 
+def writeLoginLog(userId: str):
+    connect, cursor = connectDatabase()
+    try:
+        cursor.callproc('writeLoginLog', [userId])
+        connect.commit()
+    except Exception as e:
+        print(e)
+        connect.rollback()
+        raise e
+    finally:
+        closeDatabase(connect, cursor)
 def test():
     conn, cursor = connectDatabase()
     ins = 'insert into event(event_id, club_id, user_id, content, time, apply_time, expired_time, begin_time, end_time, member_count, member_limit) values (2001, 1001, %s, %s, %s, %s, %s, %s, %s, 1, 200)'
