@@ -59,7 +59,7 @@
                   <i class="el-icon-s-check"></i>
                   职务
                 </template>
-                {{ user.level }}
+                {{ user.level === 1 ? '管理员' : '学生'}}
               </el-descriptions-item>
               <el-descriptions-item>
                 <template slot="label">

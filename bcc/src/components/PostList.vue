@@ -12,7 +12,7 @@
       </v-avatar>
       <v-list-item-content style="padding-left: 10px">
         <v-list-item-title>{{ post.title }} - {{ post.user_name }}</v-list-item-title>
-        <v-list-item-subtitle v-html="post.content"></v-list-item-subtitle>
+<!--        <v-list-item-subtitle v-html="post.content"></v-list-item-subtitle>-->
       </v-list-item-content>
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
