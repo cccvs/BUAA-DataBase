@@ -693,7 +693,6 @@ export default {
     })
     console.log(this.curClub);
     next();
-
   }
 }
 </script>
