@@ -8,6 +8,7 @@
         v-for="activity in activities"
         :key="activity.event_id"
         style="margin-top: 20px; width: 400px; margin-left:20px; float: left"
+        v-show="audit && activity.status === 0 || !audit"
     >
       <v-card
           class="mx-auto"
@@ -70,13 +71,13 @@
             <v-icon>mdi-thumb-down</v-icon>
           </v-btn>
           <div v-show="!audit">{{ activity.dislike }}</div>
-          <v-btn v-show="audit" elevation="10" icon circle color="green" @click="handlePass(activity.event_id)"
+          <v-btn v-show="audit" elevation="10" icon circle color="green" @click="handlePass(activity)"
                  style="margin-right: 20px">
             <v-icon>
               mdi-check
             </v-icon>
           </v-btn>
-          <v-btn v-show="audit" elevation="10" icon color="red" @click="handleFailPass(activity.event_id)"
+          <v-btn v-show="audit" elevation="10" icon color="red" @click="handleFailPass(activity)"
                  style="margin-right: 5px">
             <v-icon>
               mdi-close
@@ -119,6 +120,7 @@ export default {
       ).then((res) => {
         if (res.data.code === 0) {
           activity.is_participate = 1
+          activity.member_count += 1
           this.$message.success("报名成功");
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
@@ -180,7 +182,7 @@ export default {
             activity.dislike += 1
             this.$message.success("点踩成功");
           } else {
-            activity.op = 0
+            activity.op = 1
             activity.dislike += 1
             this.$message.success("点踩成功");
           }
@@ -189,36 +191,38 @@ export default {
         console.log(error)
       })
     },
-    handlePass(id) {
+    handlePass(activity) {
       /*
       DO:团委老师通过活动审批
        */
       this.$axios.post(
           "http://127.0.0.1:8000/api/handle_create_event",
           Qs.stringify({
-            event_id: id,
+            event_id: activity.event_id,
             op: 1
           })
       ).then((res) => {
         if (res.data.code === 0) {
+          activity.status = 2
           this.$message.success("活动审批通过");
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
       })
     },
-    handleFailPass(id) {
+    handleFailPass(activity) {
       /*
       DO:团委老师拒绝了活动
        */
       this.$axios.post(
           "http://127.0.0.1:8000/api/handle_create_event",
           Qs.stringify({
-            event_id: id,
+            event_id: activity.event_id,
             op: 0
           })
       ).then((res) => {
         if (res.data.code === 0) {
+          activity.status = 1
           this.$message.success("活动审批拒绝");
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
