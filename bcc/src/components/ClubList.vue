@@ -169,7 +169,7 @@ export default {
   float: left;
   height: 200px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  margin-right: 20px;
+  margin-right: 30px;
   margin-bottom: 20px;
 }
 
