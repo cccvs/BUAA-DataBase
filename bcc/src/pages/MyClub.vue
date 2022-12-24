@@ -18,7 +18,7 @@
             <v-tab>成员</v-tab>
             <v-tab>活动</v-tab>
             <v-tab>公告</v-tab>
-            <v-tab>论坛</v-tab>
+            <v-tab @click="getPosts">论坛</v-tab>
             <v-tab>创建新讨论</v-tab>
             <v-tab-item>
               <ClubList :clubs="curClub" :leave-club="true"
@@ -426,6 +426,7 @@ export default {
       ).then((res) => {
         if (res.data.code === 0) {
           this.posts = res.data.post_list;
+          console.log(this.posts)
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)

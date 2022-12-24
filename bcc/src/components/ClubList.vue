@@ -1,6 +1,6 @@
 <template>
   <div class="clubs-container" style="margin-top: 10px">
-    <div class="clubBar" v-for="club in clubs" :key="club.data" @dblclick="gotoClub(club)">
+    <div class="clubBar" v-for="club in clubs" :key="club.data" @dblclick="gotoClub(club)" v-show="checkInfo && club.star < 6 || !checkInfo">
       <div><img :src="club.cover" alt="社团封面" class="club_picture"></div>
       <div class="club_name">{{ club.name }}
         <div class="club_level" v-show="rateClub" @click="starRating(club.club_id,club.star)">
@@ -19,13 +19,13 @@
           <v-btn v-show="leaveClub" style="margin-right: 5px" color="yellow lighten-3" @click="quitClub(club.club_id)">
             退出社团
           </v-btn>
-          <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club.club_id)"
+          <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club)"
                  style="margin-right: 20px">
             <v-icon>
               mdi-check
             </v-icon>
           </v-btn>
-          <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(club.club_id)"
+          <v-btn v-show="checkInfo" elevation="10" icon color="red" @click="handleFailPass(club)"
                  style="margin-right: 5px">
             <v-icon>
               mdi-close
@@ -105,36 +105,38 @@ export default {
         console.log(error)
       })
     },
-    handlePass(id) {
+    handlePass(club) {
       /*
       DO:团委老师通过社团审批
        */
       this.$axios.post(
           "http://127.0.0.1:8000/api/handle_create_club",
           Qs.stringify({
-            club_id: id,
+            club_id: club.club_id,
             op: 1
           })
       ).then((res) => {
         if (res.data.code === 0) {
+          club.star = 6
           this.$message.success("社团审批通过");
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
         console.log(error)
       })
     },
-    handleFailPass(id) {
+    handleFailPass(club) {
       /*
       DO:团委老师拒绝了社团申请
        */
       this.$axios.post(
           "http://127.0.0.1:8000/api/handle_create_club",
           Qs.stringify({
-            club_id: id,
+            club_id: club.club_id,
             op: 0
           })
       ).then((res) => {
         if (res.data.code === 0) {
+          club.star = 6
           this.$message.success("社团审批拒绝");
         } else this.$notify.error(res.data.message)
       }).catch((error) => {
