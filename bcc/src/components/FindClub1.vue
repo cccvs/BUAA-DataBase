@@ -164,9 +164,9 @@ export default {
         case '按成立时间升序':
           return itemB.time < itemA.time;
         case '按社团人数降序':
-          return itemA.num < itemB.num;
+          return itemA.member_count < itemB.member_count;
         case '按社团人数升序':
-          return itemB.num < itemA.num;
+          return itemB.member_count < itemA.member_count;
       }
     },
     sortClubs(){
