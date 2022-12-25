@@ -23,6 +23,7 @@
             <v-tab-item>
               <ClubList :clubs="curClub" :leave-club="true"
                         :check-info="false"
+                        :has-joined="hasJoined"
                         style="margin-left: 350px;max-height: 250px"
               ></ClubList>
               <div
@@ -119,6 +120,7 @@ export default {
      members是当前社团的所有成员，activities是当前社团的所有活动，notices是当前社团的所有公告
      */
     return {
+      hasJoined:false,
       isMaster: false,
       club: {},
       myClubList: [],
@@ -366,9 +368,11 @@ export default {
           this.myClubList = res.data.club_list;
           let id = Number(club_id);
           console.log("mounted id", id);
+          console.log(this.myClubList)
           this.curClub = this.myClubList.filter((club) => {
             return club.club_id === id
           })
+          this.hasJoined = this.curClub.length > 0
           console.log("curClub is ", this.curClub);
         } else this.$notify.error(res.data.message)
       }).catch((error) => {

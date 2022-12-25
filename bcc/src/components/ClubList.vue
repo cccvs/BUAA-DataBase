@@ -16,7 +16,7 @@
           <v-btn v-show="joinClub" style="margin-right: 5px" color="blue lighten-3" @click="joinInClub(club.club_id)">
             加入社团
           </v-btn>
-          <v-btn v-show="leaveClub" style="margin-right: 5px" color="yellow lighten-3" @click="quitClub(club.club_id)">
+          <v-btn v-show="leaveClub && hasJoined" style="margin-right: 5px" color="yellow lighten-3" @click="quitClub(club.club_id)">
             退出社团
           </v-btn>
           <v-btn v-show="checkInfo" elevation="10" icon circle color="green" @click="handlePass(club)"
@@ -44,7 +44,7 @@ import Qs from "qs";
 
 export default {
   name: "ClubList",
-  props: ["clubs", "rateClub", "checkInfo", "joinClub", "leaveClub"],
+  props: ["clubs", "rateClub", "checkInfo", "joinClub", "leaveClub", "hasJoined"],
   methods: {
     clubType(type) {
       if (type === 0) return '科技'
