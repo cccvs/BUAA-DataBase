@@ -19,7 +19,7 @@
             <v-tab>活动</v-tab>
             <v-tab>公告</v-tab>
             <v-tab @click="getPosts(this.$router.history.current.params.id)">论坛</v-tab>
-            <v-tab>创建新讨论</v-tab>
+            <v-tab v-show="hasJoined">创建新讨论</v-tab>
             <v-tab-item>
               <ClubList :clubs="curClub" :leave-club="true"
                         :check-info="false"
@@ -71,7 +71,7 @@
               </v-row>
             </v-tab-item>
             <v-tab-item>
-              <ActivityList :activities="activities" text="查看社团的活动"></ActivityList>
+              <ActivityList :activities="activities" :has-joined="hasJoined" text="查看社团的活动"></ActivityList>
             </v-tab-item>
             <v-tab-item>
               <v-row style="margin-left: 10px;margin-top: 10px">

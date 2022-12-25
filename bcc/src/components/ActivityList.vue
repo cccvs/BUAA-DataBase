@@ -60,7 +60,7 @@
             查看详情
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn small color="purple lighten-5" v-show="!audit && activity.is_participate === 0" @click="participate(activity)">
+          <v-btn small color="purple lighten-5" v-show="!audit && activity.is_participate === 0 && hasJoined" @click="participate(activity)">
             报名
           </v-btn>
           <v-btn icon color="deep-orange" v-show="!audit" @click="likeEvent(activity)">
@@ -108,7 +108,7 @@ import Qs from "qs";
 
 export default {
   name: "ActivityList",
-  props: ['activities', 'text', 'audit'],
+  props: ['activities', 'text', 'audit', "hasJoined"],
   methods:{
     participate(activity) {
       this.$axios.post(
