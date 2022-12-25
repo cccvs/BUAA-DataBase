@@ -16,7 +16,7 @@
           >
             <v-tab>社团申请审批</v-tab>
             <v-tab>社团活动审批</v-tab>
-            <v-tab>社团星级评定</v-tab>
+            <v-tab @click="getAllClubs">社团星级评定</v-tab>
             <v-tab>用户日志管理</v-tab>
             <v-tab-item>
               <ClubList :clubs="unhandledClubList" check-info="true" style="margin-left: 50px;"></ClubList>
