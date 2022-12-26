@@ -18,7 +18,7 @@
             <v-tab>成员</v-tab>
             <v-tab>活动</v-tab>
             <v-tab>公告</v-tab>
-            <v-tab @click="getPosts(this.$router.history.current.params.id)">论坛</v-tab>
+            <v-tab @click="getPosts($router.history.current.params.id)">论坛</v-tab>
             <v-tab v-show="hasJoined">创建新讨论</v-tab>
             <v-tab-item>
               <ClubList :clubs="curClub" :leave-club="true"

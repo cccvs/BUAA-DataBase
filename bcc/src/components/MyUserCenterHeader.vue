@@ -83,6 +83,8 @@
           </el-dialog>
         </div>
       </v-row>
+      <v-row style="margin-left: 10px;max-height:50px;min-width: 300px" v-show="id !== curId">
+      </v-row>
       <v-row align-self="center" style="margin-left: 10px;max-height:300px;margin-top: 30px">
         <v-card width="75%" shaped>
           <v-row style="margin-left: 0;margin-top: 0;margin-right: 0;">

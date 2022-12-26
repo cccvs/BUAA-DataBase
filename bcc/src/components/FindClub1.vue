@@ -170,6 +170,7 @@ export default {
       }
     },
     sortClubs(){
+      console.log(this.selectedList)
       let sortClub = []
       for (let i = 0;i < this.selectedList.length;i++){
         sortClub[i] = this.selectedList[i]
@@ -183,6 +184,7 @@ export default {
           }
         }
       }
+      console.log(sortClub);
       this.selectedList = sortClub
     },
     gotoClub(){
